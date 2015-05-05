@@ -1,81 +1,138 @@
-/**
- * Gruntfile
- *
- * This Node script is executed when you run `grunt` or `sails lift`.
- * It's purpose is to load the Grunt tasks in your project's `tasks`
- * folder, and allow you to add and remove tasks as you see fit.
- * For more information on how this works, check out the `README.md`
- * file that was generated in your `tasks` folder.
- *
- * WARNING:
- * Unless you know what you're doing, you shouldn't change this file.
- * Check out the `tasks` directory instead.
- */
+/*jslint node: true */
+'use strict';
 
 module.exports = function(grunt) {
+  
+  // Client-side javascript files to inject in order
+  // (uses Grunt-style wildcard/glob/splat expressions)
+  var jsFiles = [
+  
+    // Dependencies like sails.io.js, jQuery, or Angular
+    // are brought in here
+  
+    //- es5-shim: ECMAScript 5 compatibility shims for legacy JavaScript engines: https://github.com/es-shims/es5-shim
+    'assets/third-party/es5-shim/es5-shim.js',
+    'assets/third-party/es5-shim/es5-sham.js',
+  
+    //- masonry and imagesloaded
+    'assets/third-party/jquery/dist/jquery.js',
+    'assets/third-party/jquery-bridget/jquery.bridget.js',
+    // 'assets/third-party/get-style-property/get-style-property.js',
+    // 'assets/third-party/get-size/get-size.js',
+    'assets/third-party/eventEmitter/EventEmitter.js',
+    'assets/third-party/eventie/eventie.js',
+    // 'assets/third-party/doc-ready/doc-ready.js',
+    // 'assets/third-party/matches-selector/matches-selector.js',
+    // 'assets/third-party/outlayer/item.js',
+    // 'assets/third-party/outlayer/outlayer.js',
+    // 'assets/third-party/masonry/masonry.js',
+    'assets/third-party/imagesloaded/imagesloaded.js',
+  
+    //- angular
+    'assets/third-party/angular/angular.js',
+    'assets/third-party/angular-i18n/angular-locale_de.js',
+    'assets/third-party/moment/moment.js',
+    'assets/third-party/angular-moment/angular-moment.js',
+    'assets/third-party/moment/locale/de.js',
+    'assets/third-party/angular-fullscreen/src/angular-fullscreen.js',
+    'assets/third-party/webodf/webodf-debug.js',
+    'assets/third-party/angular-animate/angular-animate.js',
+    'assets/third-party/angular-ui-router/release/angular-ui-router.js',
+    'assets/third-party/angular-sanitize/angular-sanitize.js',
+    'assets/third-party/angular-touch/angular-touch.js',
+    'assets/third-party/angular-strap/dist/angular-strap.js',
+    'assets/third-party/angular-carousel/dist/angular-carousel.js',
+    'assets/third-party/angular-fullscreen/src/angular-fullscreen.js',
+  
+    //- textAngular
+    //- 'assets/third-party/textAngular/dist/textAngular.min.js',
+  
+    //- angular-medium-editor
+    'assets/third-party/medium-editor/dist/js/medium-editor.js',
+    'assets/third-party/angular-medium-editor/dist/angular-medium-editor.js',
+  
+    //- angular-ui-ace
+    'assets/third-party/ace-builds/src-noconflict/ace.js',
+    'assets/third-party/ace-builds/src-noconflict/mode-html.js',
+    'assets/third-party/angular-ui-ace/ui-ace.js',
+  
+    //- angular-masonry
+    // 'assets/third-party/angular-masonry/angular-masonry.js',
+  
+    //- html, css, javascript beautifier
+    'assets/third-party/js-beautify/js/lib/beautify.js',
+    'assets/third-party/js-beautify/js/lib/beautify-css.js',
+    'assets/third-party/js-beautify/js/lib/beautify-html.js',
+  
+    //- angular-leaflet-directive: https://github.com/tombatossals/angular-leaflet-directive
+    'assets/third-party/leaflet/dist/leaflet-src.js',
+    'assets/third-party/Leaflet.label/dist/leaflet.label-src.js',
+    'assets/third-party/angular-leaflet-directive/dist/angular-leaflet-directive.js',
+  
+    //- AngularJS-Toaster: https://github.com/jirikavi/AngularJS-Toaster: https://github.com/jirikavi/AngularJS-Toaster
+    'assets/third-party/AngularJS-Toaster/toaster.js',
+  
+    //- async: https://github.com/caolan/async
+    'assets/third-party/async/lib/async.js',
+  
+    //- generic angular filters: https://github.com/niemyjski/angular-filters
+    'assets/third-party/ng-filters/dist/angular-filters.js',
+  
+    //- angular-file-upload: https://github.com/nervgh/angular-file-upload
+    'assets/third-party/angular-file-upload/angular-file-upload.js',
+  
+    //- Bring in the socket.io client
+    'assets/third-party/socket.io-client/socket.io.js',
+    'assets/third-party/sails.io.js/sails.io.js',
+    'assets/third-party/angularSails/dist/ngsails.io.js',
+  
+    'assets/js/app.js',
+    'assets/js/bootstrap.js',
+    'assets/js/translations.js',
+    'assets/js/services.js',
+    'assets/js/controllers.js',
+    'assets/js/bootstrap/controllers.js',
+    'assets/js/bootstrap/directives.js',
+    'assets/js/directives/*'
+  ];
 
+  
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+    
+    concat: {
+      options: {
+        separator: ';'
+      },
+      dist: {
+        src: jsFiles,
+        dest: 'assets/js/app.concat.js'
+      }
+    },
+    
+    less: {
+      dist: {
+        options: {
+          cleancss: true,
+          compress: true
+        },
+        files: [
+          {
+            expand: true,
+            cwd: 'assets/styles/',
+            src: ['app.less'],
+            dest: 'assets/styles/',
+            ext: '.css'
+          }
+        ]
+      }
+    }
+    
+  });
+  
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-less');
 
-	// Load the include-all library in order to require all of our grunt
-	// configurations and task registrations dynamically.
-	var includeAll;
-	try {
-		includeAll = require('include-all');
-	} catch (e0) {
-		try {
-			includeAll = require('sails/node_modules/include-all');
-		}
-		catch(e1) {
-			console.error('Could not find `include-all` module.');
-			console.error('Skipping grunt tasks...');
-			console.error('To fix this, please run:');
-			console.error('npm install include-all --save`');
-			console.error();
-
-			grunt.registerTask('default', []);
-			return;
-		}
-	}
-
-
-	/**
-	 * Loads Grunt configuration modules from the specified
-	 * relative path. These modules should export a function
-	 * that, when run, should either load/configure or register
-	 * a Grunt task.
-	 */
-	function loadTasks(relPath) {
-		return includeAll({
-			dirname: require('path').resolve(__dirname, relPath),
-			filter: /(.+)\.js$/
-		}) || {};
-	}
-
-	/**
-	 * Invokes the function from a Grunt configuration module with
-	 * a single argument - the `grunt` object.
-	 */
-	function invokeConfigFn(tasks) {
-		for (var taskName in tasks) {
-			if (tasks.hasOwnProperty(taskName)) {
-				tasks[taskName](grunt);
-			}
-		}
-	}
-
-
-
-
-	// Load task functions
-	var taskConfigurations = loadTasks('./tasks/config'),
-		registerDefinitions = loadTasks('./tasks/register');
-
-	// (ensure that a default task exists)
-	if (!registerDefinitions.default) {
-		registerDefinitions.default = function (grunt) { grunt.registerTask('default', []); };
-	}
-
-	// Run task functions to configure Grunt.
-	invokeConfigFn(taskConfigurations);
-	invokeConfigFn(registerDefinitions);
-
+  grunt.registerTask('dev', [ 'concat:dist', 'less:dist' ]);
+  grunt.registerTask('prod', [ 'concat:dist', 'less:dist' ]);
 };
