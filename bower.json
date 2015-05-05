@@ -1,11 +1,11 @@
 {
-  "name": "Twitter Bootstrap 3 Theme",
+  "name": "Nautischer Verein Cuxhaven Theme",
   "version": "0.0.1",
   "homepage": "https://github.com/JumpLink/cms",
   "authors": [
     "Pascal Garber <pascal@jumplink.eu>"
   ],
-  "description": "The default theme of JumpLink CMS",
+  "description": "Custom Theme of Nautischer Verein Cuxhaven",
   "main": "",
   "moduleType": [
     "node"
@@ -22,7 +22,8 @@
   "dependencies": {
     "AngularJS-Toaster": "~0.4.*",
     "Leaflet.label": "~0.2.*",
-    "angular-animate": "1.2.26",
+    "ace-builds": "^1",
+    "angular-animate": "1.13.*",
     "angular-carousel": "~0.2.*",
     "angular-contenteditable": "~0.3.*",
     "angular-leaflet-directive": "~0.7.*",
@@ -44,7 +45,8 @@
     "js-beautify": "beautify-web/js-beautify#~1.5.4",
     "ng-filters": "*",
     "sails.io.js": "~0.11.5",
-    "socket.io-client": "1.2.1"
-  },
-  "devDependencies": {}
+    "socket.io-client": "1.2.1",
+    "WebODF": "kogmbh/WebODF#~0.5.5",
+    "webodf.js": "kogmbh/webodf.js_release#~0.5.5"
+  }
 }

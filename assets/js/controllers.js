@@ -267,7 +267,7 @@ jumplink.cms.controller('HomeContentController', function($scope, $sailsSocket, 
 
 jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, FileUploader, $modal, $log, $location) {
   $scope.images = images;
-  //$log.debug(images[0]);
+  // $log.debug(images[0]);
   $scope.uploader = new FileUploader({url: 'gallery/upload', removeAfterUpload: true});
   $scope.uploader.filters.push({
     name: 'imageFilter',
@@ -923,7 +923,7 @@ jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $s
             var attachmentFilename = 'aufnahmeantrag_'+$scope.member.vorname+'_'+$scope.member.name;
             attachmentFilename = attachmentFilename.toLowerCase();
 
-            var to = $scope.member.email+',nvcux@t­-online.de';
+            var to = $scope.member.email+',nvcux@t-online.de';
             var subject = 'Aufnahmeantrag von '+$scope.member.vorname+' '+$scope.member.name;
             var from = $scope.member.email;
 
@@ -1087,7 +1087,7 @@ jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sails
 
     var text = String(html).replace(/<[^>]+>/gm, '');
 
-    $sailsSocket.post('/email/send', {from: $scope.email.from, to: $scope.email.from+',nvcux@t­-online.de', subject:'Kontaktanfrage von '+$scope.email.name+': '+$scope.email.subject, text: text, html: html}).success(function(data, status, headers, config){
+    $sailsSocket.post('/email/send', {from: $scope.email.from, to: $scope.email.from+',nvcux@t-online.de', subject:'Kontaktanfrage von '+$scope.email.name+': '+$scope.email.subject, text: text, html: html}).success(function(data, status, headers, config){
       if(!$rootScope.authenticated) {
         $rootScope.pop('success', 'E-Mail wurde versendet.');
       }

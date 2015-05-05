@@ -35,7 +35,7 @@ module.exports = function(grunt) {
     'assets/third-party/angular-moment/angular-moment.js',
     'assets/third-party/moment/locale/de.js',
     'assets/third-party/angular-fullscreen/src/angular-fullscreen.js',
-    'assets/third-party/webodf/webodf-debug.js',
+    'assets/third-party/webodf.js/webodf.js',
     'assets/third-party/angular-animate/angular-animate.js',
     'assets/third-party/angular-ui-router/release/angular-ui-router.js',
     'assets/third-party/angular-sanitize/angular-sanitize.js',
@@ -98,7 +98,7 @@ module.exports = function(grunt) {
 
   
   grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
+    pkg: grunt.file.readJSON('bower.json'),
     
     concat: {
       options: {
@@ -108,6 +108,42 @@ module.exports = function(grunt) {
         src: jsFiles,
         dest: 'assets/js/app.concat.js'
       }
+    },
+    
+    ngAnnotate: {
+        options: {
+            singleQuotes: true,
+        },
+  		dist: {
+  			src: 'assets/js/app.concat.js',
+  			dest: 'assets/js/app.annotated.js'
+  		}
+    },
+    
+    uglify: {
+      options: {
+        mangle: true // http://stackoverflow.com/questions/17238759/angular-module-minification-bug
+      },
+  		dist: {
+  			src: 'assets/js/app.annotated.js',
+  			dest: 'assets/js/app.min.js'
+  		}
+  	},
+  	
+    jshint: {
+      options: {
+        curly: true,
+        eqeqeq: true,
+        eqnull: true,
+        browser: true,
+        asi: true,
+        globals: {
+          angular: true
+        },
+      },
+      before: jsFiles,
+      afterconcat: ['assets/js/app.concat.js'],
+      aftermin: ['assets/js/app.min.js']
     },
     
     less: {
@@ -127,12 +163,14 @@ module.exports = function(grunt) {
         ]
       }
     }
-    
   });
   
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.registerTask('dev', [ 'concat:dist', 'less:dist' ]);
-  grunt.registerTask('prod', [ 'concat:dist', 'less:dist' ]);
+  grunt.registerTask('prod', [ 'concat:dist', 'ngAnnotate:dist', 'uglify:dist', 'less:dist' ]);
 };
