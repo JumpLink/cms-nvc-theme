@@ -111,9 +111,9 @@ module.exports = function(grunt) {
     },
     
     ngAnnotate: {
-        options: {
-            singleQuotes: true,
-        },
+      options: {
+          singleQuotes: true,
+      },
   		dist: {
   			src: 'assets/js/app.concat.js',
   			dest: 'assets/js/app.annotated.js'
@@ -124,12 +124,12 @@ module.exports = function(grunt) {
       options: {
         mangle: true // http://stackoverflow.com/questions/17238759/angular-module-minification-bug
       },
-  		dist: {
-  			src: 'assets/js/app.annotated.js',
-  			dest: 'assets/js/app.min.js'
-  		}
-  	},
-  	
+      dist: {
+        src: 'assets/js/app.annotated.js',
+        dest: 'assets/js/app.min.js'
+      }
+    },
+
     jshint: {
       options: {
         curly: true,
