@@ -162,6 +162,33 @@ module.exports = function(grunt) {
           }
         ]
       }
+    },
+    
+    watch: {
+      jsdev: {
+        // Assets to watch:
+        files: [jsFiles, 'assets/js/**/*.js', '!assets/js/app.*.js', 'Gruntfile.js'],
+
+        // When assets are changed:
+        tasks: ['concat:dist']
+      },
+
+      jsprod: {
+        // Assets to watch:
+        files: [jsFiles, 'assets/js/**/*.js', '!assets/js/app.*.js', 'Gruntfile.js'],
+
+        // When assets are changed:
+        tasks: ['concat:dist', 'ngAnnotate:dist', 'uglify:dist']
+      },
+
+      less: {
+        // Assets to watch:
+        files: ['assets/styles/**/*.less', 'Gruntfile.js'],
+
+        // When assets are changed:
+        tasks: ['less:dist']
+      },
+
     }
   });
   
@@ -170,7 +197,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('dev', [ 'concat:dist', 'less:dist' ]);
-  grunt.registerTask('prod', [ 'concat:dist', 'ngAnnotate:dist', 'uglify:dist', 'less:dist' ]);
+  grunt.registerTask('watch-dev', [ 'watch:jsdev', 'watch:less' ]);
+  grunt.registerTask('watch-prod', [ 'watch:jsprod', 'watch:less' ]);
+
+  grunt.registerTask('build-dev', [ 'concat:dist', 'less:dist' ]);
+  grunt.registerTask('build-prod', [ 'concat:dist', 'ngAnnotate:dist', 'uglify:dist', 'less:dist' ]);
+
+  grunt.registerTask('clean', [ ]);
 };
