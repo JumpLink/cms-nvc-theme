@@ -110995,18 +110995,32 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     , resolve:{
       about: function($sailsSocket) {
         return $sailsSocket.get('/content?name=about', {name: 'about'}).then (function (data) {
-          if(angular.isUndefined(data) || angular.isUndefined(data.data[0]))
+          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
             return null;
-          else
-            return html_beautify(data.data[0].content);
+          } else {
+            if (data.data instanceof Array) {
+              data.data = data.data[0];
+              console.error("request has more than one results");
+            }
+            return html_beautify(data.data.content);
+          }
+        }, function error (resp){
+          console.error(resp);
         });
       }
-      , goals: function($sailsSocket, $timeout) {
+      , goals: function($sailsSocket) {
         return $sailsSocket.get('/content?name=goals', {name: 'goals'}).then (function (data) {
-          if(angular.isUndefined(data) || angular.isUndefined(data.data[0]))
+          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
             return null;
-          else
-            return html_beautify(data.data[0].content);
+          } else {
+            if (data.data instanceof Array) {
+              data.data = data.data[0];
+              console.error("request has more than one results");
+            }
+            return html_beautify(data.data.content);
+          }
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
@@ -111156,8 +111170,13 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     , resolve:{
       application: function($sailsSocket) {
         return $sailsSocket.get('/content?name=application', {name: 'application'}).then (function (data) {
-          if(angular.isDefined(data) && angular.isDefined(data.data[0]) && angular.isDefined(data.data[0].content))
-            return html_beautify(data.data[0].content);
+          if(angular.isDefined(data) && angular.isDefined(data.data)) {
+            if (data.data instanceof Array) {
+              data.data = data.data[0];
+              console.error("request has more than one results");
+            }
+            return html_beautify(data.data.content);
+          }
           else
             return null;
         });
@@ -111184,10 +111203,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     , resolve:{
       imprint: function($sailsSocket) {
         return $sailsSocket.get('/content?name=imprint', {name: 'imprint'}).then (function (data) {
-          if(angular.isUndefined(data) || angular.isUndefined(data.data[0]))
+          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
             return null;
-          else
-            return html_beautify(data.data[0].content);
+          } else {
+            if (data.data instanceof Array) {
+              data.data = data.data[0];
+              console.error("request has more than one results");
+            }
+            return html_beautify(data.data.content);
+          }
         });
       }
     }
@@ -111212,10 +111236,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     , resolve:{
       links: function($sailsSocket) {
         return $sailsSocket.get('/content?name=links', {name: 'links'}).then (function (data) {
-          if(angular.isUndefined(data) || angular.isUndefined(data.data[0]))
+          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
             return null;
-          else
-            return html_beautify(data.data[0].content);
+          } else {
+            if (data.data instanceof Array) {
+              data.data = data.data[0];
+              console.error("request has more than one results");
+            }
+            return html_beautify(data.data.content);
+          }
         });
       }
     }
@@ -111545,7 +111574,7 @@ jumplink.cms.service('themeService', function ($rootScope, $sailsSocket, $log, $
    ,  subscribe: subscribe
   };
 });
-;jumplink.cms.controller('test', function($rootScope, $scope, $state, $window, $timeout, Fullscreen, toaster, $sailsSocket, $location, $anchorScroll, $log) {
+;jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $window, $timeout, Fullscreen, toaster, $sailsSocket, $location, $anchorScroll, $log) {
 
   // fix scroll to top on route change
   $scope.$on("$stateChangeSuccess", function () {
