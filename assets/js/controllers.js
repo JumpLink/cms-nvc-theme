@@ -96,13 +96,13 @@ jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $w
   // TODO loading animation on $stateChangeStart
     $rootScope.$on('$stateChangeStart',
   function(event, toState, toParams, fromState, fromParams){
-     $rootScope.loadclass = 'loading';
+    // $rootScope.loadclass = 'loading'; // WORKAROUND comment because event is not always fired, see FIXME
   });
 
   // on new url
   $rootScope.$on('$stateChangeSuccess',
   function(event, toState, toParams, fromState, fromParams){
-    $rootScope.loadclass = 'finish';
+    $rootScope.loadclass = 'finish'; // FIXME this event is not always fired
     switch(toState.name) {
       case "bootstrap-layout.home":
         $rootScope.bodyclass = 'home';

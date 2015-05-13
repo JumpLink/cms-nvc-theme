@@ -111672,13 +111672,13 @@ jumplink.cms.service('themeService', ['$rootScope', '$sailsSocket', '$log', '$as
   // TODO loading animation on $stateChangeStart
     $rootScope.$on('$stateChangeStart',
   function(event, toState, toParams, fromState, fromParams){
-     $rootScope.loadclass = 'loading';
+    // $rootScope.loadclass = 'loading';
   });
 
   // on new url
   $rootScope.$on('$stateChangeSuccess',
   function(event, toState, toParams, fromState, fromParams){
-    $rootScope.loadclass = 'finish';
+    $rootScope.loadclass = 'finish'; // WORKAROUND this event is not always fire
     switch(toState.name) {
       case "bootstrap-layout.home":
         $rootScope.bodyclass = 'home';
