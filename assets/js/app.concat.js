@@ -111398,6 +111398,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       images: function($sailsSocket) {
         return $sailsSocket.get('/gallery?limit=0').then (function (data) {
           return data.data;
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
@@ -111418,7 +111420,10 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     , resolve:{
       events: function($sailsSocket, eventService) {
         return $sailsSocket.get('/timeline').then (function (data) {
+          // console.log(data);
           return eventService.split(data.data);
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
@@ -111444,6 +111449,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       members: function($sailsSocket, $filter) {
         return $sailsSocket.get('/member').then (function (data) {
           return $filter('orderBy')(data.data, 'position');
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
@@ -111480,6 +111487,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
           }
           else
             return null;
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
@@ -111513,6 +111522,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             }
             return html_beautify(data.data.content);
           }
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
@@ -111546,6 +111557,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             }
             return html_beautify(data.data.content);
           }
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
@@ -111572,6 +111585,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
         return $sailsSocket.get('/theme/find').then (function (data) {
           console.log(data);
           return data.data;
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
@@ -111592,6 +111607,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       users: function($sailsSocket) {
         return $sailsSocket.get('/user').then (function (data) {
           return data.data;
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
@@ -111613,6 +111630,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
         return $sailsSocket.get('/user'+'/'+$stateParams.index).then (function (data) {
           delete data.data.password;
           return data.data;
+        }, function error (resp){
+          console.error(resp);
         });
       }
     }
