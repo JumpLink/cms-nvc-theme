@@ -111347,6 +111347,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       images: function($sailsSocket) {
         return $sailsSocket.get('/gallery?limit=0').then (function (data) {
           return data.data;
+        }, function error (resp){
+          log.error(resp);
         });
       }
     }
