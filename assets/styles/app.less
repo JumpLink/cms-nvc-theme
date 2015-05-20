@@ -226,8 +226,43 @@ i.fa.img-dropdown {
 @import (less) "./../third-party/angular-carousel/dist/angular-carousel.css";
 
 // carousel
-.rn-carousel-indicator {
-  margin-top: -19px;
+
+// dynamic height: https://github.com/revolunet/angular-carousel/issues/309
+ul[rn-carousel] {
+  > li {
+    position: relative;
+    margin-left: -100%;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+// .rn-carousel-indicator {
+//   margin-top: -19px;
+// }
+
+// // slider
+.center-slider {
+  height: 100%;
+  // center image: http://davidwalsh.name/css-vertical-center
+  .rn-carousel-container {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+.rn-carousel-control {
+  &.rn-carousel-control-prev:before {
+    color: white;
+    content: @fa-var-arrow-circle-left;
+    font: normal normal normal 40px/1 FontAwesome;
+  }
+  &.rn-carousel-control-next:before {
+    color: white;
+    content: @fa-var-arrow-circle-right;
+    font: normal normal normal 40px/1 FontAwesome;
+  }
 }
 
 // angular-medium-editor
@@ -492,28 +527,6 @@ body {
 .anchor-static-navbar {
   margin-top: -50px;
   padding-top: 50px;
-}
-
-// slider
-.center-slider {
-  height: 100%;
-  // center image: http://davidwalsh.name/css-vertical-center
-  .rn-carousel-container {
-    top: 50%;
-    transform: translateY(-50%);
-  }
-}
-.rn-carousel-control {
-  &.rn-carousel-control-prev:before {
-    color: white;
-    content: @fa-var-arrow-circle-left;
-    font: normal normal normal 40px/1 FontAwesome;
-  }
-  &.rn-carousel-control-next:before {
-    color: white;
-    content: @fa-var-arrow-circle-right;
-    font: normal normal normal 40px/1 FontAwesome;
-  }
 }
 
 // sidebar
