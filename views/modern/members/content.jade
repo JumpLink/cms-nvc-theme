@@ -5,9 +5,9 @@
     .col-lg-3.col-md-4.col-sm-6.member(ng-repeat="member in members")
       img.img-circle(alt='{{member.name}}', ng-src='/assets/images/members/{{member.image}}', style='width: 140px; height: 140px;')
       h2
-        div(ng-show="$root.authenticated", medium-editor, ng-model="member.name", options='{"placeholder": "Name eingeben", "disableToolbar": true, "forcePlainText": true, "disableReturn": true}')
+        div(ng-show="$root.authenticated", medium-editor, ng-model="member.name", options='{"placeholder": "Name eingeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
         div(ng-hide="$root.authenticated", ng-bind-html="member.name")
-        small(ng-show="$root.authenticated", medium-editor, ng-model="member.job", options='{"placeholder": "Job eingeben", "disableToolbar": true, "forcePlainText": true, "disableReturn": true}')
+        small(ng-show="$root.authenticated", medium-editor, ng-model="member.job", options='{"placeholder": "Job eingeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
         small(ng-hide="$root.authenticated", ng-bind-html="member.job")
       p.btn-group(ng-show="authenticated")
         button.btn.btn-warning(ng-disabled="$index <= 0", ng-click="moveBackward(member)"): i.fa.fa-backward

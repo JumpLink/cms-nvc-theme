@@ -265,8 +265,11 @@ jumplink.cms.controller('HomeContentController', function($scope, $sailsSocket, 
 });
 
 
-jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, FileUploader, $modal, $log, $location) {
+jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, config, FileUploader, $modal, $log, $location) {
   $scope.images = images;
+  $scope.config = config;
+
+  console.log($scope.config);
   // $log.debug(images[0]);
   $scope.uploader = new FileUploader({url: 'gallery/upload', removeAfterUpload: true});
   $scope.uploader.filters.push({
@@ -348,6 +351,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
           $rootScope.pop('success', 'Ein Bild wurde aktualisiert', msg.data.original.name);
       break;
       case 'created':
+        // TODO not broadcast / fired why?!
         if($rootScope.authenticated)
           $rootScope.pop('success', 'Ein Bild wurde hochgeladen', msg.data.original.name);
         $scope.images.push(msg.data);
@@ -431,7 +435,15 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
 
   $scope.uploader.onCompleteItem = function(fileItem, response, status, headers) {
-    // fileItem.member.image = response.files[0].uploadedAs;
+    //fileItem.member.image = response.files[0].uploadedAs;
+    console.log(fileItem, response, status, headers);
+    // WORKAROUND until the socket method works
+
+    response.forEach(function (file, index, files) {
+      if($rootScope.authenticated)
+        $rootScope.pop('success', 'Ein Bild wurde hochgeladen', file.original.name);
+      $scope.images.push(file);
+    });
   };
 
   // image is set in ng-repeat, this is working :)
@@ -452,9 +464,11 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
 });
 
-jumplink.cms.controller('GalleryFullscreenController', function($scope, $rootScope, $sailsSocket, $stateParams, image, $log) {
+jumplink.cms.controller('GalleryFullscreenController', function($scope, image, config) {
   $scope.image = image;
+  $scope.config = config;
 });
+
 jumplink.cms.controller('GallerySlideController', function($scope, $sailsSocket, $stateParams, $timeout, images, $log) {
   $scope.images = images;
   var setSlide = function () {

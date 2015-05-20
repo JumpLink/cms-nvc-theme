@@ -29,12 +29,12 @@
           i.fa.fa-check-square
         .timeline-panel
           .timeline-heading
-            h4.timeline-title(ng-show="$root.authenticated", medium-editor, ng-model="event.title", options='{"placeholder": "Kein Titel angegeben", "disableToolbar": true, "forcePlainText": true, "disableReturn": true}')
+            h4.timeline-title(ng-show="$root.authenticated", medium-editor, ng-model="event.title", options='{"buttonLabels": "fontawesome", "placeholder": "Kein Titel angegeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
             h4.timeline-title(ng-show="!$root.authenticated && event.title", ng-bind-html="event.title")
             p.text-muted
               i.fa.fa-user(ng-show="$root.authenticated || event.person")
               //- Person (Admin)
-              span(ng-show="$root.authenticated", medium-editor, ng-model="event.person", options='{"placeholder": "Keine Person angegeben", "disableToolbar": true, "forcePlainText": true, "disableReturn": true}')
+              span(ng-show="$root.authenticated", medium-editor, ng-model="event.person", options='{"placeholder": "Keine Person angegeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
               //- Person (User)
               span(ng-show="!$root.authenticated && event.person", ng-bind-html="event.person")
             //- Von bis (User)
@@ -45,7 +45,7 @@
                 |  bis {{event.to | amCalendar}}
             p.text-muted(ng-show="$root.authenticated")
               i.fa.fa-home
-              span(medium-editor, ng-model="event.place", options='{"placeholder": "Kein Ort angegeben", "disableToolbar": true, "forcePlainText": true, "disableReturn": true}')
+              span(medium-editor, ng-model="event.place", options='{"placeholder": "Kein Ort angegeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
             p.text-muted(ng-hide="$root.authenticated", ng-show="event.place")
               i.fa.fa-home(ng-show="event.place")
               a(ng-hide="$root.authenticated", ng-bind-html="event.place", ng-href="https://maps.google.com?q={{event.place}}")

@@ -164,13 +164,20 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('bootstrap-layout.gallery', {
     url: '/gallery'
     , resolve:{
-      images: function($sailsSocket) {
+      images: function($sailsSocket, $log) {
         return $sailsSocket.get('/gallery?limit=0').then (function (data) {
           return data.data;
         }, function error (resp){
-          log.error(resp);
+          $log.error(resp);
         });
-      }
+      },
+      config: function($sailsSocket, $log) {
+        return $sailsSocket.get('/config/find').then (function (data) {
+          return data.data;
+        }, function error (resp){
+          $log.error(resp);
+        });
+      },
     }
     , views: {
       'content' : {
@@ -195,6 +202,13 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
         return $sailsSocket.get('/gallery/'+$stateParams.id).then (function (data) {
           $log.debug('/gallery/'+$stateParams.id, data);
           return data.data;
+        });
+      },
+      config: function($sailsSocket, $log) {
+        return $sailsSocket.get('/config/find').then (function (data) {
+          return data.data;
+        }, function error (resp){
+          $log.error(resp);
         });
       }
     }
