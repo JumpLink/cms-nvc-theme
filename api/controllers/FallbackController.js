@@ -9,41 +9,58 @@ var updateBrowser = function (req, res, next, force) {
 var fallbackHome = function (req, res, next, force, showLegacyToast) {
   sails.log.debug("fallbackHome");
   var about = null, goals = null;
-  Content.find({name:'about'}).exec(function found(err, results) {
-    if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) about = results[0].content;
-    Content.find({name:'goals'}).exec(function found(err, results) {
-      if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) goals = results[0].content;
-      return ThemeService.view(req, 'views/fallback/home/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, about: about, goals: goals, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Startseite', config: {paths: sails.config.paths} });
+  MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
+    if(err) { return res.serverError(err); }
+    Content.find({name:'about', site:config.name}).exec(function found(err, results) {
+      if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) about = results[0].content;
+      Content.find({name:'goals', site:config.name}).exec(function found(err, results) {
+        if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) goals = results[0].content;
+        return ThemeService.view(req, 'views/fallback/home/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, about: about, goals: goals, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Startseite', config: {paths: sails.config.paths} });
+      });
     });
   });
 }
 
 var fallbackMembers = function (req, res, next, force, showLegacyToast) {
   var members;
-  Member.find().exec(function found(err, results) {
-    members = MemberService.sort(results);
-    return ThemeService.view(req, 'views/fallback/members/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, members: members, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Vorstand / Beirat', config: {paths: sails.config.paths} });
-  });
+  MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
+    if(err) { return res.serverError(err); }
+    Member.find({site:config.name}).exec(function found(err, results) {
+      members = MemberService.sort(results);
+      return ThemeService.view(req, 'views/fallback/members/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, members: members, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Vorstand / Beirat', config: {paths: sails.config.paths} });
+    });
+  }); 
 }
 
 var fallbackEvents = function (req, res, next, force, showLegacyToast) {
   var events;
-  Timeline.find().exec(function found(err, results) {
-    // sails.log.debug(results);
-    // events = EventService.sort(results);
-    // events = EventService.momentise(events);
-    // events = EventService.split(events);
-    // sails.log.debug(events);
-    events = EventService.transform(results);
-    return ThemeService.view(req, 'views/fallback/events/timeline.jade', res,  {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, events: events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Veranstaltungen', config: {paths: sails.config.paths} });
-  });
+  MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
+    if(err) { return res.serverError(err); }
+    Timeline.find({site:config.name}).exec(function found(err, results) {
+      // sails.log.debug(results);
+      // events = EventService.sort(results);
+      // events = EventService.momentise(events);
+      // events = EventService.split(events);
+      // sails.log.debug(events);
+      events = EventService.transform(results);
+      return ThemeService.view(req, 'views/fallback/events/timeline.jade', res,  {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, events: events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Veranstaltungen', config: {paths: sails.config.paths} });
+    });
+  }); 
 }
 
 var fallbackGallery = function (req, res, next, force, showLegacyToast) {
-  var about, goals;
-  Gallery.find().exec(function found(err, results) {
-    images = results;
-    return ThemeService.view(req, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, images: images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}});
+  MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
+    if(err) { return res.serverError(err); }
+    var query = {
+      where: {
+        site: config.name
+      },
+      sort: 'position'
+    };
+    Gallery.find(query).exec(function found(err, results) {
+      images = results;
+      return ThemeService.view(req, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, images: images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}});
+    });
   });
 }
 
@@ -67,20 +84,25 @@ var fallbackApplication = function (req, res, next, force, showLegacyToast) {
       , bic: null
     }
   }
-
-  Content.find({name:'application'}).exec(function found(err, results) {
-    if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) {
-      application = results[0].content;
-    }
-    return ThemeService.view(req, 'views/fallback/application/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, application: application, member: member, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Aufnahmeantrag', config: {paths: sails.config.paths} });
+  MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
+    if(err) { return res.serverError(err); }
+    Content.find({name:'application', site:config.name}).exec(function found(err, results) {
+      if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) {
+        application = results[0].content;
+      }
+      return ThemeService.view(req, 'views/fallback/application/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, application: application, member: member, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Aufnahmeantrag', config: {paths: sails.config.paths} });
+    });
   });
 }
 
 var fallbackLinks = function (req, res, next, force, showLegacyToast) {
   var links = null;
-  Content.find({name:'links'}).exec(function found(err, results) {
-    if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) links = results[0].content;
-    return ThemeService.view(req, 'views/fallback/links/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, links: links, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Links', config: {paths: sails.config.paths} });
+  MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
+    if(err) { return res.serverError(err); }
+    Content.find({name:'links', site:config.name}).exec(function found(err, results) {
+      if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) links = results[0].content;
+      return ThemeService.view(req, 'views/fallback/links/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, links: links, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Links', config: {paths: sails.config.paths} });
+    });
   });
 }
 
@@ -88,9 +110,12 @@ var fallbackImprint = function (req, res, next, force, showLegacyToast) {
   var imprint = null, emailIsSend = null;
 
   var view = function (req, host, url, form, useragent, emailIsSend) {
-    Content.find({name:'imprint'}).exec(function found(err, results) {
-      if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content))  imprint = results[0].content;
-      return ThemeService.view(req, 'views/fallback/imprint/content.jade', res, {showLegacyToast: showLegacyToast, force: force, emailIsSend: emailIsSend, host: host, url: url, imprint: imprint, form: form, useragent: useragent, title: 'Nautischer Verein Cuxhaven e.V. - Impressum', config: {paths: sails.config.paths} });
+    MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
+      if(err) { return res.serverError(err); }
+      Content.find({name:'imprint', site:config.name}).exec(function found(err, results) {
+        if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content))  imprint = results[0].content;
+        return ThemeService.view(req, 'views/fallback/imprint/content.jade', res, {showLegacyToast: showLegacyToast, force: force, emailIsSend: emailIsSend, host: host, url: url, imprint: imprint, form: form, useragent: useragent, title: 'Nautischer Verein Cuxhaven e.V. - Impressum', config: {paths: sails.config.paths} });
+      });
     });
   }
 
