@@ -165,9 +165,9 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('bootstrap-layout.gallery', {
     url: '/gallery'
     , resolve:{
-      images: function($sailsSocket, $log) {
+      images: function($sailsSocket, $filter, $log) {
         return $sailsSocket.get('/gallery?limit=0').then (function (data) {
-          return data.data;
+          return $filter('orderBy')(data.data, 'position');
         }, function error (resp){
           $log.error(resp);
         });

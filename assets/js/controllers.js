@@ -265,7 +265,7 @@ jumplink.cms.controller('HomeContentController', function($scope, $sailsSocket, 
 });
 
 
-jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, config, FileUploader, $modal, $log, $location) {
+jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, config, FileUploader, $modal, $log, $location, $state) {
   $scope.images = images;
   $scope.config = config;
 
@@ -461,6 +461,57 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
       "click": "save(image)"
     }
   ];
+
+
+  /* ==== Drag and Drop Stuff ==== */
+
+  // vertausche Bilder
+  var swapImages = function (dragimageindex, dragimage, dropimageindex, dropimage) {
+    $log.debug(dragimage.position+" <=> "+dropimage.position);
+
+    // swap position too
+    var tmp_position = dragimage.position;
+    dragimage.position = dropimage.position;
+    dropimage.position = tmp_position;
+
+    // IMPORTANT: swap Indexes, too
+    $scope.images[dragimageindex] = dropimage;
+    $scope.images[dropimageindex] = dragimage;
+  }
+
+  $scope.onDragOnImageComplete = function(index, image, evt) {
+    if(image == null) {
+      $log.debug("*click*", index);
+      var image = $scope.images[index];
+      $state.go('bootstrap-layout.gallery-fullscreen', {id:image.id});
+    }
+    // $log.debug("onDragOnImageComplete, image:", image, "index", index);
+  }
+
+  $scope.onDropOnImageComplete = function(dropimageindex, dragimage, evt) {
+    var dragimageindex = $scope.images.indexOf(dragimage);
+    var dropimage = $scope.images[dropimageindex];
+
+    swapImages(dragimageindex, dragimage, dropimageindex, dropimage);
+    
+    // console.log("onDropOnImageComplete, dragimage:", dragimage, "dragimageindex", dragimageindex, "dropimage", dropimage, "dropimageindex", dropimageindex);
+  }
+
+  $scope.onDropOnAreaComplete = function(image, evt) {
+    var index = $scope.images.indexOf(image);
+    // $log.debug("onDropOnAreaComplete, image:", image, "index", index);
+  }
+
+  // var setImagePosition = function (images) {
+  //   var lastposition = 0;
+  //   for (var i = 0; i < images.length; i++) {
+  //     // if(typeof images[i].position === 'undefined') {
+  //       lastposition++;
+  //       images[i].position = lastposition;
+  //     // }
+  //   };
+
+  // setImagePosition($scope.images);
 
 });
 
@@ -729,21 +780,18 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
 
   $scope.add = function() {
     if($rootScope.authenticated) {
-      if($scope.members.length > 0) {
-        // var newMember = angular.copy($scope.members[$scope.members.length - 1]);
-        var newMember = {
-          position: $scope.members.length,
-          name: "",
-          job: "",
-          image: "photo.png",
-          site: $scope.members[$scope.members.length - 1].site
-        }
-        // delete newMember.id;
-        // delete newMember.position++;
-        $scope.members.push(newMember);
-      } else {
-        $scope.members.push({position: 1, name:"Hier Name eingeben", job: "Hier Beruf eingeben", image: 'photo.png'});
+      if(!angular.isArray($scope.members)) $scope.members = [];
+      // var newMember = angular.copy($scope.members[$scope.members.length - 1]);
+      var newMember = {
+        position: $scope.members.length || 0,
+        name: "",
+        job: "",
+        image: "photo.png",
+        site: $scope.members[$scope.members.length - 1].site
       }
+      // delete newMember.id;
+      // delete newMember.position++;
+      $scope.members.push(newMember);
       $scope.edit(newMember);
     }
   }
