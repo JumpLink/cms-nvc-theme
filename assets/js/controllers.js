@@ -730,9 +730,16 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
   $scope.add = function() {
     if($rootScope.authenticated) {
       if($scope.members.length > 0) {
-        var newMember = angular.copy($scope.members[$scope.members.length - 1]);
-        delete newMember.id;
-        delete newMember.position++;
+        // var newMember = angular.copy($scope.members[$scope.members.length - 1]);
+        var newMember = {
+          position: $scope.members.length,
+          name: "",
+          job: "",
+          image: "photo.png",
+          site: $scope.members[$scope.members.length - 1].site
+        }
+        // delete newMember.id;
+        // delete newMember.position++;
         $scope.members.push(newMember);
       } else {
         $scope.members.push({position: 1, name:"Hier Name eingeben", job: "Hier Beruf eingeben", image: 'photo.png'});

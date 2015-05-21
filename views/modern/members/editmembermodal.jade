@@ -39,4 +39,5 @@
             div
               img.img-circle(ng-hide="uploader.queue[uploader.queue.length-1].file", width="140", height="140", ng-src='assets/images/members/{{member.image}}', style='width: 140px; height: 140px;')
       .modal-footer
+        button.btn.btn-danger(type='button', ng-click='remove(member);$hide()') Löschen
         button.btn.btn-primary(type='button', ng-click='save(member);$hide()') Speichern
