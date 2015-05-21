@@ -255,10 +255,10 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('bootstrap-layout.timeline', {
     url: '/events'
     , resolve:{
-      events: function($sailsSocket, eventService) {
+      events: function($sailsSocket, EventService) {
         return $sailsSocket.get('/timeline').then (function (data) {
           // console.log(data);
-          return eventService.split(data.data);
+          return EventService.transform(data.data);
         }, function error (resp){
           console.error(resp);
         });

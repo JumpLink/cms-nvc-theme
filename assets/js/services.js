@@ -1,4 +1,4 @@
-jumplink.cms.service('historyService', function ($window) {
+jumplink.cms.service('HistoryService', function ($window) {
   var back = function () {
     $window.history.back();
   }
@@ -8,7 +8,20 @@ jumplink.cms.service('historyService', function ($window) {
   };
 });
 
-jumplink.cms.service('eventService', function (moment) {
+jumplink.cms.service('UtilityService', function () {
+  var invertOrder = function (array) {
+    var result = [];
+    for (var i = array.length - 1; i >= 0; i--) {
+      result.push(array[i]);
+    };
+    return result;
+  }
+  return {
+    invertOrder: invertOrder
+  };
+});
+
+jumplink.cms.service('EventService', function (moment, UtilityService) {
 
   var split = function(events) {
     var unknown = [], before = [], after = [];
@@ -31,6 +44,12 @@ jumplink.cms.service('eventService', function (moment) {
     return {unknown:unknown, before:before, after:after};
   }
 
+  var transform = function(events) {
+    events = split(events);
+    events.before = UtilityService.invertOrder(events.before);
+    return events;
+  }
+
   var merge = function(unknown, before, after) {
     if(angular.isUndefined(unknown))
       unknown = [];
@@ -44,6 +63,7 @@ jumplink.cms.service('eventService', function (moment) {
   return {
     split: split
     , merge: merge
+    , transform: transform
   };
 });
 
@@ -70,7 +90,7 @@ jumplink.cms.service('$async', function () {
   return async;
 });
 
-jumplink.cms.service('userService', function ($rootScope, $sailsSocket, $log) {
+jumplink.cms.service('UserService', function ($rootScope, $sailsSocket, $log) {
   var isSubscribed = false;
 
   var save = function(user, callback) {
@@ -160,7 +180,7 @@ jumplink.cms.service('userService', function ($rootScope, $sailsSocket, $log) {
 });
 
 
-jumplink.cms.service('themeService', function ($rootScope, $sailsSocket, $log, $async) {
+jumplink.cms.service('ThemeService', function ($rootScope, $sailsSocket, $log, $async) {
   var isSubscribed = false;
 
   var save = function (themes, callback) {

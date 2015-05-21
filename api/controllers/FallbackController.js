@@ -29,9 +29,12 @@ var fallbackMembers = function (req, res, next, force, showLegacyToast) {
 var fallbackEvents = function (req, res, next, force, showLegacyToast) {
   var events;
   Timeline.find().exec(function found(err, results) {
-    events = EventService.sort(results);
-    events = EventService.momentise(events);
-    events = EventService.split(events);
+    // sails.log.debug(results);
+    // events = EventService.sort(results);
+    // events = EventService.momentise(events);
+    // events = EventService.split(events);
+    // sails.log.debug(events);
+    events = EventService.transform(results);
     return ThemeService.view(req, 'views/fallback/events/timeline.jade', res,  {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, events: events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Veranstaltungen', config: {paths: sails.config.paths} });
   });
 }

@@ -1,13 +1,13 @@
 .container(style="min-height: 200px;")
   span(ng-repeat="eventName in ['after', 'before', 'unknown']")
     .page-header(ng-show="events.before.length > 0 && eventName == 'before'")
-      h1 Archiv
+      h1 Vergangene Veranstaltungen / Archiv
     .page-header(ng-show="events.after.length > 0 && eventName == 'after'")
       h1 Anstehende Veranstaltungen
     .page-header(ng-show="events.unknown.length > 0 && eventName == 'unknown'")
-      h1 Weiteres
-    ul.timeline
-      li(ng-repeat="event in events[eventName] | orderBy:'from'", ng-class="{'timeline-inverted':$index%2}", ng-switch, on="event.type")
+      h1 Weitere unsortiere Veranstaltungen
+    ul.timeline(ng-if="events[eventName].length > 0")
+      li(ng-repeat="event in events[eventName] | orderBy:'from':eventName === 'before' ? true : false", ng-class="{'timeline-inverted':$index%2}", ng-switch, on="event.type")
         //- Timerline type
         //- Vortrag
         .timeline-badge.success(ng-switch-when="lecture", ng-click="openTypeChooserModal(event)")

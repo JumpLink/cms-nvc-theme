@@ -486,7 +486,7 @@ jumplink.cms.controller('GallerySlideController', function($scope, $sailsSocket,
   }, 1000);
 });
 
-jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, moment, $sailsSocket, $modal, $datepicker, eventService, FileUploader, $log) {
+jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, moment, $sailsSocket, $modal, $datepicker, EventService, FileUploader, $log) {
   $scope.events = events;
   $scope.uploader = new FileUploader({url: 'timeline/upload', removeAfterUpload: true});
   var typeChooserModal = $modal({scope: $scope, title: 'Typ wählen', template: 'bootstrap/events/typechoosermodal', show: false});
@@ -605,10 +605,10 @@ jumplink.cms.controller('TimelineController', function($rootScope, $scope, event
   };
 
   $scope.refresh = function() {
-    var allEvents = eventService.merge(events.unknown, events.before, events.after);
+    var allEvents = EventService.merge(events.unknown, events.before, events.after);
 
     $log.debug("allEvents.length", allEvents.length);
-    $scope.events = eventService.split(allEvents);
+    $scope.events = EventService.transform(allEvents);
     $log.debug("refreshed");
   };
 
@@ -835,11 +835,11 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
 
 });
 
-jumplink.cms.controller('AdminController', function($scope, themeSettings, $log, themeService) {
+jumplink.cms.controller('AdminController', function($scope, themeSettings, $log, ThemeService) {
   $scope.themeSettings = themeSettings;
   
   $scope.save = function() {
-    themeService.save($scope.themeSettings.available, function(data) {
+    ThemeService.save($scope.themeSettings.available, function(data) {
       // $scope.themeSettings = data;
       $log.debug(data);
     });
@@ -847,43 +847,43 @@ jumplink.cms.controller('AdminController', function($scope, themeSettings, $log,
   
 });
 
-jumplink.cms.controller('UsersController', function($scope, $rootScope, $sailsSocket, users, $log, userService) {
+jumplink.cms.controller('UsersController', function($scope, $rootScope, $sailsSocket, users, $log, UserService) {
   $scope.users = users;
 
   $scope.remove = function(user) {
-    userService.remove($scope.users, user);
+    UserService.remove($scope.users, user);
   }
 
-  userService.subscribe();
+  UserService.subscribe();
 
 });
 
-jumplink.cms.controller('UserController', function($scope, userService, user, $state, $log) {
+jumplink.cms.controller('UserController', function($scope, UserService, user, $state, $log) {
   $scope.user = user;
   $scope.save = function(user) {
     if(angular.isUndefined(user))
       user = $scope.user;
-    userService.save(user, function(data) {
+    UserService.save(user, function(data) {
       // $scope.user = data;
       $state.go('bootstrap-layout.users');
     });
   }
 
-  userService.subscribe();
+  UserService.subscribe();
 });
 
-jumplink.cms.controller('UserNewController', function($scope, userService, $state, $log) {
+jumplink.cms.controller('UserNewController', function($scope, UserService, $state, $log) {
   $scope.user = {};
   $scope.save = function(user) {
     if(angular.isUndefined(user))
       user = $scope.user;
-    userService.save(user, function(data) {
+    UserService.save(user, function(data) {
       // $scope.user = data;
       $state.go('bootstrap-layout.users');
     });
   }
 
-  userService.subscribe();
+  UserService.subscribe();
 });
 
 // Aufnahmeantrag
