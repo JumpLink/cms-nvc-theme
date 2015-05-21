@@ -94,6 +94,7 @@ jumplink.cms = angular.module('jumplink.cms', [
   , 'toaster'                 // AngularJS Toaster is a customized version of "toastr" non-blocking notification javascript library: https://github.com/jirikavi/AngularJS-Toaster
   , 'angularFileUpload'       // Angular File Upload is a module for the AngularJS framework: https://github.com/nervgh/angular-file-upload
   , 'angular-filters'         // Useful filters for AngularJS: https://github.com/niemyjski/angular-filters
+  , 'ngDraggable'             // Drag and drop module for Angular JS: https://github.com/fatlinesofcode/ngDraggable
 ]);
 
 jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvider) {

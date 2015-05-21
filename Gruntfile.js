@@ -80,6 +80,9 @@ module.exports = function(grunt) {
   
     //- angular-file-upload: https://github.com/nervgh/angular-file-upload
     'assets/third-party/angular-file-upload/angular-file-upload.js',
+
+    //- ngDraggable: https://github.com/fatlinesofcode/ngDraggable
+    'assets/third-party/ngDraggable/ngDraggable.js',
   
     //- Bring in the socket.io client
     'assets/third-party/socket.io-client/socket.io.js',

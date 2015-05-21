@@ -46,6 +46,7 @@
     "webodf.js": "~0.5.7",
     "angular-ui-router": "~0.2.15",
     "angular-strap": "~2.2.3",
-    "bootstrap": "~3.3.4"
+    "bootstrap": "~3.3.4",
+    "ngDraggable": "~0.1.8"
   }
 }
