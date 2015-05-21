@@ -268,8 +268,6 @@ jumplink.cms.controller('HomeContentController', function($scope, $sailsSocket, 
 jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, config, FileUploader, $modal, $log, $location, $state) {
   $scope.images = images;
   $scope.config = config;
-
-  console.log($scope.config);
   // $log.debug(images[0]);
   $scope.uploader = new FileUploader({url: 'gallery/upload', removeAfterUpload: true});
   $scope.uploader.filters.push({
@@ -438,10 +436,14 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     //fileItem.member.image = response.files[0].uploadedAs;
     console.log(fileItem, response, status, headers);
     // WORKAROUND until the socket method works
-
     response.forEach(function (file, index, files) {
-      if($rootScope.authenticated)
-        $rootScope.pop('success', 'Ein Bild wurde hochgeladen', file.original.name);
+      var last_position = $scope.images[$scope.images.length-1].position;
+      if($rootScope.authenticated) $rootScope.pop('success', 'Ein Bild wurde hochgeladen', file.original.name);
+      if(typeof file.position === 'undefined') {
+        last_position++;
+        file.position = last_position;
+      }
+      
       $scope.images.push(file);
     });
   };
@@ -454,7 +456,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     },
     {
       "text": "<i class=\"fa fa-trash\"></i>&nbsp;Löschen",
-      "click": "remove(image)"
+      "click": "$dropdown.hide();$dropdown.destroy();remove(image);" // TODO delay
     },
     {
       "text": "<i class=\"fa fa-floppy-o\"></i>&nbsp;Speichern",
@@ -501,17 +503,6 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     var index = $scope.images.indexOf(image);
     // $log.debug("onDropOnAreaComplete, image:", image, "index", index);
   }
-
-  // var setImagePosition = function (images) {
-  //   var lastposition = 0;
-  //   for (var i = 0; i < images.length; i++) {
-  //     // if(typeof images[i].position === 'undefined') {
-  //       lastposition++;
-  //       images[i].position = lastposition;
-  //     // }
-  //   };
-
-  // setImagePosition($scope.images);
 
 });
 
