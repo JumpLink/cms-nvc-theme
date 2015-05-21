@@ -13,7 +13,7 @@ var fallbackHome = function (req, res, next, force, showLegacyToast) {
     if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) about = results[0].content;
     Content.find({name:'goals'}).exec(function found(err, results) {
       if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) goals = results[0].content;
-      return ThemeService.view(req, 'views/fallback/home/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, about: about, goals: goals, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Startseite' });
+      return ThemeService.view(req, 'views/fallback/home/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, about: about, goals: goals, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Startseite', config: {paths: sails.config.paths} });
     });
   });
 }
@@ -22,7 +22,7 @@ var fallbackMembers = function (req, res, next, force, showLegacyToast) {
   var members;
   Member.find().exec(function found(err, results) {
     members = MemberService.sort(results);
-    return ThemeService.view(req, 'views/fallback/members/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, members: members, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Vorstand / Beirat' });
+    return ThemeService.view(req, 'views/fallback/members/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, members: members, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Vorstand / Beirat', config: {paths: sails.config.paths} });
   });
 }
 
@@ -32,7 +32,7 @@ var fallbackEvents = function (req, res, next, force, showLegacyToast) {
     events = EventService.sort(results);
     events = EventService.momentise(events);
     events = EventService.split(events);
-    return ThemeService.view(req, 'views/fallback/events/timeline.jade', res,  {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, events: events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Veranstaltungen' });
+    return ThemeService.view(req, 'views/fallback/events/timeline.jade', res,  {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, events: events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Veranstaltungen', config: {paths: sails.config.paths} });
   });
 }
 
@@ -40,7 +40,7 @@ var fallbackGallery = function (req, res, next, force, showLegacyToast) {
   var about, goals;
   Gallery.find().exec(function found(err, results) {
     images = results;
-    return ThemeService.view(req, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, images: images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie' });
+    return ThemeService.view(req, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, images: images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}});
   });
 }
 
@@ -69,7 +69,7 @@ var fallbackApplication = function (req, res, next, force, showLegacyToast) {
     if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) {
       application = results[0].content;
     }
-    return ThemeService.view(req, 'views/fallback/application/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, application: application, member: member, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Aufnahmeantrag' });
+    return ThemeService.view(req, 'views/fallback/application/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, application: application, member: member, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Aufnahmeantrag', config: {paths: sails.config.paths} });
   });
 }
 
@@ -77,7 +77,7 @@ var fallbackLinks = function (req, res, next, force, showLegacyToast) {
   var links = null;
   Content.find({name:'links'}).exec(function found(err, results) {
     if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) links = results[0].content;
-    return ThemeService.view(req, 'views/fallback/links/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, links: links, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Links' });
+    return ThemeService.view(req, 'views/fallback/links/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, links: links, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Links', config: {paths: sails.config.paths} });
   });
 }
 
@@ -87,7 +87,7 @@ var fallbackImprint = function (req, res, next, force, showLegacyToast) {
   var view = function (req, host, url, form, useragent, emailIsSend) {
     Content.find({name:'imprint'}).exec(function found(err, results) {
       if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content))  imprint = results[0].content;
-      return ThemeService.view(req, 'views/fallback/imprint/content.jade', res, {showLegacyToast: showLegacyToast, force: force, emailIsSend: emailIsSend, host: host, url: url, imprint: imprint, form: form, useragent: useragent, title: 'Nautischer Verein Cuxhaven e.V. - Impressum' });
+      return ThemeService.view(req, 'views/fallback/imprint/content.jade', res, {showLegacyToast: showLegacyToast, force: force, emailIsSend: emailIsSend, host: host, url: url, imprint: imprint, form: form, useragent: useragent, title: 'Nautischer Verein Cuxhaven e.V. - Impressum', config: {paths: sails.config.paths} });
     });
   }
 
