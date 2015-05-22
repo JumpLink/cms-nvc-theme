@@ -255,12 +255,19 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('bootstrap-layout.timeline', {
     url: '/events'
     , resolve:{
-      events: function($sailsSocket, EventService) {
+      events: function($sailsSocket, EventService, $log) {
         return $sailsSocket.get('/timeline').then (function (data) {
-          // console.log(data);
+          // $log.debug(data);
           return EventService.transform(data.data);
         }, function error (resp){
-          console.error(resp);
+          $log.error("Error on resolve bootstrap-layout.timeline", resp);
+        });
+      },
+      config: function($sailsSocket, $log) {
+        return $sailsSocket.get('/config/find').then (function (data) {
+          return data.data;
+        }, function error (resp){
+          $log.error("Error on resolve bootstrap-layout.timeline", resp);
         });
       }
     }

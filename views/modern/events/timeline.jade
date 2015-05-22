@@ -38,11 +38,12 @@
               //- Person (User)
               span(ng-show="!$root.authenticated && event.person", ng-bind-html="event.person")
             //- Von bis (User)
-            p.text-muted(ng-show="event.from", title="{{event.from | amDateFormat:'dddd Do MMMM YYYY, HH:mm'}} Uhr", ng-click="edit(event)")
+            p.text-muted(ng-show="event.from", ng-click="edit(event)")
               i.fa.fa-clock-o
-              | {{event.from | amCalendar}}
-              span(ng-show="event.to")
-                |  bis {{event.to | amCalendar}}
+              span(title="{{event.from | amCalendar}}")
+                | {{event.from | amDateFormat:'dddd Do MMMM YYYY, HH:mm'}} Uhr
+              span(ng-show="event.to", title="bis {{event.to | amCalendar}}")
+                |  bis {{event.to | amDateFormat:'dddd Do MMMM YYYY, HH:mm'}} Uhr
             p.text-muted(ng-show="$root.authenticated")
               i.fa.fa-home
               span(medium-editor, ng-model="event.place", options='{"placeholder": "Kein Ort angegeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
@@ -51,7 +52,7 @@
               a(ng-hide="$root.authenticated", ng-bind-html="event.place", ng-href="https://maps.google.com?q={{event.place}}")
           .timeline-body
             p(ng-show="event.download")
-              a(href="/files/timeline/{{event.download}}").btn.btn-info: | Weitere Informationen
+              a(href="/{{config.paths.timeline}}/{{event.download}}").btn.btn-info: | Weitere Informationen
             p.btn-group(ng-show="$root.authenticated")
               button.btn.btn-danger(type="button", title="Ereignis löschen", ng-click="remove(event, eventName)"): i.fa.fa-trash
               button.btn.btn-warning(type="button", title="Ereignis bearbeiten", ng-click="edit(event, eventName)"): i.fa.fa-edit

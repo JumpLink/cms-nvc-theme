@@ -528,8 +528,9 @@ jumplink.cms.controller('GallerySlideController', function($scope, $sailsSocket,
   }, 1000);
 });
 
-jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, moment, $sailsSocket, $modal, $datepicker, EventService, FileUploader, $log) {
+jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, config,  moment, $sailsSocket, $modal, $datepicker, EventService, FileUploader, $log) {
   $scope.events = events;
+  $scope.config = config;
   $scope.uploader = new FileUploader({url: 'timeline/upload', removeAfterUpload: true});
   var typeChooserModal = $modal({scope: $scope, title: 'Typ wählen', template: 'bootstrap/events/typechoosermodal', show: false});
   var editEventModal = $modal({scope: $scope, title: 'Ereignis bearbeiten', uploader: $scope.uploader, template: 'bootstrap/events/editeventmodal', show: false});

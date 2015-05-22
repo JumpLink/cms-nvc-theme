@@ -61,15 +61,15 @@ block body
                     p.text-muted
                       //- TODO {{event.from | amCalendar}}
                       i.fa.fa-clock-o
-                      span(title!=event.from.format("dddd Do MMMM YYYY, HH:mm"))!=event.from.calendar()
+                      span(title!=event.from.calendar())!=event.from.format("dddd Do MMMM YYYY, HH:mm")+" Uhr"
                       //- TODO ' bis '+{{event.to | amCalendar}}
                       if event.to
-                        span(title!=event.to.format("dddd Do MMMM YYYY, HH:mm"))!=' bis '+event.to.calendar()
+                        span(title!=event.to.calendar())!=' bis '+event.to.format("dddd Do MMMM YYYY, HH:mm")+" Uhr"
                   if event.place
                     p.text-muted
                       i.fa.fa-home
                       a(href="https://maps.google.com?q="+event.place)!= event.place
                 .timeline-body
                   if event.download
-                    p: a(href="/files/timeline/"+event.download).btn.btn-info: | Weitere Informationen
+                    p: a(href="/"+config.paths.timeline+"/"+event.download).btn.btn-info: | Weitere Informationen
   include ../footer.jade
