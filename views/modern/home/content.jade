@@ -11,29 +11,25 @@
     li
       img(src="/assets/images/header/5.jpg", style="width: 100%;")
 .container(style="min-height: 200px;")
-  .row
+  .row  
     .col-md-2.hidden-sm.hidden-xs
       .bs-sidebar(hidden-print, role="complementary", data-offset-top="-50", bs-affix)
         ul.nav.bs-sidenav
-          li(data-target="#top", bs-scrollspy, data-offset="40")
-            a(ng-click="goTo('top')") Startseite
-          li(data-target="#about", bs-scrollspy, data-offset="40")
-            a(ng-click="goTo('about')") Wir über uns
-          li(data-target="#goals", bs-scrollspy, data-offset="40")
-            a(ng-click="goTo('goals')") Ziele
+          li(ng-repeat="nav in navs", data-target="{{'#'+nav.target}}", bs-scrollspy, data-offset="70")
+            a(ng-click="goTo(nav.target)") {{nav.name}}
     .col-md-10
-      h1.anchor-static-navbar#about
-      .page-header
-        h1 Wir über uns
-      div(ng-show="html && $root.authenticated", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}", ng-model="about")
-      div(ng-show="$root.authenticated", medium-editor, ng-model="about", options='{"buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
-      div(ng-bind-html="about", ng-hide="$root.authenticated")
-      h1.anchor-static-navbar#goals
-      .page-header
-        h1 Unsere Ziele
-      div(ng-show="html && $root.authenticated", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}", ng-model="goals")
-      div(ng-show="$root.authenticated", medium-editor, ng-model="goals", options='{"buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
-      div(ng-bind-html="goals", ng-hide="$root.authenticated")
+      div(ng-repeat="content in contents | orderBy:'position'")
+        p.btn-group.pull-right(ng-if="authenticated")
+          button.btn.btn-warning(ng-disabled="$index <= 0", ng-click="moveBackward($index, content)"): i.fa.fa-backward.fa-rotate-90
+          button.btn.btn-danger(ng-click="remove($index, content)"): i.fa.fa-trash
+          button.btn.btn-warning(ng-click="edit($index, content)"): i.fa.fa-edit
+          //- button.btn.btn-primary(ng-click="save($index, content)"): i.fa.fa-floppy-o
+          button.btn.btn-warning(ng-disabled="$index >= contents.length - 1", ng-click="moveForward($index, content)"): i.fa.fa-forward.fa-rotate-90
+        h1.page-header(ng-if="$root.authenticated", id="{{content.name}}", medium-editor, ng-model="content.title", options='{"placeholder": "Titel eingeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
+        h1.page-header(ng-if="!$root.authenticated", id="{{content.name}}", ng-bind-html="content.title")
+        div(ng-show="html && $root.authenticated", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}", ng-model="content.content")
+        div(ng-show="$root.authenticated", medium-editor, ng-model="content.content", options='{"buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
+        div(ng-bind-html="content.content", ng-hide="$root.authenticated")
 nav.navbar.navbar-inverse.navbar-fixed-bottom(role="administration", ng-show="$root.authenticated")
   .container
     .navbar-left
@@ -50,5 +46,5 @@ nav.navbar.navbar-inverse.navbar-fixed-bottom(role="administration", ng-show="$r
           | HTML
         button.btn.btn-primary.navbar-btn(ng-if="save", title="Speichern", ng-click="save()")
           i.fa.fa-floppy-o
-      button.btn.btn-default.navbar-btn(title="Einstellungen", bs-dropdown="adminSettingDropdown", ng-click="$event.stopPropagation();", data-template="bootstrap/dropdown", data-placement="top-left", data-html="true")
+      button.btn.btn-default.navbar-btn(title="Einstellungen", bs-dropdown="adminSettingDropdown", ng-click="$event.stopPropagation();", data-template="dropdown", data-placement="top-left", data-html="true")
         i.fa.fa-cog

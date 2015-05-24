@@ -94,9 +94,8 @@ module.exports = function(grunt) {
     'assets/js/translations.js',
     'assets/js/services.js',
     'assets/js/controllers.js',
-    'assets/js/bootstrap/controllers.js',
-    'assets/js/bootstrap/directives.js',
-    'assets/js/directives/*'
+    'assets/js/controllers/*.js',
+    'assets/js/directives/*.js'
   ];
 
   

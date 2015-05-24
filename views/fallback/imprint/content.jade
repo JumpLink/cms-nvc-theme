@@ -18,12 +18,9 @@ block body
       .col-md-2.hidden-sm.hidden-xs
         .bs-sidebar(hidden-print, role="complementary")
           ul.nav.bs-sidenav
-            li
-              a(href="#imprint") Impressum
-            li
-              a(href="#contact") Kontakt
-            li
-              a(href="#approach") Anfahrt
+            each nav in navs
+              li
+                a(href="\##{nav.target}") #{nav.name}
       .col-md-10
         h1.anchor-static-navbar#imprint
         .page-header

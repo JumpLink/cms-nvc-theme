@@ -19,9 +19,14 @@ TODO
       * Bilddateien die zum Theme zugehörig sind und Bilder die Hochgeladen wurden (z.B. Gallerie), werden nun in unterschiedlichen Ordnern gespeichert
       * Gallery- und Member-Image-Quellen angepasst
         * https://github.com/JumpLink/cms-bootstrap-theme/commit/2de39eb19b26ad2ed66a9a42a15eda937d78b5d2
+    * Dynamische Subnavigation
+    * Dynamische Content-Blöcke
+      * Content-Blöcke können nun hinzugefügt, verschoben, bearbeitet und gelöscht werden.
   * Startseite
     * Carousel / Slideshow mit neuster Version lauffähig gemacht
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/6fb341eb091c592185646b0fd8a47ac43ac364ec
+    * An neues dynamisches Content-Block-System angepasst
+    * An neues dynamisches Subnavigation-System angepasst
   * Gallery
     * Probleme beim Upload von Bildern behoben
       * https://github.com/JumpLink/cms/commit/4c2093f4fb355202c4f2b5de6e4a43ce38d6bc52
@@ -33,10 +38,12 @@ TODO
   * Impressum
     * Kartenmarker - welcher die Position der Geschäfsstelle vom NVC anzeigt - ist nicht mehr "dragable"
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/2de39eb19b26ad2ed66a9a42a15eda937d78b5d2#diff-7849cc22587ec66496b9f9a129526b8bR1125
+    * An neues dynamisches Subnavigation-System angepasst
   * Veranstaltungen
     * Reihenfolge im Archiv umgedreht
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/74be5f0d59f48dfdb191c851ed5ee03e6e15f2c4
     * Die Uhrzeit wird bei Ereignissen jetzt immer angezeigt
+      * https://github.com/JumpLink/cms-bootstrap-theme/commit/c57d2acf99976832117e0e3ad3bcf6e5c7b36178
   * Vorstand / Beirat
     * Bei dem Hinzufügen eines neuen Mitglieds nicht die Daten des letzten Mitglieds als Vorlage anzeigen
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/1902411b7fb936bbd81054ecd17f3a4b37cc35e7

@@ -5,10 +5,10 @@ div.container-fluid(style="min-height: 400px;")
   div(ng-if="$root.authenticated", ng-drop="true", ng-drop-success="onDropOnAreaComplete($data,$event)", style="display:inline-block;")
     div.pull-left(ng-repeat="image in images", style="height:100px;width:100px;padding:2px")
       img.img-responsive(ng-src="/{{config.paths.gallery}}/{{image.thumb.name}}", ng-drag="true", ng-drag-data="image", data-allow-transform="true", ng-drag-success="onDragOnImageComplete($index,$data,$event)", ng-drop="true", ng-drop-success="onDropOnImageComplete($index,$data,$event)")
-      i.fa.fa-ellipsis-v.img-dropdown.static(bs-dropdown="dropdown", ng-click="$event.stopPropagation();", data-template="bootstrap/dropdown", data-placement="bottom", data-html="true")
+      i.fa.fa-ellipsis-v.img-dropdown.static(bs-dropdown="dropdown", ng-click="$event.stopPropagation();", data-template="dropdown", data-placement="bottom", data-html="true")
   div(ng-if="!$root.authenticated", style="display:inline-block;")
     div.pull-left(ng-repeat="image in images", style="height:100px;width:100px;padding:2px")
-      img.img-responsive(ng-src="/{{config.paths.gallery}}/{{image.thumb.name}}", ui-sref="bootstrap-layout.gallery-fullscreen({id:image.id})")
+      img.img-responsive(ng-src="/{{config.paths.gallery}}/{{image.thumb.name}}", ui-sref="layout.gallery-fullscreen({id:image.id})")
 nav.navbar.navbar-inverse.navbar-fixed-bottom(role="administration", ng-show="$root.authenticated")
   .container
     .navbar-left
@@ -25,5 +25,5 @@ nav.navbar.navbar-inverse.navbar-fixed-bottom(role="administration", ng-show="$r
           | HTML
         button.btn.btn-primary.navbar-btn(ng-if="save", title="Speichern", ng-click="save()")
           i.fa.fa-floppy-o
-      button.btn.btn-default.navbar-btn(title="Einstellungen", bs-dropdown="adminSettingDropdown", ng-click="$event.stopPropagation();", data-template="bootstrap/dropdown", data-placement="top-left", data-html="true")
+      button.btn.btn-default.navbar-btn(title="Einstellungen", bs-dropdown="adminSettingDropdown", ng-click="$event.stopPropagation();", data-template="dropdown", data-placement="top-left", data-html="true")
         i.fa.fa-cog

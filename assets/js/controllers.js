@@ -104,13 +104,13 @@ jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $w
   function(event, toState, toParams, fromState, fromParams){
     $rootScope.loadclass = 'finish'; // FIXME this event is not always fired
     switch(toState.name) {
-      case "bootstrap-layout.home":
+      case "layout.home":
         $rootScope.bodyclass = 'home';
       break;
-      case "bootstrap-layout.gallery":
+      case "layout.gallery":
         $rootScope.bodyclass = 'gallery';
       break;
-      case "bootstrap-layout.gallery-slider":
+      case "layout.gallery-slider":
         $rootScope.bodyclass = 'gallery-slider';
       break;
       default:
@@ -170,11 +170,11 @@ jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $w
   $scope.adminSettingDropdown = [
     {
       "text": "<i class=\"fa fa-list\"></i>&nbsp;Übersicht",
-      "click": "goToState('bootstrap-layout.administration')"
+      "click": "goToState('layout.administration')"
     },
     {
       "text": "<i class=\"fa fa-users\"></i>&nbsp;Benutzer",
-      "click": "goToState('bootstrap-layout.users')"
+      "click": "goToState('layout.users')"
     },
     {
       "text": "<i class=\"fa fa-sign-out\"></i>&nbsp;Abmelden",
@@ -202,69 +202,6 @@ jumplink.cms.controller('FooterController', function($scope) {
 
 });
 
-jumplink.cms.controller('HomeContentController', function($scope, $sailsSocket, $location, $anchorScroll, $timeout, $window, about, goals, $log) {
-
-  $scope.about = about;
-  $scope.goals = goals;
-
-  // WORKAROUND wait until image is loaded to fix bs-sidebar
-  angular.element($window).imagesLoaded(function() {
-    angular.element($window).triggerHandler('resize');
-  });
-
-  $scope.goTo = function (hash) {
-    $location.hash(hash);
-    $anchorScroll();
-  }
-
-  $scope.toogleHtml = function() {
-    $scope.html = !$scope.html;
-  }
-
-  $scope.save = function() {
-    $sailsSocket.put('/content/replace', {name: 'about', content: $scope.about}).success(function(data, status, headers, config) {
-      if(data != null && typeof(data) !== "undefined") {
-        $log.debug (data);
-      } else {
-        $log.debug ("Can't save site");
-      }
-    });
-
-    $sailsSocket.put('/content/replace', {name: 'goals', content: $scope.goals}).success(function(data, status, headers, config) {
-      if(data != null && typeof(data) !== "undefined") {
-        $log.debug (data);
-      } else {
-        $log.debug ("Can't save site");
-      }
-    });
-  }
-
-  // called on content changes
-  $sailsSocket.subscribe('content', function(msg){
-    $log.debug(msg);
-    switch(msg.verb) {
-      case 'updated':
-        switch(msg.id) {
-          case 'about':
-            $scope.about = msg.data.content;;
-            if($rootScope.authenticated) {
-              $rootScope.pop('success', '"Wir über uns" wurde aktualisiert', "");
-            }
-          break;
-          case 'goals':
-            $scope.goals = msg.data.content;;
-            if($rootScope.authenticated) {
-              $rootScope.pop('success', '"Ziele" wurde aktualisiert', "");
-            }
-          break;
-        }
-      break;
-    }
-  });
-
-});
-
-
 jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, config, FileUploader, $modal, $log, $location, $state) {
   $scope.images = images;
   $scope.config = config;
@@ -277,8 +214,8 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
       return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
     }
   });
-  var uploadImagesModal = $modal({scope: $scope, title: 'Bilder hinzufügen', uploader: $scope.uploader, template: 'bootstrap/gallery/uploadimagesmodal', show: false});
-  var editImageModal = $modal({scope: $scope, title: 'Bild bearbeiten', template: 'bootstrap/gallery/editimagemodal', show: false});
+  var uploadImagesModal = $modal({scope: $scope, title: 'Bilder hinzufügen', uploader: $scope.uploader, template: 'gallery/uploadimagesmodal', show: false});
+  var editImageModal = $modal({scope: $scope, title: 'Bild bearbeiten', template: 'gallery/editimagemodal', show: false});
 
   $scope.aspect = function (image, width)  {
     var height, scale, aspectRatio, win, paddingTopBottom = 0, paddingLeftRight = 0;
@@ -485,7 +422,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     if(image == null) {
       $log.debug("*click*", index);
       var image = $scope.images[index];
-      $state.go('bootstrap-layout.gallery-fullscreen', {id:image.id});
+      $state.go('layout.gallery-fullscreen', {id:image.id});
     }
     // $log.debug("onDragOnImageComplete, image:", image, "index", index);
   }
@@ -532,8 +469,8 @@ jumplink.cms.controller('TimelineController', function($rootScope, $scope, event
   $scope.events = events;
   $scope.config = config;
   $scope.uploader = new FileUploader({url: 'timeline/upload', removeAfterUpload: true});
-  var typeChooserModal = $modal({scope: $scope, title: 'Typ wählen', template: 'bootstrap/events/typechoosermodal', show: false});
-  var editEventModal = $modal({scope: $scope, title: 'Ereignis bearbeiten', uploader: $scope.uploader, template: 'bootstrap/events/editeventmodal', show: false});
+  var typeChooserModal = $modal({scope: $scope, title: 'Typ wählen', template: 'events/typechoosermodal', show: false});
+  var editEventModal = $modal({scope: $scope, title: 'Ereignis bearbeiten', uploader: $scope.uploader, template: 'events/editeventmodal', show: false});
   var types = ['lecture', 'panel discussion', 'travel', 'info', 'food', 'other'];
 
   $scope.uploader.onCompleteItem = function(fileItem, response, status, headers) {
@@ -735,7 +672,7 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
       return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
     }
   });
-  var editMemberModal = $modal({scope: $scope, title: 'Person bearbeiten', uploader: $scope.uploader, template: 'bootstrap/members/editmembermodal', show: false});
+  var editMemberModal = $modal({scope: $scope, title: 'Person bearbeiten', uploader: $scope.uploader, template: 'members/editmembermodal', show: false});
 
   $scope.upload = function(fileItem, member) {
     fileItem.member = member;
@@ -912,7 +849,7 @@ jumplink.cms.controller('UserController', function($scope, UserService, user, $s
       user = $scope.user;
     UserService.save(user, function(data) {
       // $scope.user = data;
-      $state.go('bootstrap-layout.users');
+      $state.go('layout.users');
     });
   }
 
@@ -926,7 +863,7 @@ jumplink.cms.controller('UserNewController', function($scope, UserService, $stat
       user = $scope.user;
     UserService.save(user, function(data) {
       // $scope.user = data;
-      $state.go('bootstrap-layout.users');
+      $state.go('layout.users');
     });
   }
 
@@ -934,8 +871,8 @@ jumplink.cms.controller('UserNewController', function($scope, UserService, $stat
 });
 
 // Aufnahmeantrag
-jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $sailsSocket, moment, $filter, application, $log) {
-
+jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $sailsSocket, moment, $filter, application, $state, $log) {
+  var page = $state.current.name;
   var date = moment(); // now
   $scope.html = false;
   $scope.application = application;
@@ -1038,7 +975,7 @@ jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $s
       case 'updated':
         switch(msg.id) {
           case 'application':
-            $scope.application = msg.data.content;
+            $scope.application = msg.data;
             if($rootScope.authenticated) {
               $rootScope.pop('success', 'Aufnahmeantrags-Text wurde aktualisiert', "");
             }
@@ -1053,7 +990,8 @@ jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $s
   }
 
   $scope.save = function() {
-    $sailsSocket.put("/content/replace", {name: 'application', content: $scope.application}, function (response) {
+    $scope.application.page = page;
+    $sailsSocket.put("/content/replace", $scope.application, function (response) {
       if(response != null && typeof(response) !== "undefined") {
         $log.debug (response);
       } else {
@@ -1064,11 +1002,13 @@ jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $s
 
 });
 
-jumplink.cms.controller('LinksController', function($rootScope, $scope, $sailsSocket, links, $location, $anchorScroll, $log) {
+jumplink.cms.controller('LinksController', function($rootScope, $scope, $sailsSocket, links, $location, $anchorScroll, $state, $log) {
+  var page = $state.current.name;
   $scope.links = links;
 
   $scope.goTo = function (hash) {
     $location.hash(hash);
+    $anchorScroll.yOffset = 60;
     $anchorScroll();
   }
 
@@ -1077,7 +1017,8 @@ jumplink.cms.controller('LinksController', function($rootScope, $scope, $sailsSo
   }
 
   $scope.save = function() {
-    $sailsSocket.put("/content/replace", {name: 'links', content: $scope.links}, function (response) {
+    $scope.links.page = page;
+    $sailsSocket.put("/content/replace", $scope.links, function (response) {
       if(response != null && typeof(response) !== "undefined") {
         $log.debug (response);
       } else {
@@ -1093,7 +1034,7 @@ jumplink.cms.controller('LinksController', function($rootScope, $scope, $sailsSo
       case 'updated':
         switch(msg.id) {
           case 'links':
-            $scope.links = msg.data.content;;
+            $scope.links = msg.data;
             if($rootScope.authenticated) {
               $rootScope.pop('success', 'Links-Text wurde aktualisiert', "");
             }
@@ -1105,8 +1046,27 @@ jumplink.cms.controller('LinksController', function($rootScope, $scope, $sailsSo
 
 });
 
-jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sailsSocket, imprint, $location, $anchorScroll, $log) {
+jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sailsSocket, imprint, navs, $location, $anchorScroll, $state, $log) {
+  var page = $state.current.name;
   $scope.imprint = imprint;
+  // $scope.navs = [
+  //   {
+  //     "target": "imprint",
+  //     "name": "Impressum",
+  //     "page": page,
+  //   },
+  //   {
+  //     "target": "contact",
+  //     "name": "Kontakt",
+  //     "page": page,
+  //   },
+  //   {
+  //     "target": "approach",
+  //     "name": "Anfahrt",
+  //     "page": page,
+  //   }
+  // ]
+  $scope.navs = navs;
 
   $scope.email = {
     from: null
@@ -1117,6 +1077,7 @@ jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sails
 
   $scope.goTo = function (hash) {
     $location.hash(hash);
+    $anchorScroll.yOffset = 60;
     $anchorScroll();
   }
 
@@ -1125,9 +1086,18 @@ jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sails
   }
 
   $scope.save = function() {
-    $sailsSocket.put("/content/replace", {name: 'imprint', content: $scope.imprint}, function (response) {
+    $scope.imprint.page = page;
+    $sailsSocket.put("/content/replace", $scope.imprint, function (response) {
       if(response != null && typeof(response) !== "undefined") {
         $log.debug (response);
+      } else {
+        $log.debug ("Can't save site");
+      }
+    });
+
+    $sailsSocket.put('/navigation/replaceall', {navs: $scope.navs, page: page}).success(function(data, status, headers, config) {
+      if(data != null && typeof(data) !== "undefined") {
+        $log.debug (data);
       } else {
         $log.debug ("Can't save site");
       }
@@ -1187,7 +1157,7 @@ jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sails
       case 'updated':
         switch(msg.id) {
           case 'imprint':
-            $scope.imprint = msg.data.content;;
+            $scope.imprint = msg.data;
             if($rootScope.authenticated) {
               $rootScope.pop('success', 'Impressums-Text wurde aktualisiert', "");
             }

@@ -13,7 +13,7 @@
         label(for='exampleInputEmail1') Priorität
         input.form-control(type='number', ng-model="theme.priority")
   h2
-    a(ui-sref='bootstrap-layout.users') Benutzer
+    a(ui-sref='layout.users') Benutzer
   h2
     a(ng-click="$root.logout()") Abmelden
 nav.navbar.navbar-inverse.navbar-fixed-bottom(role="administration", ng-show="$root.authenticated")
@@ -32,5 +32,5 @@ nav.navbar.navbar-inverse.navbar-fixed-bottom(role="administration", ng-show="$r
           | HTML
         button.btn.btn-primary.navbar-btn(ng-if="save", title="Speichern", ng-click="save()")
           i.fa.fa-floppy-o
-      button.btn.btn-default.navbar-btn(title="Einstellungen", bs-dropdown="adminSettingDropdown", ng-click="$event.stopPropagation();", data-template="bootstrap/dropdown", data-placement="top-left", data-html="true")
+      button.btn.btn-default.navbar-btn(title="Einstellungen", bs-dropdown="adminSettingDropdown", ng-click="$event.stopPropagation();", data-template="dropdown", data-placement="top-left", data-html="true")
         i.fa.fa-cog

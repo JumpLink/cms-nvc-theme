@@ -8,19 +8,12 @@ block body
       .col-md-2.hidden-sm.hidden-xs
         .bs-sidebar(hidden-print, role="complementary")
           ul.nav.bs-sidenav
-            li
-              a(href="#top") Startseite
-            li
-              a(href="#about") Wir über uns
-            li
-              a(href="#goals") Ziele
+            each nav in navs
+              li
+                a(href="\##{nav.target}") #{nav.name}
       .col-md-10
-        h1.anchor-static-navbar#about
-        .page-header
-          h1 Wir über uns
-        div!= about
-        h1.anchor-static-navbar#goals
-        .page-header
-          h1 Unsere Ziele
-        div!= goals
+        each content in contents
+          h1.anchor-static-navbar(id="#{content.name}")
+          h1.page-header #{content.title}
+          div!= content.content
   include ../footer.jade

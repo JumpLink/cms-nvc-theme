@@ -1,0 +1,20 @@
+.modal(tabindex='-1', role='dialog')
+  .modal-dialog
+    .modal-content
+      .modal-header(ng-show='title')
+        button.close(type='button', ng-click='$hide()') ×
+        h4.modal-title(ng-bind='title')
+      .modal-body
+        form(role='form')
+          .form-group
+            label(for='title') Überschrift
+            input#title.form-control(type='text', ng-model="content.title", placeholder='Überschrift eingeben')
+          .form-group
+            label(for='name') Identifikation
+            input#name.form-control(type='text', ng-model="content.name", ng-disabled="true", placeholder='Wird automatisch ausgefüllt', ng-pattern="onlyChars")
+          .form-group
+            label(for='content') Inhalt
+            .textarea#content(medium-editor, ng-model="content.content", options='{"placeholder": "Inhalt eingeben","buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions", style="max-height:300px; overflow-y:scroll;")
+      .modal-footer
+        button.btn.btn-danger(type='button', ng-click='remove(null, content);$hide()') Löschen
+        button.btn.btn-primary(type='button', ng-click='save(null, content);$hide()') Speichern

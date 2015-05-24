@@ -9,7 +9,7 @@
         th {{ 'Name' }}
         th {{ 'Aktion' }}
     tbody
-      tr(ng-repeat="user in users", ui-sref="bootstrap-layout.user({index: user.id})")
+      tr(ng-repeat="user in users", ui-sref="layout.user({index: user.id})")
         //- td {{user.color}}
         td {{user.email}}
         td {{user.name}}
@@ -17,9 +17,9 @@
           .btn-group
             button.btn.btn-danger.btn-xs(title="Benutzer löschen", ng-click="remove(user);$event.stopPropagation();")
               i.fa.fa-trash
-            a.btn.btn-warning.btn-xs(title="Benutzer bearbeiten", ui-sref="bootstrap-layout.user({index: user.id})", ng-click="$event.stopPropagation();")
+            a.btn.btn-warning.btn-xs(title="Benutzer bearbeiten", ui-sref="layout.user({index: user.id})", ng-click="$event.stopPropagation();")
               i.fa.fa-edit
-  a.btn.btn-success(title="Benutzer hinzufügen", ui-sref="bootstrap-layout.new-user")
+  a.btn.btn-success(title="Benutzer hinzufügen", ui-sref="layout.new-user")
     i.fa.fa-plus
 nav.navbar.navbar-inverse.navbar-fixed-bottom(role="administration", ng-show="$root.authenticated")
   .container
@@ -37,5 +37,5 @@ nav.navbar.navbar-inverse.navbar-fixed-bottom(role="administration", ng-show="$r
           | HTML
         button.btn.btn-primary.navbar-btn(ng-if="save", title="Speichern", ng-click="save()")
           i.fa.fa-floppy-o
-      button.btn.btn-default.navbar-btn(title="Einstellungen", bs-dropdown="adminSettingDropdown", ng-click="$event.stopPropagation();", data-template="bootstrap/dropdown", data-placement="top-left", data-html="true")
+      button.btn.btn-default.navbar-btn(title="Einstellungen", bs-dropdown="adminSettingDropdown", ng-click="$event.stopPropagation();", data-template="dropdown", data-placement="top-left", data-html="true")
         i.fa.fa-cog

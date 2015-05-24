@@ -106,63 +106,94 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
 
   $stateProvider
   // LAYOUT
-  .state('bootstrap-layout', {
+  .state('layout', {
     abstract: true
-    , templateUrl: "bootstrap/layout"
+    , templateUrl: "layout"
     , controller: 'LayoutController'
   })
   // HOME
-  .state('bootstrap-layout.home', {
+  .state('layout.home', {
     url: '/home'
     , resolve:{
-      about: function($sailsSocket) {
-        return $sailsSocket.get('/content?name=about', {name: 'about'}).then (function (data) {
+      navs: function($sailsSocket, $filter, $log) {
+        var statename = 'layout.home';
+        return $sailsSocket.get('/navigation?page='+statename, {page: statename}).then (function (data) {
           if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
+            $log.warn("Warn: On trying to resolve "+statename+" navs!", "Not found, navigation is empty!");
             return null;
-          } else {
-            if (data.data instanceof Array) {
-              data.data = data.data[0];
-              console.error("request has more than one results");
-            }
-            return html_beautify(data.data.content);
           }
+          data.data = $filter('orderBy')(data.data, 'position');
+          $log.debug(data);
+          return data.data;
         }, function error (resp){
-          console.error(resp);
+          $log.error("Error: On trying to resolve "+statename+" navs!", resp);
         });
-      }
-      , goals: function($sailsSocket) {
-        return $sailsSocket.get('/content?name=goals', {name: 'goals'}).then (function (data) {
+      },
+      contents: function($sailsSocket, $filter, $log) {
+        var statename = 'layout.home';
+        return $sailsSocket.get('/content/findall?page='+statename, {page: statename}).then (function (data) {
           if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
+            $log.warn("Warn: On trying to resolve layout.home navs!", "Not found, navigation is empty!");
             return null;
-          } else {
-            if (data.data instanceof Array) {
-              data.data = data.data[0];
-              console.error("request has more than one results");
-            }
-            return html_beautify(data.data.content);
           }
+          // data.data.content = html_beautify(data.data.content);
+          data.data = $filter('orderBy')(data.data, 'position');
+          $log.debug(data);
+          return data.data;
         }, function error (resp){
-          console.error(resp);
+          $log.error("Error: On trying to resolve layout.home about!", resp);
         });
-      }
+      }, 
+      // about: function($sailsSocket, $log) {
+      //   return $sailsSocket.get('/content?name=about', {name: 'about'}).then (function (data) {
+      //     if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
+      //       $log.warn("Warn: On trying to resolve layout.home navs!", "Not found, navigation is empty!");
+      //       return null;
+      //     }
+      //     if (data.data instanceof Array) {
+      //       data.data = data.data[0];
+      //       $log.warn("Warn: On trying to resolve layout.home about!", "Request has more than one results");
+      //     }
+      //     data.data.content = html_beautify(data.data.content);
+      //     return data.data;
+      //   }, function error (resp){
+      //     $log.error("Error: On trying to resolve layout.home about!", resp);
+      //   });
+      // }, 
+      // goals: function($sailsSocket, $log) {
+      //   return $sailsSocket.get('/content?name=goals', {name: 'goals'}).then (function (data) {
+      //     if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
+      //       return null;
+      //     } else {
+      //       if (data.data instanceof Array) {
+      //         data.data = data.data[0];
+      //         $log.warn("Warn: Request has more than one results");
+      //       }
+      //       data.data.content = html_beautify(data.data.content);
+      //       return data.data;
+      //     }
+      //   }, function error (resp){
+      //     $log.error(resp);
+      //   });
+      // }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/home/content'
+        templateUrl: 'home/content'
         , controller: 'HomeContentController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'bootstrap/footer'
+        templateUrl: 'footer'
         , controller: 'FooterController'
       }
     }
   })
   // gallery
-  .state('bootstrap-layout.gallery', {
+  .state('layout.gallery', {
     url: '/gallery'
     , resolve:{
       images: function($sailsSocket, $filter, $log) {
@@ -182,20 +213,20 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/gallery/content'
+        templateUrl: 'gallery/content'
         , controller: 'GalleryContentController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'bootstrap/footer'
+        templateUrl: 'footer'
         , controller: 'FooterController'
       }
     }
   })
-  .state('bootstrap-layout.gallery-fullscreen', {
+  .state('layout.gallery-fullscreen', {
     url: '/gallery/fs/:id'
     , resolve:{
       image: function($sailsSocket, $stateParams, $log) {
@@ -215,44 +246,44 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/gallery/fullscreen'
+        templateUrl: 'gallery/fullscreen'
         , controller: 'GalleryFullscreenController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
       // , 'footer' : {
-      //   templateUrl: 'bootstrap/footer'
+      //   templateUrl: 'footer'
       //   , controller: 'FooterController'
       // }
     }
   })
   // gallery slideshow
-  .state('bootstrap-layout.gallery-slider', {
+  .state('layout.gallery-slider', {
     url: '/slider/:slideIndex'
     , resolve:{
-      images: function($sailsSocket) {
+      images: function($sailsSocket, $log) {
         return $sailsSocket.get('/gallery?limit=0').then (function (data) {
           return data.data;
         }, function error (resp){
-          console.error(resp);
+          $log.error(resp);
         });
       }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/gallery/slider'
+        templateUrl: 'gallery/slider'
         , controller: 'GallerySlideController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/gallery/toolbar'
+        templateUrl: 'gallery/toolbar'
         , controller: 'ToolbarController'
       }
     }
   })
   // events timeline
-  .state('bootstrap-layout.timeline', {
+  .state('layout.timeline', {
     url: '/events'
     , resolve:{
       events: function($sailsSocket, EventService, $log) {
@@ -260,245 +291,264 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
           // $log.debug(data);
           return EventService.transform(data.data);
         }, function error (resp){
-          $log.error("Error on resolve bootstrap-layout.timeline", resp);
+          $log.error("Error on resolve layout.timeline", resp);
         });
       },
       config: function($sailsSocket, $log) {
         return $sailsSocket.get('/config/find').then (function (data) {
           return data.data;
         }, function error (resp){
-          $log.error("Error on resolve bootstrap-layout.timeline", resp);
+          $log.error("Error on resolve layout.timeline", resp);
         });
       }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/events/timeline'
+        templateUrl: 'events/timeline'
         , controller: 'TimelineController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'bootstrap/footer'
+        templateUrl: 'footer'
         , controller: 'FooterController'
       }
     }
   })
   // members
-  .state('bootstrap-layout.members', {
+  .state('layout.members', {
     url: '/members'
     , resolve:{
-      members: function($sailsSocket, $filter) {
+      members: function($sailsSocket, $filter, $log) {
         return $sailsSocket.get('/member').then (function (data) {
           return $filter('orderBy')(data.data, 'position');
         }, function error (resp){
-          console.error(resp);
+          $log.error(resp);
         });
       }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/members/content'
+        templateUrl: 'members/content'
         , controller: 'MembersController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'bootstrap/footer'
+        templateUrl: 'footer'
         , controller: 'FooterController'
       }
       // 'adminbar': {
-      //   templateUrl: 'bootstrap/adminbar'
+      //   templateUrl: 'adminbar'
       // }
     }
   })
   // application
-  .state('bootstrap-layout.application', {
+  .state('layout.application', {
     url: '/application'
     , resolve:{
-      application: function($sailsSocket) {
-        return $sailsSocket.get('/content?name=application', {name: 'application'}).then (function (data) {
+      application: function($sailsSocket, $log) {
+        var statename = 'layout.application';
+        return $sailsSocket.get('/content?name=application&page='+statename, {name: 'application', page: statename}).then (function (data) {
           if(angular.isDefined(data) && angular.isDefined(data.data)) {
             if (data.data instanceof Array) {
               data.data = data.data[0];
-              console.error("request has more than one results");
+              $log.error("request has more than one results");
             }
-            return html_beautify(data.data.content);
+            data.data.content = html_beautify(data.data.content);
+            return data.data;
           }
           else
             return null;
         }, function error (resp){
-          console.error(resp);
+          $log.error(resp);
         });
       }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/application/content'
+        templateUrl: 'application/content'
         , controller: 'ApplicationController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'bootstrap/footer'
+        templateUrl: 'footer'
         , controller: 'FooterController'
       }
     }
   })
   // imprint
-  .state('bootstrap-layout.imprint', {
+  .state('layout.imprint', {
     url: '/imprint'
-    , resolve:{
-      imprint: function($sailsSocket) {
-        return $sailsSocket.get('/content?name=imprint', {name: 'imprint'}).then (function (data) {
+    , resolve: {
+      navs: function($sailsSocket, $state, $log) {
+        // $log.debug("resolve", $state.current);
+        var statename = 'layout.imprint';
+        return $sailsSocket.get('/navigation?page='+statename, {page: statename}).then (function (data) {
+          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
+            $log.warn("Warn: On trying to resolve "+statename+" navs!", "Not found, navigation is empty!");
+            return null;
+          }
+          return data.data;
+        }, function error (resp){
+          $log.error("Error: On trying to resolve "+statename+" navs!", resp);
+        });
+      },
+      imprint: function($sailsSocket, $log) {
+        var statename = 'layout.imprint';
+        return $sailsSocket.get('/content?name=imprint&page='+statename, {name: 'imprint', page: statename}).then (function (data) {
           if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
             return null;
           } else {
             if (data.data instanceof Array) {
               data.data = data.data[0];
-              console.error("request has more than one results");
+              $log.warn("Warn: Request has more than one results");
             }
-            return html_beautify(data.data.content);
+            data.data.content = html_beautify(data.data.content);
+            return data.data;
           }
         }, function error (resp){
-          console.error(resp);
+          $log.error("Error: On trying to resolve "+statename+" navs!", resp);
         });
       }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/imprint/content'
+        templateUrl: 'imprint/content'
         , controller: 'ImprintController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'bootstrap/footer'
+        templateUrl: 'footer'
         , controller: 'FooterController'
       }
     }
   })
   // links
-  .state('bootstrap-layout.links', {
+  .state('layout.links', {
     url: '/links'
     , resolve:{
-      links: function($sailsSocket) {
-        return $sailsSocket.get('/content?name=links', {name: 'links'}).then (function (data) {
+      links: function($sailsSocket, $log) {
+        var statename = 'layout.links';
+        return $sailsSocket.get('/content?name=links&page='+statename, {name: 'links', page: statename}).then (function (data) {
           if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
             return null;
           } else {
             if (data.data instanceof Array) {
               data.data = data.data[0];
-              console.error("request has more than one results");
+              $log.error("request has more than one results");
             }
-            return html_beautify(data.data.content);
+            data.data.content = html_beautify(data.data.content);
+            return data.data;
           }
         }, function error (resp){
-          console.error(resp);
+          $log.error(resp);
         });
       }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/links/content'
+        templateUrl: 'links/content'
         , controller: 'LinksController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'bootstrap/footer'
+        templateUrl: 'footer'
         , controller: 'FooterController'
       }
     }
   })
   // administration
-  .state('bootstrap-layout.administration', {
+  .state('layout.administration', {
     url: '/admin'
     , resolve:{
-      themeSettings: function($sailsSocket) {
+      themeSettings: function($sailsSocket, $log) {
         return $sailsSocket.get('/theme/find').then (function (data) {
-          console.log(data);
+          $log.log(data);
           return data.data;
         }, function error (resp){
-          console.error(resp);
+          $log.error(resp);
         });
       }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/administration/settings'
+        templateUrl: 'administration/settings'
         , controller: 'AdminController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
     }
   })
-  .state('bootstrap-layout.users', {
+  .state('layout.users', {
     url: '/users'
     , resolve:{
-      users: function($sailsSocket) {
+      users: function($sailsSocket, $log) {
         return $sailsSocket.get('/user').then (function (data) {
           return data.data;
         }, function error (resp){
-          console.error(resp);
+          $log.error(resp);
         });
       }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/administration/users'
+        templateUrl: 'administration/users'
         , controller: 'UsersController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
     }
   })
-  .state('bootstrap-layout.user', {
+  .state('layout.user', {
     url: '/user/:index'
     , resolve:{
-      user: function($sailsSocket, $stateParams) {
+      user: function($sailsSocket, $stateParams, $log) {
         return $sailsSocket.get('/user'+'/'+$stateParams.index).then (function (data) {
           delete data.data.password;
           return data.data;
         }, function error (resp){
-          console.error(resp);
+          $log.error(resp);
         });
       }
     }
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/administration/user'
+        templateUrl: 'administration/user'
         , controller: 'UserController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
     }
   })
-  .state('bootstrap-layout.new-user', {
+  .state('layout.new-user', {
     url: '/new/user'
     , views: {
       'content' : {
-        templateUrl: 'bootstrap/administration/user'
+        templateUrl: 'administration/user'
         , controller: 'UserNewController'
       }
       , 'toolbar' : {
-        templateUrl: 'bootstrap/toolbar'
+        templateUrl: 'toolbar'
         , controller: 'ToolbarController'
       }
     }
