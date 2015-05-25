@@ -19,9 +19,11 @@ TODO
       * Bilddateien die zum Theme zugehörig sind und Bilder die Hochgeladen wurden (z.B. Gallerie), werden nun in unterschiedlichen Ordnern gespeichert
       * Gallery- und Member-Image-Quellen angepasst
         * https://github.com/JumpLink/cms-bootstrap-theme/commit/2de39eb19b26ad2ed66a9a42a15eda937d78b5d2
-    * Dynamische Subnavigation
-    * Dynamische Content-Blöcke
+    * Dynamische Content-Blöcke und dynamische Subnavigation
       * Content-Blöcke können nun hinzugefügt, verschoben, bearbeitet und gelöscht werden.
+      * https://github.com/JumpLink/cms/commit/981d7a5fd776f2573aeecd2a232297bf11ac9e55
+      * https://github.com/JumpLink/cms-bootstrap-theme/commit/7c39b439bc5dc35338b28ba8e0528470be222b40
+      
   * Startseite
     * Carousel / Slideshow mit neuster Version lauffähig gemacht
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/6fb341eb091c592185646b0fd8a47ac43ac364ec
