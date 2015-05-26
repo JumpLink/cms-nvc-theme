@@ -17,14 +17,15 @@
         ul.nav.bs-sidenav
           li(ng-repeat="nav in navs", data-target="{{'#'+nav.target}}", bs-scrollspy, data-offset="70")
             a(ng-click="goTo(nav.target)") {{nav.name}}
+      button.btn.btn-warning.pull-right(ng-if="authenticated", ng-click="editNav($index, nav)", title="Navigation bearbeiten"): i.fa.fa-edit
     .col-md-10
       div(ng-repeat="content in contents | orderBy:'position'")
         p.btn-group.pull-right(ng-if="authenticated")
-          button.btn.btn-warning(ng-disabled="$index <= 0", ng-click="moveBackward($index, content)"): i.fa.fa-backward.fa-rotate-90
-          button.btn.btn-danger(ng-click="remove($index, content)"): i.fa.fa-trash
-          button.btn.btn-warning(ng-click="edit($index, content)"): i.fa.fa-edit
-          //- button.btn.btn-primary(ng-click="save($index, content)"): i.fa.fa-floppy-o
-          button.btn.btn-warning(ng-disabled="$index >= contents.length - 1", ng-click="moveForward($index, content)"): i.fa.fa-forward.fa-rotate-90
+          button.btn.btn-warning(ng-disabled="$index <= 0", ng-click="moveBackward($index, content)", title="Block nach oben verschieben"): i.fa.fa-backward.fa-rotate-90
+          button.btn.btn-danger(ng-click="remove($index, content)", title="Block löschen"): i.fa.fa-trash
+          button.btn.btn-warning(ng-click="edit($index, content)", title="Block bearbeiten"): i.fa.fa-edit
+          //- button.btn.btn-primary(ng-click="save($index, content)", title="Speichern"): i.fa.fa-floppy-o
+          button.btn.btn-warning(ng-disabled="$index >= contents.length - 1", ng-click="moveForward($index, content)", title="Block nach unten verschieben"): i.fa.fa-forward.fa-rotate-90
         h1.page-header(ng-if="$root.authenticated", id="{{content.name}}", medium-editor, ng-model="content.title", options='{"placeholder": "Titel eingeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
         h1.page-header(ng-if="!$root.authenticated", id="{{content.name}}", ng-bind-html="content.title")
         div(ng-show="html && $root.authenticated", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}", ng-model="content.content")
