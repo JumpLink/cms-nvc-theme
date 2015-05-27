@@ -1,30 +1,33 @@
-jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $sailsSocket, $location, $anchorScroll, $timeout, $window, contents, navs, $state, $log, $filter, $modal, HistoryService, ContentService) {
+jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $window, contents, navs, $state, $log, $modal, HistoryService, ContentService, SubnavigationService, SortableService) {
   var page = $state.current.name;
   $scope.contents = contents;
-  // for left navigation with affix, scrollspy and anchor
-  $scope.navs = navs;
-
-  $scope.editContentBLockModal = $modal({scope: $scope, title: 'Inhalt bearbeiten', template: 'editcontentmodal', show: false});
-
-  $scope.onlyChars = /^[a-zA-Z]+$/;
+  $scope.navs = navs; // for left navigation with affix, scrollspy and anchor
+  ContentService.setEditModal($scope);
+  SubnavigationService.setEditModal($scope);
+  $scope.goTo = HistoryService.goToHashPosition;
+  $scope.html = ContentService.getShowHtml();
+  ContentService.subscribe();
+  SubnavigationService.subscribe();
 
   // WORKAROUND wait until image is loaded to fix bs-sidebar
-  angular.element($window).imagesLoaded(function() {
-    angular.element($window).triggerHandler('resize');
-  });
-
-  $scope.goTo = HistoryService.goToHashPosition;
+  SubnavigationService.resizeOnImagesLoaded();
 
   $scope.toogleHtml = function() {
-    $scope.html = !$scope.html;
-    if($scope.html) {
-      $scope.contents = ContentService.beautifyEach($scope.contents);
-    }
+    $scope.html = ContentService.toogleShowHtml($scope.contents);
   }
 
   $scope.add = function() {
     if($rootScope.authenticated) {
-      ContentService.add($scope.contents, $scope.editContentBLockModal, page, function(err, content) {
+      ContentService.add($scope.contents, page, function(err, content) {
+        if(err) $log.error("Error: On add content!", err);
+        $log.debug("add done!", content);
+      });
+    }
+  }
+
+  $scope.addNav = function() {
+    if($rootScope.authenticated) {
+      SubnavigationService.add($scope.navs, {page:page}, function(err, content) {
         if(err) $log.error("Error: On add content!", err);
         $log.debug("add done!", content);
       });
@@ -32,32 +35,69 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $s
   }
 
   $scope.moveForward = function(index, content) {
-    ContentService.moveForward(index, $scope.contents, function(err, contents) {
+    SortableService.moveForward(index, $scope.contents, function(err, contents) {
       if(err) $log.error("Error: On move content forward!", err);
       else $scope.contents = contents;
     });
   }
 
+  $scope.moveForwardNav = function(index, nav) {
+    SortableService.moveForward(index, $scope.navs, function(err, navs) {
+      if(err) $log.error("Error: On move subnavigation forward!", err);
+      else $scope.navs = navs;
+    });
+  }
+
   $scope.moveBackward = function(index, content) {
-    ContentService.moveBackward(index, $scope.contents, function(err, contents) {
+    SortableService.moveBackward(index, $scope.contents, function(err, contents) {
       if(err) $log.error("Error: On move content backward!", err);
       else $scope.contents = contents;
     });
   }
 
+  $scope.moveBackwardNav = function(index, nav) {
+    SortableService.moveBackward(index, $scope.navs, function(err, navs) {
+      if(err) $log.error("Error: On move content backward!", err);
+      else $scope.navs = navs;
+    });
+  }
+
   $scope.edit = function(index, content) {
     if($rootScope.authenticated) {
-      ContentService.edit($scope.editContentBLockModal, content, function(err) {
+      ContentService.edit(content, function(err) {
         if(err) $log.error("Error: On edit content!", err);
+      });
+    }
+  }
+
+  $scope.editNavs = function(navs) {
+    if($rootScope.authenticated) {
+      SubnavigationService.edit(navs, function(err) {
+        if(err) $log.error("Error: On edit subnavigations!", err);
       });
     }
   }
 
   $scope.remove = function(index, content) {
     if($rootScope.authenticated) {
-      ContentService.remove($scope.contents, index, content, page, function (err, removed) {
+      ContentService.remove($scope.contents, index, content, page, function (err, contents) {
         if(err) $log.error("Error: On remove content!", err);
-        $log.debug("remove done!", removed);
+        else{
+          $log.debug("remove done!");
+          $scope.contents = contents;
+        }
+      });
+    }
+  }
+
+  $scope.removeNav = function(index, nav) {
+    if($rootScope.authenticated) {
+      SubnavigationService.remove($scope.navs, index, nav, page, function (err, navs) {
+        if(err) $log.error("Error: On remove subnavigation!", err);
+        else {
+          $log.debug("remove done!");
+          $scope.navs = navs;
+        }
       });
     }
   }
@@ -88,59 +128,38 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $s
           if(cb) return cb(err);
           return err;
         }
-        saveNavigation(function(err, navs) {
+        $scope.contents = contents;
+        // $rootScope.pop('success', 'Seiteninhalt wurde gespeichert', "");
+        SubnavigationService.save($scope.navs, page, function(err, navs) {
           if(err) {
             $log.error("Error: On save navigation!", err);
             if(cb) return cb(err);
             return err;
           }
+          $scope.navs = navs;
+          // $rootScope.pop('success', 'Navigation wurde gespeichert', "");
           if(cb) cb(null, {contents:contents, navs:navs});
         });
       });
     }
   }
 
-  var saveNavigation = function(cb) {
-    $sailsSocket.put('/navigation/replaceall', {navs: $scope.navs, page: page}).success(function(data, status, headers, config) {
-      if(data != null && typeof(data) !== "undefined") {
-        // WORKAROUND until socket event works
-        $scope.navs = $filter('orderBy')(data, 'position');
-        $log.debug (data);
-        $rootScope.pop('success', 'Navigation wurde gespeichert', "");
-        if(cb) cb(null, $scope.contents);
-      } else {
-        var err = 'Navigation konnte nicht gespeichert werden';
-        $rootScope.pop('error', err, "");
-        $log.error (err);
-        if(cb) cb(err);
-      }
+  $scope.onDragOnNavComplete = function(index, nav, evt) {
+    if(nav == null) {
+      $log.debug("*click*", index);
+    }
+    $log.debug("onDragOnNavComplete, nav:", nav, "index", index);
+  }
+
+  $scope.onDropOnNavComplete = function(dropnavindex, dragnav, event) {
+    SortableService.onDropComplete($scope.navs, dropnavindex, dragnav, event, function(err, navs) {
+      $scope.navs = navs;
     });
   }
 
-  // called on content changes
-  $sailsSocket.subscribe('content', function(msg){
-    $log.debug("Content event!", msg);
-    switch(msg.verb) {
-      case 'updated':
-        // switch(msg.id) {
-        //   case 'about':
-        //     $scope.about = msg.data;
-        //     if($rootScope.authenticated) {
-        //       $rootScope.pop('success', '"Wir über uns" wurde aktualisiert', "");
-        //     }
-        //   break;
-        //   case 'goals':
-        //     $scope.goals = msg.data;
-        //     if($rootScope.authenticated) {
-        //       $rootScope.pop('success', '"Ziele" wurde aktualisiert', "");
-        //     }
-        //   break;
-        // }
-        if($rootScope.authenticated) {
-          $rootScope.pop('success', 'Seite wurde aktualisiert', msg.id);
-        }
-      break;
-    }
-  });
+  $scope.onDropOnAreaComplete = function(nav, evt) {
+    var index = $scope.navs.indexOf(nav);
+    // $log.debug("onDropOnAreaComplete, nav:", nav, "index", index);
+  }
 
 });

@@ -1,18 +1,42 @@
-jumplink.cms.service('ContentService', function ($log, $sailsSocket, $filter) {
+jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket, $filter, $modal, SortableService) {
 
   var showHtml = false;
+  var editModal = null;
 
   var getShowHtml = function() {
     return showHtml;
   }
 
-  var toogleHtml = function(contents, cb) {
+  var setEditModal = function($scope) {
+    editModal = $modal({scope: $scope, title: 'Inhalt bearbeiten', template: 'editcontentmodal', show: false});
+    return getEditModal();
+  }
+
+  var getEditModal = function() {
+    return editModal;
+  }
+
+  var subscribe = function() {
+    // called on content changes
+    $sailsSocket.subscribe('content', function(msg){
+      $log.debug("Content event!", msg);
+      switch(msg.verb) {
+        case 'updated':
+          if($rootScope.authenticated) {
+            $rootScope.pop('success', 'Seite wurde aktualisiert', msg.id);
+          }
+        break;
+      }
+    });
+  }
+
+  var toogleShowHtml = function(contents, cb) {
     showHtml = !showHtml;
     if(showHtml && contents) {
       contents = beautifyEach(contents);
     }
-    if(cb) cb(null, contents);
-    else return contents;
+    if(cb) cb(null, showHtml);
+    else return showHtml;
   }
 
   var beautify = function(content, cb) {
@@ -29,7 +53,7 @@ jumplink.cms.service('ContentService', function ($log, $sailsSocket, $filter) {
     else return contents;
   }
 
-  var add = function(contents, modal, page, cb) {
+  var add = function(contents, page, cb) {
     var new_index = contents.length;
     contents.push({
       position: contents[new_index-1].position+1,
@@ -38,74 +62,48 @@ jumplink.cms.service('ContentService', function ($log, $sailsSocket, $filter) {
       name: "",
       page: page
     });
-    edit(modal, contents[new_index], cb);
+    edit(editModal, contents[new_index], cb);
   }
 
   var swap = function(contents, index_1, index_2, cb) {
-
-    var content_1 = contents[index_1];
-    var content_2 = contents[index_2];
-
-    // swap position too
-    var position_tmp = content_1.position;
-    content_1.position = content_2.position;
-    content_2.position = position_tmp;
-
-    // IMPORTANT: swap Indexes, too
-    contents[index_1] = content_2;
-    contents[index_2] = content_1;
-
-    if(cb) cb(null, contents);
-    else return contents;
+    return SortableService.swap(contents, index_1, index_2, cb);
   }
 
   var moveForward = function(index, contents, cb) {
-    if(index + 1 < contents.length ) {
-      return swap(contents, index, index+1, cb);
-    } else {
-      if(cb) cb("Can't move forward, index is the last element.", contents);
-      else return contents;
-    }
+    return SortableService.moveForward(index, contents, cb);
   }
 
   var moveBackward = function(index, contents, cb) {
-    if(index - 1 >= 0) {
-      return swap(contents, index, index-1, cb);
-    } else {
-      if(cb) cb("Can't move backward, index is the first element.", contents);
-      else return contents;
-    }
+    return SortableService.moveBackward(index, contents, cb);
   }
 
-  var edit = function(modal, content, cb) {
+  var edit = function(content, cb) {
     $log.debug("edit", content);
-    modal.$scope.content = content;
+    editModal.$scope.content = content;
     //- Show when some event occurs (use $promise property to ensure the template has been loaded)
-    modal.$promise.then(modal.show);
+    editModal.$promise.then(editModal.show);
 
-    modal.$scope.$on('modal.hide',function(){
+    editModal.$scope.$on('modal.hide',function(){
       $log.debug("edit closed");
-      cb(null, modal.$scope.content);
+      cb(null, editModal.$scope.content);
     });
   }
 
-  var removeFromClient = function (contents, index, content) {
-    $log.debug("removeFromClient", index, content);
-    if (index > -1) {
-      contents.splice(index, 1);
-    }
+  var removeFromClient = function (contents, index, content, cb) {
+    return SortableService.remove(index, contents, cb);
   }
 
   var remove = function(contents, index, content, page, cb) {
     if(typeof(index) === 'undefined' || index === null) {
       index = contents.indexOf(content);
     }
-    removeFromClient(contents, index, content);
+    // remove from client
+    contents = SortableService.remove(contents, index, content);
     // if content has an id it is saved on database, if not, not
     if(content.id) {
       $log.debug("remove from server, too" ,content);
       $sailsSocket.delete('/content/'+content.id+"?page="+page, {id:content.id, page: page}).success(function(data, status, headers, config) {
-        if(cb) cb(null, data)
+        if(cb) cb(null, contents)
       });
     }
   }
@@ -168,8 +166,10 @@ jumplink.cms.service('ContentService', function ($log, $sailsSocket, $filter) {
   }
 
   return {
+    subscribe: subscribe,
+    setEditModal: setEditModal,
     getShowHtml: getShowHtml,
-    toogleHtml: toogleHtml,
+    toogleShowHtml: toogleShowHtml,
     beautify: beautify,
     beautifyEach: beautifyEach,
     add: add,

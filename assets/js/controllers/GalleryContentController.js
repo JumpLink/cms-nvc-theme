@@ -1,4 +1,4 @@
-jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, config, FileUploader, $modal, $log, $location, $state) {
+jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, config, FileUploader, $modal, $log, $location, $state, SortableService) {
   $scope.images = images;
   $scope.config = config;
   // $log.debug(images[0]);
@@ -199,42 +199,23 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
 
   /* ==== Drag and Drop Stuff ==== */
-
-  // vertausche Bilder
-  var swapImages = function (dragimageindex, dragimage, dropimageindex, dropimage) {
-    $log.debug(dragimage.position+" <=> "+dropimage.position);
-
-    // swap position too
-    var tmp_position = dragimage.position;
-    dragimage.position = dropimage.position;
-    dropimage.position = tmp_position;
-
-    // IMPORTANT: swap Indexes, too
-    $scope.images[dragimageindex] = dropimage;
-    $scope.images[dropimageindex] = dragimage;
-  }
-
   $scope.onDragOnImageComplete = function(index, image, evt) {
     if(image == null) {
       $log.debug("*click*", index);
       var image = $scope.images[index];
       $state.go('layout.gallery-fullscreen', {id:image.id});
     }
-    // $log.debug("onDragOnImageComplete, image:", image, "index", index);
   }
 
   $scope.onDropOnImageComplete = function(dropimageindex, dragimage, evt) {
-    var dragimageindex = $scope.images.indexOf(dragimage);
-    var dropimage = $scope.images[dropimageindex];
-
-    swapImages(dragimageindex, dragimage, dropimageindex, dropimage);
-    
-    // console.log("onDropOnImageComplete, dragimage:", dragimage, "dragimageindex", dragimageindex, "dropimage", dropimage, "dropimageindex", dropimageindex);
+    SortableService.onDropComplete($scope.images, dropimageindex, dragimage, evt, function(err, images) {
+      $scope.images = images;
+    });
   }
 
   $scope.onDropOnAreaComplete = function(image, evt) {
     var index = $scope.images.indexOf(image);
-    // $log.debug("onDropOnAreaComplete, image:", image, "index", index);
+    $log.debug("onDropOnAreaComplete, image:", image, "index", index);
   }
 
 });
