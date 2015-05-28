@@ -1,7 +1,8 @@
-jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, config,  moment, $sailsSocket, $modal, $datepicker, EventService, FileUploader, $log) {
+jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, config,  moment, $sailsSocket, $modal, $datepicker, EventService, FileUploader, HistoryService, $log) {
   $scope.events = events;
   $scope.config = config;
   $scope.uploader = new FileUploader({url: 'timeline/upload', removeAfterUpload: true});
+  $scope.goTo = HistoryService.goToHashPosition;
   var typeChooserModal = $modal({scope: $scope, title: 'Typ wählen', template: 'events/typechoosermodal', show: false});
   var editEventModal = $modal({scope: $scope, title: 'Ereignis bearbeiten', uploader: $scope.uploader, template: 'events/editeventmodal', show: false});
   var types = ['lecture', 'panel discussion', 'travel', 'info', 'food', 'other'];
@@ -19,36 +20,27 @@ jumplink.cms.controller('TimelineController', function($rootScope, $scope, event
     fileItem.upload();
   };
 
-  var saveEvent = function (event, eventName) {
-    if(angular.isUndefined(event.id)) {
-      $sailsSocket.post('/timeline', event).success(function(data, status, headers, config) {
-        $log.debug("event created", event, data);
-        var index = $scope.events[eventName].indexOf(event);
-        if (index > -1) {
-          $scope.events[eventName][index] = data;
-          $log.debug($scope.events[eventName][index]);
-        }
-      });
-    } else {
-      $sailsSocket.put('/timeline/'+event.id, event).success(function(data, status, headers, config) {
-        $log.debug("event updated", event, data);
-        event = data;
-      });
-    }
-  };
-
   $scope.save = function(event, eventName) {
     if($rootScope.authenticated) {
       // save just this event if defined
-      if(angular.isDefined(event)) {
-        saveEvent(event, eventName);
+      if(angular.isDefined(event) && angular.isDefined(eventName)) {
+        EventService.save(event, eventName, function (err, savedEvent) {
+          if(err) $log.error("TimelineController: Can't save event:", err);
+          else {
+            event = savedEvent;
+            $log.debug("TimelineController: Event saved!", events);
+          }
+        });
       } else { // save all events
-        angular.forEach(['after', 'before', 'unknown'], function(eventPart, index) {
-          angular.forEach($scope.events[eventPart], function(event, index) {
-            saveEvent(event, eventName);
-          });
+        EventService.saveAll($scope.events, function (err, savedEvents) {
+          if(err) $log.error("TimelineController: Can't save events:", err);
+          else {
+            $scope.events = savedEvents;
+            $log.debug("TimelineController: Events saved!", events);
+          }
         });
       }
+
     }
   };
 

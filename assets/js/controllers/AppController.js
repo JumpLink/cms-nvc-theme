@@ -1,8 +1,8 @@
-jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $window, $timeout, Fullscreen, toaster, $sailsSocket, $location, $anchorScroll, $log) {
+jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $window, $timeout, Fullscreen, toaster, $sailsSocket, $location, HistoryService, $log) {
 
   // fix scroll to top on route change
   $scope.$on("$stateChangeSuccess", function () {
-    $anchorScroll();
+    HistoryService.autoScroll();
   });
 
   //AngularJS Toaster - AngularJS Toaster is a customized version of "toastr" non-blocking notification javascript library: https://github.com/jirikavi/AngularJS-Toaster

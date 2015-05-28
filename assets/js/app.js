@@ -144,38 +144,14 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
           $log.error("Error: On trying to resolve layout.home about!", resp);
         });
       }, 
-      // about: function($sailsSocket, $log) {
-      //   return $sailsSocket.get('/content?name=about', {name: 'about'}).then (function (data) {
-      //     if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
-      //       $log.warn("Warn: On trying to resolve layout.home navs!", "Not found, navigation is empty!");
-      //       return null;
-      //     }
-      //     if (data.data instanceof Array) {
-      //       data.data = data.data[0];
-      //       $log.warn("Warn: On trying to resolve layout.home about!", "Request has more than one results");
-      //     }
-      //     data.data.content = html_beautify(data.data.content);
-      //     return data.data;
-      //   }, function error (resp){
-      //     $log.error("Error: On trying to resolve layout.home about!", resp);
-      //   });
-      // }, 
-      // goals: function($sailsSocket, $log) {
-      //   return $sailsSocket.get('/content?name=goals', {name: 'goals'}).then (function (data) {
-      //     if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
-      //       return null;
-      //     } else {
-      //       if (data.data instanceof Array) {
-      //         data.data = data.data[0];
-      //         $log.warn("Warn: Request has more than one results");
-      //       }
-      //       data.data.content = html_beautify(data.data.content);
-      //       return data.data;
-      //     }
-      //   }, function error (resp){
-      //     $log.error(resp);
-      //   });
-      // }
+      events: function($sailsSocket, EventService, $log) {
+        return $sailsSocket.get('/timeline').then (function (data) {
+          // $log.debug(data);
+          return EventService.transform(data.data);
+        }, function error (resp){
+          $log.error("Error on resolve layout.timeline", resp);
+        });
+      },
     }
     , views: {
       'content' : {

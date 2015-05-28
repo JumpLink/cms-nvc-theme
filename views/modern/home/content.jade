@@ -15,7 +15,7 @@
     .col-md-2.hidden-sm.hidden-xs
       .bs-sidebar(hidden-print, role="complementary", data-offset-top="-50", bs-affix)
         ul.nav.bs-sidenav
-          li(ng-repeat="nav in navs", data-target="{{'#'+nav.target}}", bs-scrollspy, data-offset="70")
+          li(ng-repeat="nav in navs", ng-if="nav.target && nav.name", data-target="{{'#'+nav.target}}", bs-scrollspy, data-offset="70")
             a(ng-click="goTo(nav.target)") {{nav.name}}
         button.btn.btn-warning.pull-right(ng-if="authenticated", ng-click="editNavs(navs)", title="Navigation bearbeiten"): i.fa.fa-edit
     .col-md-10

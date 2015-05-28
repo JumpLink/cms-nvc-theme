@@ -3,7 +3,6 @@ TODO
     * Es können jetzt Überschriften angelegt werden
     * Die Bilder jetzt per Drag and Drop zwischen den Überschriften verschoben werden
   * Startseite
-    * Überschriften ändern / hinzufügen
     * Rubrik "Aktuelles"
 
 0.0.2
@@ -20,10 +19,12 @@ TODO
       * Gallery- und Member-Image-Quellen angepasst
         * https://github.com/JumpLink/cms-bootstrap-theme/commit/2de39eb19b26ad2ed66a9a42a15eda937d78b5d2
     * Dynamische Content-Blöcke und dynamische Subnavigation
-      * Content-Blöcke können nun hinzugefügt, verschoben, bearbeitet und gelöscht werden.
+      * Content-Blöcke können nun hinzugefügt, verschoben, bearbeitet und gelöscht werden
+      * Subnavugationen können nun hinzugefügt, verschoben, bearbeitet und gelöscht werden
       * https://github.com/JumpLink/cms/commit/981d7a5fd776f2573aeecd2a232297bf11ac9e55
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/7c39b439bc5dc35338b28ba8e0528470be222b40
-      
+      * https://github.com/JumpLink/cms-bootstrap-theme/commit/991860c9bd43f67e917bc23cfb8b9216b33e11c9
+    * Diverse Kleinigkeiten wie Codebereinigungen, kleinerer Bugfixes, etc.
   * Startseite
     * Carousel / Slideshow mit neuster Version lauffähig gemacht
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/6fb341eb091c592185646b0fd8a47ac43ac364ec
