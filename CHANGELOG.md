@@ -2,8 +2,6 @@ TODO
   * Galerie erweitert
     * Es können jetzt Überschriften angelegt werden
     * Die Bilder jetzt per Drag and Drop zwischen den Überschriften verschoben werden
-  * Startseite
-    * Rubrik "Aktuelles"
 
 0.0.2
   * Allgemein
@@ -30,6 +28,8 @@ TODO
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/6fb341eb091c592185646b0fd8a47ac43ac364ec
     * An neues dynamisches Content-Block-System angepasst
     * An neues dynamisches Subnavigation-System angepasst
+    * Neue Rubrik "Aktuelles"
+      * Zeigt die bevorstehenden Veranstaltungen an inkl. direkter Verlinkung
   * Gallery
     * Probleme beim Upload von Bildern behoben
       * https://github.com/JumpLink/cms/commit/4c2093f4fb355202c4f2b5de6e4a43ce38d6bc52
@@ -47,6 +47,8 @@ TODO
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/74be5f0d59f48dfdb191c851ed5ee03e6e15f2c4
     * Die Uhrzeit wird bei Ereignissen jetzt immer angezeigt
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/c57d2acf99976832117e0e3ad3bcf6e5c7b36178
+    * Neue dynamische Subnavigation eingebaut
+    * Es kann nun direkt auf Veranstaltungen verlinkt werden 
   * Vorstand / Beirat
     * Bei dem Hinzufügen eines neuen Mitglieds nicht die Daten des letzten Mitglieds als Vorlage anzeigen
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/1902411b7fb936bbd81054ecd17f3a4b37cc35e7

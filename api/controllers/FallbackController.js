@@ -8,14 +8,19 @@ var updateBrowser = function (req, res, next, force) {
 
 var fallbackHome = function (req, res, next, force, showLegacyToast) {
   sails.log.debug("fallbackHome");
-  var about = null, goals = null, page = 'layout.home';
+  var about = null, goals = null, page = 'layout.home', events;
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
     if(err) { return res.serverError(err); }
     Navigation.find({where:{page:page, site:config.name}, sort: 'position'}).exec(function found(err, navs) {
       if(err) { return res.serverError(err); }
       Content.find({where:{page:page, site:config.name}, sort: 'position'}).exec(function found(err, contents) {
         if(err) { return res.serverError(err); }
-        return ThemeService.view(req, 'views/fallback/home/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, contents: contents, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Startseite', config: {paths: sails.config.paths}, navs: navs});
+        Timeline.find({site:config.name}).exec(function found(err, results) {
+          if(err) { return res.serverError(err); }
+          // sails.log.debug(results);
+          events = EventService.transform(results);
+          return ThemeService.view(req, 'views/fallback/home/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, contents: contents, events:events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Startseite', config: {paths: sails.config.paths}, navs: navs});
+        });
       });
     });
   });
@@ -38,10 +43,6 @@ var fallbackEvents = function (req, res, next, force, showLegacyToast) {
     if(err) { return res.serverError(err); }
     Timeline.find({site:config.name}).exec(function found(err, results) {
       // sails.log.debug(results);
-      // events = EventService.sort(results);
-      // events = EventService.momentise(events);
-      // events = EventService.split(events);
-      // sails.log.debug(events);
       events = EventService.transform(results);
       return ThemeService.view(req, 'views/fallback/events/timeline.jade', res,  {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, events: events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Veranstaltungen', config: {paths: sails.config.paths} });
     });

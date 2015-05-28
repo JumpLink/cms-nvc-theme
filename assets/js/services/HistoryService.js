@@ -12,10 +12,10 @@ jumplink.cms.service('HistoryService', function ($window, $location, $anchorScro
 
   var autoScroll = function () {
     var hash = $location.hash();
-    $log.debug("hash", hash);
+    // $log.debug("hash", hash);
     if(hash) {
       // WORKAROUND
-      $timeout(function(){ goToHashPosition(hash); }, 0);
+      $timeout(function(){ goToHashPosition(hash); }, 1000); // TODO smooth?
     } else {
       $anchorScroll();
     }    

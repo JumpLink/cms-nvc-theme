@@ -2,6 +2,7 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
   var page = $state.current.name;
   $scope.contents = contents;
   $scope.navs = navs; // for left navigation with affix, scrollspy and anchor
+  $scope.events = events;
   ContentService.setEditModal($scope);
   SubnavigationService.setEditModal($scope);
   $scope.goTo = HistoryService.goToHashPosition;

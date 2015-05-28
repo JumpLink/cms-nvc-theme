@@ -66,9 +66,9 @@ block body
                       //- Anderes
                       .timeline-badge
                         i.fa.fa-check-square
+                  .anchor-static-navbar(id="#{event.name}")
                   .timeline-panel
                     .timeline-heading
-                      .anchor-static-navbar(id="#{event.name}")
                       if event.title
                         h4.timeline-title!= event.title
                       //- Person (User)
