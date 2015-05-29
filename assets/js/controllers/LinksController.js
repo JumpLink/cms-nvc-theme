@@ -14,17 +14,18 @@ jumplink.cms.controller('LinksController', function($rootScope, $scope, $sailsSo
 
   $scope.save = function() {
     $scope.links.page = page;
-    $sailsSocket.put("/content/replace", $scope.links, function (response) {
-      if(response != null && typeof(response) !== "undefined") {
-        $log.debug (response);
-      } else {
-        $log.debug ("Can't save site");
+    ContentService.saveOne($scope.news, page, function(err, contents) {
+      if(err) {
+        $log.error("Error: On save content!", err);
+        if(cb) return cb(err); else return err; }
+      else {
+        $rootScope.pop('success', 'Links-Text wurde aktualisiert', "");
       }
     });
   }
 
   // called on content changes
-  $sailsSocket.subscribe('content', function(msg){
+  $sailsSocket.subscribe('content', function(msg) {
     $log.debug(msg);
     switch(msg.verb) {
       case 'updated':

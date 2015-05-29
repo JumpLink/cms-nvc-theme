@@ -60,9 +60,10 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
       content: "",
       title: "",
       name: "",
+      type: "dynamic",
       page: page
     });
-    edit(editModal, contents[new_index], cb);
+    edit(contents[new_index], cb);
   }
 
   var swap = function(contents, index_1, index_2, cb) {
@@ -85,7 +86,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
 
     editModal.$scope.$on('modal.hide',function(){
       $log.debug("edit closed");
-      cb(null, editModal.$scope.content);
+      if(cb) cb(null, editModal.$scope.content);
     });
   }
 
@@ -94,6 +95,9 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
   }
 
   var remove = function(contents, index, content, page, cb) {
+    var errors = [
+      'Content konnte nicht gelöscht werden.'
+    ]
     if(typeof(index) === 'undefined' || index === null) {
       index = contents.indexOf(content);
     }
@@ -104,6 +108,10 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
       $log.debug("remove from server, too" ,content);
       $sailsSocket.delete('/content/'+content.id+"?page="+page, {id:content.id, page: page}).success(function(data, status, headers, config) {
         if(cb) cb(null, contents)
+      }).
+      error(function(data, status, headers, config) {
+        $log.error (errors[0], data);
+        if(cb) cb(data);
       });
     }
   }
@@ -134,6 +142,11 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
       content.name = content.title.toLowerCase().replace(/[^a-z]+/g, '');
       $log.debug("set content.name to", content.name);
     }
+
+    if(!content.type || content.type === "") {
+      content.type = 'fix';
+    }
+
     if(cb) cb(null, content);
     else return content;
   }
@@ -146,24 +159,138 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     else return contents;
   }
 
-  var save = function(contents, page, cb) {
-    fixEach(contents, function(err, contents) {
-      if(err)
+  var saveOne = function(content, page, cb) {
+    var errors = [
+      'Inhalt konnte nicht gespeichert werden'
+    ];
+    content.page = page;
+    // $sailsSocket.put("/content/replace", content, function (response) {
+    //   if(response != null && typeof(response) !== "undefined") {
+    //     $log.debug (response);
+    //     if(cb) cb(null, response);
+    //   } else {
+    //     $log.error(errors[0]);
+    //     if(cb) cb(errors[0]);
+    //   }
+    // }, function error (resp){
+    //   $log.error(resp);
+    // });
+
+    fix(content, function(err, content) {
+      if(err) {
         if(cb) cb(err);
         else return err;
+      }
+      $sailsSocket.put('/content/replace', content).success(function(data, status, headers, config) {
+        //- $log.debug ("save response from /content/replaceall", data, status, headers, config);
+        if(data != null && typeof(data) !== "undefined") {
+          content = data;
+          $log.debug (content);
+          if(cb) cb(null, content);
+        } else {
+          $log.error(errors[0]);
+          if(cb) cb(errors[0]);
+          else return errors[0];
+        }
+      }).
+      error(function(data, status, headers, config) {
+        $log.error (errors[0], data);
+        if(cb) cb(data);
+      });
+    });
+
+  }
+
+  var save = function(contents, page, cb) {
+    var errors = [
+      'Seite konnte nicht gespeichert werden'
+    ];
+    fixEach(contents, function(err, contents) {
+      if(err) {
+        if(cb) cb(err);
+        else return err;
+      }
       $sailsSocket.put('/content/replaceall', {contents: contents, page: page}).success(function(data, status, headers, config) {
+        //- $log.debug ("save response from /content/replaceall", data, status, headers, config);
         if(data != null && typeof(data) !== "undefined") {
           contents = $filter('orderBy')(data, 'position');
           $log.debug (data);
           if(cb) cb(null, contents);
         } else {
-          var err = 'Seite konnte nicht gespeichert werden';
-          $log.error (err);
-          if(cb) cb(err);
+          $log.error(errors[0]);
+          if(cb) cb(errors[0]);
+          else return errors[0];
         }
+      }).
+      error(function(data, status, headers, config) {
+        $log.error (errors[0], data);
+        if(cb) cb(data);
       });
     });
   }
+
+  var resolveOne = function(page, name, type) {
+    var query = {
+      page: page,
+      name: name
+    };
+    var url = '/content?name='+name+'&page='+page;
+    if(type) {
+      query.type = type;
+      url = url+'&type='+type;
+    }
+    return $sailsSocket.get(url, query).then (function (data) {
+      if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
+        return null;
+      } else {
+        if (data.data instanceof Array) {
+          data.data = data.data[0];
+          $log.error("request has more than one results");
+        }
+        data.data.content = html_beautify(data.data.content);
+        return data.data;
+      }
+    }, function error (resp){
+      $log.error(resp);
+    });
+  };
+
+  var resolveAll = function(page, type) {
+    var query = {
+      page: page,
+    };
+    var url = '/content/findall?page='+page;
+    if(type) {
+      query.type = type;
+      url = url+'&type='+type;
+    }
+    return $sailsSocket.get(url, query).then (function (data) {
+      if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
+        $log.warn("Warn: On trying to resolve layout.home navs!", "Not found, navigation is empty!");
+        return null;
+      }
+      // data.data.content = html_beautify(data.data.content);
+      data.data = $filter('orderBy')(data.data, 'position');
+      $log.debug(data);
+      return data.data;
+    }, function error (resp){
+      $log.error("Error: On trying to resolve layout.home about!", resp);
+    });
+  };
+
+  /**
+   * Resolve function for angular ui-router.
+   * name parameter is optional
+   */
+  var resolve = function(page, name, type) {
+    //- get soecial content (one)
+    if(angular.isDefined(name)) {
+      return resolveOne(page, name, type);
+    // get all for page
+    } else {
+      return resolveAll(page, type);
+    }
+  };
 
   return {
     subscribe: subscribe,
@@ -182,6 +309,10 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     refresh: refresh,
     fix: fix,
     fixEach: fixEach,
-    save: save
+    save: save,
+    saveOne: saveOne,
+    resolve: resolve,
+    resolveAll: resolveAll,
+    resolveOne: resolveOne
   };
 });

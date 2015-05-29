@@ -5,11 +5,11 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
   var setEditModal = function($scope) {
     editModal = $modal({scope: $scope, title: 'Navigation bearbeiten', template: 'editsubnavigationmodal', show: false});
     return getEditModal();
-  }
+  };
 
   var getEditModal = function() {
     return editModal;
-  }
+  };
 
   var subscribe = function() {
     // called on content changes
@@ -23,14 +23,14 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
         break;
       }
     });
-  }
+  };
 
   // WORKAROUND wait until image is loaded to fix bs-sidebar
   var resizeOnImagesLoaded = function () {
     angular.element($window).imagesLoaded(function() {
       angular.element($window).triggerHandler('resize');
     });
-  }
+  };
 
   var add = function(navs, data, cb) {
     var new_index = navs.length;
@@ -48,19 +48,19 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
 
     if(cb) cb(null, navs);
     else return navs;
-  }
+  };
 
   var swap = function(navs, index_1, index_2, cb) {
     return SortableService.swap(contents, index_1, index_2, cb);
-  }
+  };
 
   var moveForward = function(index, navs, cb) {
     return SortableService.moveForward(index, navs, cb);
-  }
+  };
 
   var moveBackward = function(index, navs, cb) {
     return SortableService.moveBackward(index, navs, cb);
-  }
+  };
 
   var edit = function(navs, cb) {
     $log.debug("edit subnavigations", navs);
@@ -72,12 +72,12 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
       $log.debug("edit navigation modal closed");
       cb(null, editModal.$scope.navs);
     });
-  }
+  };
 
   var removeFromClient = function (navs, index, nav, cb) {
     if(cb) return SortableService.remove(navs, index, nav, cb);
     else return SortableService.remove(navs, index, nav);
-  }
+  };
 
   var remove = function(navs, index, nav, page, cb) {
     if(typeof(index) === 'undefined' || index === null) {
@@ -91,7 +91,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
         if(cb) cb(null, navs)
       });
     }
-  }
+  };
 
   var fix = function(fixed, object, index, cb) {
     console.log(object);
@@ -102,7 +102,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     }
     if(cb) cb(null, fixed);
     else return fixed;
-  }
+  };
 
   var fixEach = function(objects, cb) {
     var fixed = [];
@@ -111,8 +111,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     };
     if(cb) cb(null, fixed);
     else return fixed;
-  }
-
+  };
 
   var save = function(navs, page, cb) {
     fixEach(navs, function(err, navs) {
@@ -128,7 +127,22 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
         }
       });
     });
-  }
+  };
+
+  var resolve = function(page) {
+    var statename = 'layout.gallery';
+    return $sailsSocket.get('/navigation?page='+page, {page: page}).then (function (data) {
+      if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
+        $log.warn("Warn: On trying to resolve "+page+" navs!", "Not found, navigation is empty!");
+        return null;
+      }
+      data.data = $filter('orderBy')(data.data, 'position');
+      $log.debug(data);
+      return data.data;
+    }, function error (resp){
+      $log.error("Error: On trying to resolve "+page+" navs!", resp);
+    });
+  };
 
   return {
     resizeOnImagesLoaded: resizeOnImagesLoaded,
@@ -142,6 +156,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     edit: edit,
     removeFromClient: removeFromClient,
     remove: remove,
-    save: save
+    save: save,
+    resolve: resolve
   };
 });

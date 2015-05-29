@@ -12,16 +12,17 @@ block body
               li
                 a(href="\##{nav.target}") #{nav.name}
       .col-md-8
+        h1.page-header Startseite
         each content in contents
-          h1.anchor-static-navbar(id="#{content.name}")
-          h1.page-header #{content.title}
+          h2.anchor-static-navbar(id="#{content.name}")
+          h2.page-header #{content.title}
           div!= content.content
       .col-md-2
         .panel.panel-primary(style="margin-top: 40px;")
           .panel-heading
             h3.panel-title.text-center Aktuelles
           .panel-body
-            | Panel content
+            div!= news.content
           ul.list-group
             each event in events.after
               li.list-group-item

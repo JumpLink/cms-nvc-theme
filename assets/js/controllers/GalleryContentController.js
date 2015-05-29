@@ -1,6 +1,8 @@
-jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, config, FileUploader, $modal, $log, $location, $state, SortableService) {
+jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, contents, navs, config, FileUploader, $modal, $log, $location, $state, SortableService) {
   $scope.images = images;
   $scope.config = config;
+  $scope.contents = contents;
+  $scope.navs = navs;
   // $log.debug(images[0]);
   $scope.uploader = new FileUploader({url: 'gallery/upload', removeAfterUpload: true});
   $scope.uploader.filters.push({

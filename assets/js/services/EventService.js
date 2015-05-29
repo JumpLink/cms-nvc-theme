@@ -128,12 +128,22 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
     }
   };
 
+  var resolve = function(page) {
+    return $sailsSocket.get('/timeline').then (function (data) {
+      // $log.debug(data);
+      return transform(data.data);
+    }, function error (resp){
+      $log.error("Error on resolve "+page, resp);
+    });
+  };
+
   return {
     split: split,
     merge: merge,
     transform: transform,
     save: save,
     saveAll: saveAll,
-    fixEach: fixEach
+    fixEach: fixEach,
+    resolve: resolve
   };
 });

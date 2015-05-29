@@ -1,6 +1,15 @@
-jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $window, contents, navs, events, $state, $log, $modal, HistoryService, ContentService, SubnavigationService, SortableService) {
+jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $window, contents, navs, events, news, $state, $log, $modal, HistoryService, ContentService, SubnavigationService, SortableService) {
   var page = $state.current.name;
   $scope.contents = contents;
+
+  // for (var i = contents.length - 1; i >= 0; i--) {
+  //   if(contents[i].name === 'news') {
+  //     $scope.news = contents[i];
+  //     $scope.contents.splice(i, 1); // remove news from contents array
+  //   }
+  // };
+
+  $scope.news = news;
   $scope.navs = navs; // for left navigation with affix, scrollspy and anchor
   $scope.events = events;
   ContentService.setEditModal($scope);
@@ -123,23 +132,33 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
 
   var saveAll = function(cb) {
     if($rootScope.authenticated) {
-      ContentService.save($scope.contents, page, function(err, contents) {
+      $log.debug("Save news");
+      ContentService.saveOne($scope.news, page, function(err, content) {
         if(err) {
           $log.error("Error: On save content!", err);
           if(cb) return cb(err);
           return err;
         }
-        $scope.contents = contents;
-        // $rootScope.pop('success', 'Seiteninhalt wurde gespeichert', "");
-        SubnavigationService.save($scope.navs, page, function(err, navs) {
+        $log.debug("Save other contents");
+        ContentService.save($scope.contents, page, function(err, contents) {
           if(err) {
-            $log.error("Error: On save navigation!", err);
+            $log.error("Error: On save content!", err);
             if(cb) return cb(err);
             return err;
           }
-          $scope.navs = navs;
-          // $rootScope.pop('success', 'Navigation wurde gespeichert', "");
-          if(cb) cb(null, {contents:contents, navs:navs});
+          $scope.contents = contents;
+          // $rootScope.pop('success', 'Seiteninhalt wurde gespeichert', "");
+          $log.debug("Save subnavigation");
+          SubnavigationService.save($scope.navs, page, function(err, navs) {
+            if(err) {
+              $log.error("Error: On save navigation!", err);
+              if(cb) return cb(err);
+              return err;
+            }
+            $scope.navs = navs;
+            // $rootScope.pop('success', 'Navigation wurde gespeichert', "");
+            if(cb) cb(null, {contents:contents, navs:navs});
+          });
         });
       });
     }

@@ -1,14 +1,34 @@
-div.container-fluid(style="min-height: 400px;")
-  h1.anchor-static-navbar#gallery
-  .page-header
-    h1 Galerie
-  div(ng-if="$root.authenticated", ng-drop="true", ng-drop-success="onDropOnAreaComplete($data,$event)", style="display:inline-block;")
-    div.pull-left(ng-repeat="image in images", style="height:100px;width:100px;padding:2px")
-      img.img-responsive(ng-src="/{{config.paths.gallery}}/{{image.thumb.name}}", ng-drag="true", ng-drag-data="image", data-allow-transform="true", ng-drag-success="onDragOnImageComplete($index,$data,$event)", ng-drop="true", ng-drop-success="onDropOnImageComplete($index,$data,$event)")
-      i.fa.fa-ellipsis-v.img-dropdown.static(bs-dropdown="dropdown", ng-click="$event.stopPropagation();", data-template="dropdown", data-placement="bottom", data-html="true")
-  div(ng-if="!$root.authenticated", style="display:inline-block;")
-    div.pull-left(ng-repeat="image in images", style="height:100px;width:100px;padding:2px")
-      img.img-responsive(ng-src="/{{config.paths.gallery}}/{{image.thumb.name}}", ui-sref="layout.gallery-fullscreen({id:image.id})")
+.container-fluid(style="min-height: 400px;")
+  .row  
+    .col-md-2.hidden-sm.hidden-xs
+      .bs-sidebar(hidden-print, role="complementary", bs-affix, data-offset-top="-50")
+        ul.nav.bs-sidenav
+          li(ng-repeat="nav in navs", ng-if="nav.target && nav.name", data-target="{{'#'+nav.target}}", bs-scrollspy, data-offset="70")
+            a(ng-click="goTo(nav.target)") {{nav.name}}
+        button.btn.btn-warning.pull-right(ng-if="authenticated", ng-click="editNavs(navs)", title="Navigation bearbeiten"): i.fa.fa-edit
+    .col-md-10
+      h1.page-header Galerie
+      div(ng-repeat="content in contents | orderBy:'position'")
+        p.btn-group.pull-right(ng-if="authenticated")
+          button.btn.btn-warning(ng-click="moveBackward($index, content)", ng-disabled="$index <= 0", title="Block nach oben verschieben"): i.fa.fa-backward.fa-rotate-90
+          button.btn.btn-danger(ng-click="remove($index, content)", title="Block löschen"): i.fa.fa-trash
+          button.btn.btn-warning(ng-click="edit($index, content)", title="Block bearbeiten"): i.fa.fa-edit
+          //- button.btn.btn-primary(ng-click="save($index, content)", title="Speichern"): i.fa.fa-floppy-o
+          button.btn.btn-warning(ng-click="moveForward($index, content)", ng-disabled="$index >= contents.length - 1", title="Block nach unten verschieben"): i.fa.fa-forward.fa-rotate-90
+        h2.page-header(ng-if="$root.authenticated", id="{{content.name}}", medium-editor, ng-model="content.title", options='{"placeholder": "Titel eingeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
+        h2.page-header(ng-if="!$root.authenticated", id="{{content.name}}", ng-bind-html="content.title")
+        div(ng-show="html && $root.authenticated", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}", ng-model="content.content")
+        div(ng-show="$root.authenticated", medium-editor, ng-model="content.content", options='{"placeholder": "Inhalt eingeben", "buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
+        div(ng-bind-html="content.content", ng-hide="$root.authenticated")
+        //- h1.page-header#gallery Galerie
+        div(ng-if="$root.authenticated", ng-drop="true", ng-drop-success="onDropOnAreaComplete($data,$event)", style="display:inline-block;")
+          .pull-left(ng-repeat="image in images", style="height:100px;width:100px;padding:2px")
+            img.img-responsive(ng-src="/{{config.paths.gallery}}/{{image.thumb.name}}", ng-drag="true", ng-drag-data="image", data-allow-transform="true", ng-drag-success="onDragOnImageComplete($index,$data,$event)", ng-drop="true", ng-drop-success="onDropOnImageComplete($index,$data,$event)")
+            i.fa.fa-ellipsis-v.img-dropdown.static(bs-dropdown="dropdown", ng-click="$event.stopPropagation();", data-template="dropdown", data-placement="bottom", data-html="true")
+        div(ng-if="!$root.authenticated", style="display:inline-block;")
+          .pull-left(ng-repeat="image in images", style="height:100px;width:100px;padding:2px")
+            img.img-responsive(ng-src="/{{config.paths.gallery}}/{{image.thumb.name}}", ui-sref="layout.gallery-fullscreen({id:image.id})")
+
 nav.navbar.navbar-inverse.navbar-fixed-bottom(role="administration", ng-show="$root.authenticated")
   .container
     .navbar-left

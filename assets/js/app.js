@@ -115,43 +115,22 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('layout.home', {
     url: '/home'
     , resolve:{
-      navs: function($sailsSocket, $filter, $log) {
+      navs: function(SubnavigationService) {
         var statename = 'layout.home';
-        return $sailsSocket.get('/navigation?page='+statename, {page: statename}).then (function (data) {
-          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
-            $log.warn("Warn: On trying to resolve "+statename+" navs!", "Not found, navigation is empty!");
-            return null;
-          }
-          data.data = $filter('orderBy')(data.data, 'position');
-          $log.debug(data);
-          return data.data;
-        }, function error (resp){
-          $log.error("Error: On trying to resolve "+statename+" navs!", resp);
-        });
+        return SubnavigationService.resolve(statename);
       },
-      contents: function($sailsSocket, $filter, $log) {
+      contents: function(ContentService) {
         var statename = 'layout.home';
-        return $sailsSocket.get('/content/findall?page='+statename, {page: statename}).then (function (data) {
-          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
-            $log.warn("Warn: On trying to resolve layout.home navs!", "Not found, navigation is empty!");
-            return null;
-          }
-          // data.data.content = html_beautify(data.data.content);
-          data.data = $filter('orderBy')(data.data, 'position');
-          $log.debug(data);
-          return data.data;
-        }, function error (resp){
-          $log.error("Error: On trying to resolve layout.home about!", resp);
-        });
-      }, 
-      events: function($sailsSocket, EventService, $log) {
-        return $sailsSocket.get('/timeline').then (function (data) {
-          // $log.debug(data);
-          return EventService.transform(data.data);
-        }, function error (resp){
-          $log.error("Error on resolve layout.timeline", resp);
-        });
+        return ContentService.resolveAll(statename, 'dynamic');
       },
+      news: function(ContentService) {
+        var statename = 'layout.home';
+        return ContentService.resolveOne(statename, 'news', 'fix');
+      },
+      events: function(EventService) {
+        var statename = 'layout.home';
+        return EventService.resolve(statename);
+      }
     }
     , views: {
       'content' : {
@@ -179,13 +158,18 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
           $log.error(resp);
         });
       },
-      config: function($sailsSocket, $log) {
-        return $sailsSocket.get('/config/find').then (function (data) {
-          return data.data;
-        }, function error (resp){
-          $log.error(resp);
-        });
+      navs: function(SubnavigationService) {
+        var statename = 'layout.gallery';
+        return SubnavigationService.resolve(statename);
       },
+      contents: function(ContentService) {
+        var statename = 'layout.gallery';
+        return ContentService.resolveAll(statename);
+      },
+      config: function(ConfigService) {
+        var statename = 'layout.gallery';
+        return ConfigService.resolve(statename);
+      }
     }
     , views: {
       'content' : {
@@ -212,12 +196,9 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
           return data.data;
         });
       },
-      config: function($sailsSocket, $log) {
-        return $sailsSocket.get('/config/find').then (function (data) {
-          return data.data;
-        }, function error (resp){
-          $log.error(resp);
-        });
+      config: function(ConfigService) {
+        var statename = 'layout.gallery-fullscreen';
+        return ConfigService.resolve(statename);
       }
     }
     , views: {
@@ -262,20 +243,13 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('layout.timeline', {
     url: '/events'
     , resolve:{
-      events: function($sailsSocket, EventService, $log) {
-        return $sailsSocket.get('/timeline').then (function (data) {
-          // $log.debug(data);
-          return EventService.transform(data.data);
-        }, function error (resp){
-          $log.error("Error on resolve layout.timeline", resp);
-        });
+      events: function(EventService) {
+        var statename = 'layout.timeline';
+        return EventService.resolve(statename);
       },
-      config: function($sailsSocket, $log) {
-        return $sailsSocket.get('/config/find').then (function (data) {
-          return data.data;
-        }, function error (resp){
-          $log.error("Error on resolve layout.timeline", resp);
-        });
+      config: function(ConfigService) {
+        var statename = 'layout.timeline';
+        return ConfigService.resolve(statename);
       }
     }
     , views: {
@@ -327,22 +301,10 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('layout.application', {
     url: '/application'
     , resolve:{
-      application: function($sailsSocket, $log) {
+      application: function(ContentService) {
         var statename = 'layout.application';
-        return $sailsSocket.get('/content?name=application&page='+statename, {name: 'application', page: statename}).then (function (data) {
-          if(angular.isDefined(data) && angular.isDefined(data.data)) {
-            if (data.data instanceof Array) {
-              data.data = data.data[0];
-              $log.error("request has more than one results");
-            }
-            data.data.content = html_beautify(data.data.content);
-            return data.data;
-          }
-          else
-            return null;
-        }, function error (resp){
-          $log.error(resp);
-        });
+        var name = 'application';
+        return ContentService.resolveOne(statename, name);
       }
     }
     , views: {
@@ -364,35 +326,14 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('layout.imprint', {
     url: '/imprint'
     , resolve: {
-      navs: function($sailsSocket, $state, $log) {
-        // $log.debug("resolve", $state.current);
+      navs: function(SubnavigationService) {
         var statename = 'layout.imprint';
-        return $sailsSocket.get('/navigation?page='+statename, {page: statename}).then (function (data) {
-          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
-            $log.warn("Warn: On trying to resolve "+statename+" navs!", "Not found, navigation is empty!");
-            return null;
-          }
-          return data.data;
-        }, function error (resp){
-          $log.error("Error: On trying to resolve "+statename+" navs!", resp);
-        });
+        return SubnavigationService.resolve(statename);
       },
-      imprint: function($sailsSocket, $log) {
+      imprint: function(ContentService) {
         var statename = 'layout.imprint';
-        return $sailsSocket.get('/content?name=imprint&page='+statename, {name: 'imprint', page: statename}).then (function (data) {
-          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
-            return null;
-          } else {
-            if (data.data instanceof Array) {
-              data.data = data.data[0];
-              $log.warn("Warn: Request has more than one results");
-            }
-            data.data.content = html_beautify(data.data.content);
-            return data.data;
-          }
-        }, function error (resp){
-          $log.error("Error: On trying to resolve "+statename+" navs!", resp);
-        });
+        var name = 'imprint';
+        return ContentService.resolveOne(statename, name);
       }
     }
     , views: {
@@ -414,23 +355,11 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('layout.links', {
     url: '/links'
     , resolve:{
-      links: function($sailsSocket, $log) {
+      links: function(ContentService) {
         var statename = 'layout.links';
-        return $sailsSocket.get('/content?name=links&page='+statename, {name: 'links', page: statename}).then (function (data) {
-          if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
-            return null;
-          } else {
-            if (data.data instanceof Array) {
-              data.data = data.data[0];
-              $log.error("request has more than one results");
-            }
-            data.data.content = html_beautify(data.data.content);
-            return data.data;
-          }
-        }, function error (resp){
-          $log.error(resp);
-        });
-      }
+        var name = 'links';
+        return ContentService.resolveOne(statename, name);
+      },
     }
     , views: {
       'content' : {
