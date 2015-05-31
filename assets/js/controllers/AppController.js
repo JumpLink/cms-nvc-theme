@@ -167,23 +167,6 @@ jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $w
     });
   }
 
-  $scope.adminSettingDropdown = [
-    {
-      "text": "<i class=\"fa fa-list\"></i>&nbsp;Übersicht",
-      "click": "goToState('layout.administration')"
-    },
-    {
-      "text": "<i class=\"fa fa-users\"></i>&nbsp;Benutzer",
-      "click": "goToState('layout.users')"
-    },
-    {
-      "text": "<i class=\"fa fa-sign-out\"></i>&nbsp;Abmelden",
-      "click": "$root.logout()"
-    }
-  ];
-
-  $scope.goToState = function (to, params, options) {
-    $state.go(to, params, options)
-  }
+  $scope.goToState = $state.go;
 
 });

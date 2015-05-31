@@ -164,18 +164,6 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
       'Inhalt konnte nicht gespeichert werden'
     ];
     content.page = page;
-    // $sailsSocket.put("/content/replace", content, function (response) {
-    //   if(response != null && typeof(response) !== "undefined") {
-    //     $log.debug (response);
-    //     if(cb) cb(null, response);
-    //   } else {
-    //     $log.error(errors[0]);
-    //     if(cb) cb(errors[0]);
-    //   }
-    // }, function error (resp){
-    //   $log.error(resp);
-    // });
-
     fix(content, function(err, content) {
       if(err) {
         if(cb) cb(err);

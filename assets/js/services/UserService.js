@@ -9,7 +9,7 @@ jumplink.cms.service('UserService', function ($rootScope, $sailsSocket, $log) {
         $log.debug(data, status, headers, config);
         if(angular.isDefined(data.password))
           delete data.password;
-        callback(data, status, headers, config)
+        callback(null, data, status, headers, config)
       });
     } else {
       // create user
@@ -18,7 +18,7 @@ jumplink.cms.service('UserService', function ($rootScope, $sailsSocket, $log) {
         $log.debug(data, status, headers, config);
         if(angular.isDefined(data.password))
           delete data.password;
-        callback(data, status, headers, config)
+        callback(null, data, status, headers, config)
       });
     }
   }

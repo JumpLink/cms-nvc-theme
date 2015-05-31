@@ -30,6 +30,7 @@ TODO
     * An neues dynamisches Subnavigation-System angepasst
     * Neue Rubrik "Aktuelles"
       * Zeigt die bevorstehenden Veranstaltungen an inkl. direkter Verlinkung
+      * Einleitungstext kann bearbeitet werden
   * Gallery
     * Probleme beim Upload von Bildern behoben
       * https://github.com/JumpLink/cms/commit/4c2093f4fb355202c4f2b5de6e4a43ce38d6bc52

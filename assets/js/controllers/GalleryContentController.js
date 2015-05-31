@@ -1,8 +1,9 @@
-jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, Fullscreen, $sailsSocket, $stateParams, images, contents, navs, config, FileUploader, $modal, $log, $location, $state, SortableService) {
+jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, $state, Fullscreen, $sailsSocket, $stateParams, images, contents, navs, config, FileUploader, $modal, $log, $location, $state, SortableService, GalleryService) {
   $scope.images = images;
   $scope.config = config;
   $scope.contents = contents;
   $scope.navs = navs;
+  var page = $state.current.name;
   // $log.debug(images[0]);
   $scope.uploader = new FileUploader({url: 'gallery/upload', removeAfterUpload: true});
   $scope.uploader.filters.push({
@@ -139,7 +140,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
       if(data != null && typeof(data) !== "undefined") {
         $log.debug (data);
       } else {
-        $log.debug ("Can't save image");
+        $log.error ("Can't save image");
       }
     });
   }
@@ -147,11 +148,24 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
   $scope.save = function(image) {
     if($rootScope.authenticated) {
       if(angular.isUndefined(image)) {  // save all image
-        angular.forEach($scope.images, function(image, index) {
-          saveImage(image);
+        GalleryService.saveAll($scope.images, page, 'test', function (err, images) {
+          if(err) {
+            $log.error (err, images);
+            $rootScope.pop('error', err, images);
+          } else {
+            $rootScope.pop('success', 'Bilder wurden aktualisiert', '');
+          }
+
         });
       } else { // save just this member
-        saveImage(image);
+        GalleryService.saveOne(image, page, contentname, function (err, image) {
+          if(err) {
+            $log.error (err, image);
+            $rootScope.pop('error', err, image);
+          } else {
+            $rootScope.pop('success', 'Bild wurde aktualisiert', '');
+          }
+        });
       }
     }
   }
@@ -184,21 +198,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
   };
 
   // image is set in ng-repeat, this is working :)
-  $scope.dropdown = [
-    {
-      "text": "<i class=\"fa fa-edit\"></i>&nbsp;Bearbeiten",
-      "click": "edit(image)"
-    },
-    {
-      "text": "<i class=\"fa fa-trash\"></i>&nbsp;Löschen",
-      "click": "$dropdown.hide();$dropdown.destroy();remove(image);" // TODO delay
-    },
-    {
-      "text": "<i class=\"fa fa-floppy-o\"></i>&nbsp;Speichern",
-      "click": "save(image)"
-    }
-  ];
-
+  $scope.dropdown = GalleryService.getDropdown();
 
   /* ==== Drag and Drop Stuff ==== */
   $scope.onDragOnImageComplete = function(index, image, evt) {

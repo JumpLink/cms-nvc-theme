@@ -447,10 +447,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   })
   .state('layout.new-user', {
     url: '/new/user'
+    , resolve:{
+      user: function() {
+        return {
+
+        };
+      }
+    }
     , views: {
       'content' : {
         templateUrl: 'administration/user'
-        , controller: 'UserNewController'
+        , controller: 'UserController'
       }
       , 'toolbar' : {
         templateUrl: 'toolbar'

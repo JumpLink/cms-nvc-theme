@@ -1,14 +1,6 @@
 jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $window, contents, navs, events, news, $state, $log, $modal, HistoryService, ContentService, SubnavigationService, SortableService) {
   var page = $state.current.name;
   $scope.contents = contents;
-
-  // for (var i = contents.length - 1; i >= 0; i--) {
-  //   if(contents[i].name === 'news') {
-  //     $scope.news = contents[i];
-  //     $scope.contents.splice(i, 1); // remove news from contents array
-  //   }
-  // };
-
   $scope.news = news;
   $scope.navs = navs; // for left navigation with affix, scrollspy and anchor
   $scope.events = events;
