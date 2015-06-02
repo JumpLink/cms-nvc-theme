@@ -3,7 +3,7 @@ jumplink.cms.directive('adminbar', function ($compile, $window, $sailsSocket, $s
   return {
     restrict: 'E',
     templateUrl: 'adminbar',
-    scope: {download : "=", refresh: "=", toogleHtml: "=", refresh: "=", save: "="},
+    scope: {download : "=", refresh: "=", toogleHtml: "=", refresh: "=", save: "=", add: "=", addDropdown: "=", addDropdownActions: "="},
     link: function ($scope, $element, $attrs) {
 
       $scope.goToState = $state.go;

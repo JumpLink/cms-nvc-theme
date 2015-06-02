@@ -62,4 +62,4 @@
       span.form-control-feedback(ng-show="form.PasswordCompare.$error.match", title="Die Passwörter stimmen nicht überein."): i.fa.fa-exclamation-triangle
       span.form-control-feedback(ng-show="form.password.$error.minlength", title="Das Passwort muss mindestens 6 Zeichen lang sein."): i.fa.fa-exclamation-triangle
     button.btn.btn-primary(type="submit", ng-disabled="form.$invalid") Speichern
-adminbar
+adminbar(data-add="add", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")

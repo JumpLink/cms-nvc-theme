@@ -43,4 +43,4 @@
         ul.list-group
           li.list-group-item(ng-repeat="event in events.after | orderBy:'from'")
             a(ng-href="#/events\#{{event.name}}") {{event.title}}
-adminbar(data-add="add", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")
+adminbar(data-add="addContent", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")

@@ -18,7 +18,7 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
     $scope.html = ContentService.toogleShowHtml($scope.contents);
   }
 
-  $scope.add = function() {
+  $scope.addContent = function() {
     if($rootScope.authenticated) {
       ContentService.add($scope.contents, page, function(err, content) {
         if(err) $log.error("Error: On add content!", err);
@@ -29,9 +29,9 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
 
   $scope.addNav = function() {
     if($rootScope.authenticated) {
-      SubnavigationService.add($scope.navs, {page:page}, function(err, content) {
-        if(err) $log.error("Error: On add content!", err);
-        $log.debug("add done!", content);
+      SubnavigationService.add($scope.navs, {page:page}, function(err, navs) {
+        if(err) $log.error("Error: On add navs!", err);
+        $log.debug("add navs done!", navs);
       });
     }
   }
@@ -83,9 +83,12 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
   $scope.remove = function(index, content) {
     if($rootScope.authenticated) {
       ContentService.remove($scope.contents, index, content, page, function (err, contents) {
-        if(err) $log.error("Error: On remove content!", err);
+        if(err) {
+          $log.error("Error: On remove content!", err);
+          $rootScope.pop('error', 'Inhaltsblock konnte nicht entfernt werden', "");
+        }
         else{
-          $log.debug("remove done!");
+          $rootScope.pop('success', 'Inhaltsblock wurde entfernt', "");
           $scope.contents = contents;
         }
       });

@@ -33,22 +33,21 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
   };
 
   var add = function(navs, data, cb) {
-    var new_index = navs.length;
-    if(!data || !data.position) data.position = navs[new_index-1].position+1;
+
     if(!data || !data.target) data.target = "";
     if(!data || !data.name) data.name = "";
     if(!data || !data.page) cb("Page not set.")
 
-    navs.push({
-      position: data.position,
-      target: data.target,
-      name: data.name,
-      page: data.page
-    });
+    $log.debug("data", data);
 
-    if(cb) cb(null, navs);
-    else return navs;
+    SortableService.add(navs, data, function (err, navs, new_index) {
+      if(err) cb (err);
+      else {
+        edit(navs, cb);
+      }
+    });
   };
+
 
   var swap = function(navs, index_1, index_2, cb) {
     return SortableService.swap(contents, index_1, index_2, cb);
@@ -89,7 +88,11 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
       $log.debug("remove from server, too" ,nav);
       $sailsSocket.delete('/navigation/'+nav.id+"?page="+page, {id:nav.id, page: page}).success(function(data, status, headers, config) {
         if(cb) cb(null, navs)
-      });
+      }).
+      error(function(data, status, headers, config) {
+        $log.error (errors[0], data);
+        if(cb) cb(data);
+      });;
     }
   };
 

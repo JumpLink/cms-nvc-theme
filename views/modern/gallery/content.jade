@@ -10,11 +10,11 @@
       h1.page-header Galerie
       div(ng-repeat="content in contents | orderBy:'position'")
         p.btn-group.pull-right(ng-if="authenticated")
-          button.btn.btn-warning(ng-click="moveBackward($index, content)", ng-disabled="$index <= 0", title="Block nach oben verschieben"): i.fa.fa-backward.fa-rotate-90
-          button.btn.btn-danger(ng-click="remove($index, content)", title="Block löschen"): i.fa.fa-trash
-          button.btn.btn-warning(ng-click="edit($index, content)", title="Block bearbeiten"): i.fa.fa-edit
+          button.btn.btn-warning(ng-click="moveBackwardContent($index, content)", ng-disabled="$index <= 0", title="Block nach oben verschieben"): i.fa.fa-backward.fa-rotate-90
+          button.btn.btn-danger(ng-click="removeContent($index, content)", title="Block löschen"): i.fa.fa-trash
+          button.btn.btn-warning(ng-click="editContent($index, content)", title="Block bearbeiten"): i.fa.fa-edit
           //- button.btn.btn-primary(ng-click="save($index, content)", title="Speichern"): i.fa.fa-floppy-o
-          button.btn.btn-warning(ng-click="moveForward($index, content)", ng-disabled="$index >= contents.length - 1", title="Block nach unten verschieben"): i.fa.fa-forward.fa-rotate-90
+          button.btn.btn-warning(ng-click="moveForwardContent($index, content)", ng-disabled="$index >= contents.length - 1", title="Block nach unten verschieben"): i.fa.fa-forward.fa-rotate-90
         h2.page-header(ng-if="$root.authenticated", id="{{content.name}}", medium-editor, ng-model="content.title", options='{"placeholder": "Titel eingeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
         h2.page-header(ng-if="!$root.authenticated", id="{{content.name}}", ng-bind-html="content.title")
         div(ng-show="html && $root.authenticated", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}", ng-model="content.content")
@@ -28,5 +28,4 @@
         div(ng-if="!$root.authenticated", style="display:inline-block;")
           .pull-left(ng-repeat="image in images", style="height:100px;width:100px;padding:2px")
             img.img-responsive(ng-src="/{{config.paths.gallery}}/{{image.thumb.name}}", ui-sref="layout.gallery-fullscreen({id:image.id})")
-
-adminbar(data-add="add", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")
+adminbar(data-add-dropdown="addDropdown", add-dropdown-actions="addDropdownActions", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")

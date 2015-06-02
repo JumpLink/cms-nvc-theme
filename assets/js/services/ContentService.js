@@ -54,16 +54,20 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
   }
 
   var add = function(contents, page, cb) {
-    var new_index = contents.length;
-    contents.push({
-      position: contents[new_index-1].position+1,
+    var data = {
       content: "",
       title: "",
       name: "",
       type: "dynamic",
       page: page
+    };
+
+    SortableService.add(contents, data, function (err, contents, new_index) {
+      if(err) cb (err);
+      else {
+        edit(contents[new_index], cb);
+      }
     });
-    edit(contents[new_index], cb);
   }
 
   var swap = function(contents, index_1, index_2, cb) {
@@ -113,6 +117,8 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
         $log.error (errors[0], data);
         if(cb) cb(data);
       });
+    } else {
+      if(cb) cb(null, contents);
     }
   }
 

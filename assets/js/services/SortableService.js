@@ -45,6 +45,28 @@ jumplink.cms.service('SortableService', function ($rootScope, $window, $log, $sa
     else return objects;
   }
 
+  var add = function(objects, data, cb) {
+    var new_index = objects.length;
+    var new_position = 0;
+    var new_object;
+
+    if(new_index >= 1) {
+      new_position = objects[new_index-1].position+1
+    }
+
+    new_object = {
+      position: new_position,
+    }
+    angular.extend(new_object, data);
+    $log.debug("new_object", new_object);
+    // $log.debug("old objects", objects);
+    objects.push(new_object);
+    // $log.debug("new objects", objects);
+
+    if(cb) cb(null, objects, new_index);
+    else return objects;
+  }
+
   // var onDragComplete = function(index, object, event, onClick) {
   //   if(object == null) {
   //     $log.debug("*click*", index);
@@ -72,6 +94,7 @@ jumplink.cms.service('SortableService', function ($rootScope, $window, $log, $sa
     moveForward: moveForward,
     moveBackward: moveBackward,
     remove: remove,
+    add: add,
     // onDragComplete: onDragComplete,
     onDropComplete: onDropComplete,
     // onDropOnAreaComplete: onDropOnAreaComplete
