@@ -40,7 +40,9 @@
           div(ng-show="html && authenticated", ng-model="news.content", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}")
           div(ng-show="authenticated", medium-editor, ng-model="news.content", options='{"placeholder": "Optionale News hier eingeben", "buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
           div(ng-bind-html="news.content", ng-hide="authenticated")
-        ul.list-group
+          div(ng-if="events.after.length <= 0")
+            | Keine bevorstehenden Veranstaltungen
+        ul.list-group(ng-if="events.after.length > 0")
           li.list-group-item(ng-repeat="event in events.after | orderBy:'from'")
             a(ng-href="#/events\#{{event.name}}") {{event.title}}
 adminbar(data-add="addContent", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")

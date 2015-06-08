@@ -23,8 +23,11 @@ block body
             h3.panel-title.text-center Aktuelles
           .panel-body
             div!= news.content
-          ul.list-group
-            each event in events.after
-              li.list-group-item
-                a(href= force != null ? '/fallback/events?force='+force+"\##{event.name}" : '/fallback/events\##{event.name}') #{event.title}
+            if events.after.length <= 0
+              | Keine bevorstehenden Veranstaltungen
+            else
+              ul.list-group
+                each event in events.after
+                  li.list-group-item
+                    a(href= force != null ? '/fallback/events?force='+force+"\##{event.name}" : '/fallback/events\##{event.name}') #{event.title}
   include ../footer.jade
