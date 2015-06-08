@@ -19,10 +19,29 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
   }
 
   $scope.addContent = function() {
+    var errors = [
+      "Error: Konnte Inhaltsblock nicht erzeugen",
+      "Error: Konnte Inhaltsblock nicht hinzufügen",
+    ];
     if($rootScope.authenticated) {
-      ContentService.add($scope.contents, page, function(err, content) {
-        if(err) $log.error("Error: On add content!", err);
-        $log.debug("add done!", content);
+      ContentService.createEdit($scope.contents, page, function(err, content) {
+        if(err) {
+          $log.error(errors[0], err);
+          $rootScope.pop('error', errors[0], err);
+          $scope.$apply();
+        } else {
+          ContentService.append($scope.contents, content, function (err, contents) {
+            if(err) {
+              $log.error(errors[1], err);
+              $rootScope.pop('error', errors[1], err);
+              $scope.$apply();
+            } else {
+              $scope.contents = contents;
+              $rootScope.pop('success', 'Neuer Inhaltsblock wurde hinzugefügt', content.title);
+              $scope.$apply();
+            }
+          });  
+        }
       });
     }
   }

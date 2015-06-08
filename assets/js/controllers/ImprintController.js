@@ -1,23 +1,6 @@
 jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sailsSocket, imprint, navs, $location, $anchorScroll, $state, $log) {
   var page = $state.current.name;
   $scope.imprint = imprint;
-  // $scope.navs = [
-  //   {
-  //     "target": "imprint",
-  //     "name": "Impressum",
-  //     "page": page,
-  //   },
-  //   {
-  //     "target": "contact",
-  //     "name": "Kontakt",
-  //     "page": page,
-  //   },
-  //   {
-  //     "target": "approach",
-  //     "name": "Anfahrt",
-  //     "page": page,
-  //   }
-  // ]
   $scope.navs = navs;
 
   $scope.email = {

@@ -151,20 +151,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('layout.gallery', {
     url: '/gallery'
     , resolve:{
-      images: function($sailsSocket, $filter, $log) {
-        return $sailsSocket.get('/gallery?limit=0').then (function (data) {
-          return $filter('orderBy')(data.data, 'position');
-        }, function error (resp){
-          $log.error(resp);
-        });
-      },
+      // images: function(GalleryService) {
+      //   var statename = 'layout.gallery';
+      //   return GalleryService.resolve(statename, 'test');
+      // },
       navs: function(SubnavigationService) {
         var statename = 'layout.gallery';
         return SubnavigationService.resolve(statename);
       },
-      contents: function(ContentService) {
+      contents_images: function(ContentService) {
         var statename = 'layout.gallery';
-        return ContentService.resolveAll(statename);
+        return ContentService.resolveAllWithImage(statename);
       },
       config: function(ConfigService) {
         var statename = 'layout.gallery';

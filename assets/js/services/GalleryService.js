@@ -1,4 +1,4 @@
-jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $async, Fullscreen, SortableService, FileUploader, $modal, $log) {
+jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $async, $filter, Fullscreen, SortableService, FileUploader, $modal, $log) {
 
   var editModal = null, uploadModal = null, fullscreenImage = null;
 
@@ -19,16 +19,16 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
 
   var getDropdown = function () {
     return dropdown;
-  }
+  };
 
   var setEditModal = function($scope) {
     editModal = $modal({scope: $scope, title: 'Bild bearbeiten', template: 'gallery/editimagemodal', show: false});
     return getEditModal();
-  }
+  };
 
   var getEditModal = function() {
     return editModal;
-  }
+  };
 
   var setUploadModal = function($scope, images, cb) {
 
@@ -64,11 +64,11 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
 
     uploadModal = $modal({scope: $scope, title: 'Bilder hinzufügen', uploader: $scope.uploader, template: 'gallery/uploadimagesmodal', show: false});
     return getUploadModal();
-  }
+  };
 
   var getUploadModal = function() {
     return uploadModal;
-  }
+  };
 
   var fix = function(image, page, contentname, cb) {
     if(!image.page || image.page === "") {
@@ -81,7 +81,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
 
     if(cb) cb(null, image);
     else return image;
-  }
+  };
 
   // var setFullScreen = function(image) {
   //   // http://stackoverflow.com/questions/21702375/angularjs-ng-click-over-ng-click
@@ -124,14 +124,14 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
       $log.error (errors[0], data);
       if(cb) cb(errors[0], data);
     });
-  }
+  };
 
   var saveAll = function(images, page, contentname, cb) {
     $async.map(images,
     function iterator(image, cb) {
       saveOne(image, page, contentname, cb);
     }, cb);
-  }
+  };
 
   var remove = function(images, index, image, page, cb) {
     if(typeof(index) === 'undefined' || index === null) {
@@ -161,6 +161,13 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
       $log.debug("upload modal closed");
       if(cb) cb();
     });
+  };
+
+  // Images for Content
+  var addBlock = function(imageBlocks, content, cb) {
+    imageBlocks[content.name] = [];
+    if(cb) cb(null, imageBlocks[content.name]);
+    else return imageBlocks[content.name];
   }
 
   var edit = function(image, cb) {
@@ -173,7 +180,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
       $log.debug("edit closed");
       if(cb) cb(null, editModal.$scope.image);
     });
-  }
+  };
 
   var aspect = function (image, width)  {
     var height, scale, aspectRatio, win, paddingTopBottom = 0, paddingLeftRight = 0;
@@ -200,7 +207,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
       height =  image.original.height / scale;
       return {width: width+'px', height: height+'px'};
     }
-  }
+  };
 
   var subscribe = function () {
     $sailsSocket.subscribe('gallery', function(msg) {
@@ -234,7 +241,17 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
         break;
       }
     });
-  } 
+  };
+
+  var resolve = function(page, content) {
+    var url = '/gallery?limit=0&page='+page;
+    if(content) url = url+'&content='+content;
+    return $sailsSocket.get(url).then (function (data) {
+      return $filter('orderBy')(data.data, 'position');
+    }, function error (resp) {
+      $log.error(resp);
+    });
+  };
 
   return {
     getDropdown: getDropdown,
@@ -246,8 +263,10 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
     saveAll: saveAll,
     remove: remove,
     add: add,
+    addBlock: addBlock,
     edit: edit,
     aspect: aspect,
-    subscribe: subscribe
+    subscribe: subscribe,
+    resolve: resolve
   };
 });

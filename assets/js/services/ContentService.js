@@ -8,7 +8,23 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
   }
 
   var setEditModal = function($scope) {
-    editModal = $modal({scope: $scope, title: 'Inhalt bearbeiten', template: 'editcontentmodal', show: false});
+    editModal = $modal({title: 'Inhaltsblock bearbeiten', template: 'contentmodal', show: false});
+    editModal.$scope.ok = false;
+
+    editModal.$scope.$watch('content.title', function(newValue, oldValue) {
+      // $log.debug("Content in Content Modal changed!", "new", newValue, "old", oldValue);
+      if(angular.isDefined(editModal.$scope.content)) editModal.$scope.content.name = generateName(newValue);
+    });
+
+    editModal.$scope.$on('modal.hide',function(event, editModal) {
+      $log.debug("edit closed", event, editModal);
+      if(editModal.$scope.ok) {
+        return validateContent(editModal.$scope.content, editModal.$scope.callback);
+      } else {
+        if(editModal.$scope.callback) editModal.$scope.callback("discarded", editModal.$scope.content);
+      }
+    });
+
     return getEditModal();
   }
 
@@ -53,7 +69,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     else return contents;
   }
 
-  var add = function(contents, page, cb) {
+  var create = function(page) {
     var data = {
       content: "",
       title: "",
@@ -61,13 +77,16 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
       type: "dynamic",
       page: page
     };
+    return data;
+  }
 
-    SortableService.add(contents, data, function (err, contents, new_index) {
-      if(err) cb (err);
-      else {
-        edit(contents[new_index], cb);
-      }
-    });
+  var append = function(contents, content, cb) {
+    SortableService.append(contents, content, cb, true, 'name');
+  }
+
+  var createEdit = function(contents, page, cb) {
+    var data = create(page);
+    edit(data, cb);
   }
 
   var swap = function(contents, index_1, index_2, cb) {
@@ -82,16 +101,21 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     return SortableService.moveBackward(index, contents, cb);
   }
 
+  var validateContent = function (content, cb) {
+    if(content.title) {
+      return fix(content, cb)
+    } else {
+      if(cb) cb("Title not set", content);
+      else return null;
+    }
+  }
+
   var edit = function(content, cb) {
     $log.debug("edit", content);
     editModal.$scope.content = content;
+    editModal.$scope.callback = cb;
     //- Show when some event occurs (use $promise property to ensure the template has been loaded)
     editModal.$promise.then(editModal.show);
-
-    editModal.$scope.$on('modal.hide',function(){
-      $log.debug("edit closed");
-      if(cb) cb(null, editModal.$scope.content);
-    });
   }
 
   var removeFromClient = function (contents, index, content, cb) {
@@ -142,12 +166,21 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     });
   }
 
-  var fix = function(content, cb) {
-    if(!content.name || content.name === "") {
+  var generateName = function (title) {
+    if(title && title !== "") {
       // Set content.name to content.title but only the letters in lower case
-      content.name = content.title.toLowerCase().replace(/[^a-z]+/g, '');
-      $log.debug("set content.name to", content.name);
+      var name = title.toLowerCase().replace(/[^a-z1-9]+/g, '');
+      $log.debug("set content.name to", name);
+    } else {
+      var name = "";
     }
+
+    return name;
+  }
+
+  var fix = function(content, cb) {
+
+    if(angular.isDefined(content)) content.name = generateName(content.title);
 
     if(!content.type || content.type === "") {
       content.type = 'fix';
@@ -223,7 +256,11 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     });
   }
 
-  var resolveOne = function(page, name, type) {
+  var resolveOne = function(page, name, type, cb, next) {
+    var errors = [
+      "Error: On trying to resolve one with page: "+page+", name: "+name,
+      "request has more than one results"
+    ];
     var query = {
       page: page,
       name: name
@@ -239,17 +276,26 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
       } else {
         if (data.data instanceof Array) {
           data.data = data.data[0];
-          $log.error("request has more than one results");
+          $log.error(errors[1]);
         }
-        data.data.content = html_beautify(data.data.content);
-        return data.data;
+        // data.data.content = html_beautify(data.data.content);
+        if(next) data.data = next(data.data);
+
+        if(cb) cb(null, data.data);
+        else return data.data;
       }
     }, function error (resp){
-      $log.error(resp);
+      $log.error(errors[0], resp);
+      if(cb) cb(errors[0], resp);
+      else return resp;
     });
   };
 
-  var resolveAll = function(page, type) {
+  var resolveAll = function(page, type, cb, next) {
+    var errors = [
+      "Error: On trying to resolve all with page: "+page+" and type: "+type,
+      "Warn: On trying to resolve all "+page+" contents! Not found, content is empty!"
+    ];
     var query = {
       page: page,
     };
@@ -260,29 +306,79 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     }
     return $sailsSocket.get(url, query).then (function (data) {
       if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
-        $log.warn("Warn: On trying to resolve layout.home navs!", "Not found, navigation is empty!");
+        $log.warn(errors[1]);
         return null;
       }
       // data.data.content = html_beautify(data.data.content);
       data.data = $filter('orderBy')(data.data, 'position');
-      $log.debug(data);
-      return data.data;
+      // $log.debug(data);
+      if(next) data.data = next(data.data);
+
+      if(cb) {
+        cb(null, data.data);
+      } else {
+        return data.data;
+      }
     }, function error (resp){
-      $log.error("Error: On trying to resolve layout.home about!", resp);
+      $log.error(errors[0], resp);
+      if(cb) cb(errors[0], resp);
+      else return resp;
+    });
+  };
+
+  /*
+   * get all contents for page including images for each content.name 
+   */
+  var resolveAllWithImage = function(page, type, cb, next) {
+    $log.debug("resolveAllWithImage");
+    var errors = [
+      "Error: On trying to resolve all with page: "+page+" and type: "+type,
+      "Warn: On trying to resolve all "+page+" contents! Not found, content is empty!"
+    ];
+    var query = {
+      page: page,
+    };
+    var url = '/content/findAllWithImage?page='+page;
+    if(type) {
+      query.type = type;
+      url = url+'&type='+type;
+    }
+    return $sailsSocket.get(url, query).then (function (data) {
+      if(angular.isUndefined(data) || angular.isUndefined(data.data)) {
+        $log.warn(errors[1]);
+        return null;
+      }
+      // data.data.content = html_beautify(data.data.content);
+      data.data.contents = $filter('orderBy')(data.data.contents, 'position');
+      data.data.images = $filter('orderBy')(data.data.images, 'position');
+      // $log.debug(data);
+      if(next) data.data = next(data.data);
+
+      if(cb) {
+        cb(null, data.data);
+      } else {
+        return data.data;
+      }
+    }, function error (resp){
+      $log.error(errors[0], resp);
+      if(cb) cb(errors[0], resp);
+      else return resp;
     });
   };
 
   /**
    * Resolve function for angular ui-router.
-   * name parameter is optional
+   * name, cb and next parameters are optional.
+   * use next to transform the result before you get it back
+   * use cb if you want not use promise
    */
-  var resolve = function(page, name, type) {
+  var resolve = function(page, name, type, cb, next) {
     //- get soecial content (one)
     if(angular.isDefined(name)) {
-      return resolveOne(page, name, type);
+      return resolveOne(page, name, type, next);
     // get all for page
     } else {
-      return resolveAll(page, type);
+      return resolveAll(page, type, cb, next);
     }
   };
 
@@ -293,7 +389,9 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     toogleShowHtml: toogleShowHtml,
     beautify: beautify,
     beautifyEach: beautifyEach,
-    add: add,
+    create: create,
+    createEdit: createEdit,
+    append: append,
     swap: swap,
     moveForward: moveForward,
     moveBackward: moveBackward,
@@ -307,6 +405,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     saveOne: saveOne,
     resolve: resolve,
     resolveAll: resolveAll,
-    resolveOne: resolveOne
+    resolveOne: resolveOne,
+    resolveAllWithImage: resolveAllWithImage
   };
 });
