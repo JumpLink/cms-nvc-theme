@@ -4,6 +4,10 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
 
   var dropdown = [
     {
+      "text": "<i class=\"fa fa-eye\"></i>&nbsp;Anzeigen",
+      "click": "goToImage(image)"
+    },
+    {
       "text": "<i class=\"fa fa-edit\"></i>&nbsp;Bearbeiten",
       "click": "editImage(image)"
     },
@@ -13,7 +17,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
     },
     {
       "text": "<i class=\"fa fa-floppy-o\"></i>&nbsp;Speichern",
-      "click": "save(image)"
+      "click": "saveImage(image)"
     }
   ];
 
@@ -126,6 +130,21 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
     });
   };
 
+  var saveAllBlocks = function(imageBlocks, page, cb) {
+    var blockNames = Object.keys(imageBlocks);
+    $log.debug("saveAllBlocks","blockNames" , blockNames);
+
+    $async.map(blockNames,
+    function iterator(contentname, cb) {
+      saveAll(imageBlocks[contentname], page, contentname, cb);
+    }, cb);
+
+    // $async.map(images,
+    // function iterator(image, cb) {
+    //   saveOne(image, page, contentname, cb);
+    // }, cb);
+  };
+
   var saveAll = function(images, page, contentname, cb) {
     $async.map(images,
     function iterator(image, cb) {
@@ -216,7 +235,8 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
       switch(msg.verb) {
         case 'updated':
           if($rootScope.authenticated)
-            $rootScope.pop('success', 'Ein Bild wurde aktualisiert', msg.data.original.name);
+            $log.debug('success', 'Ein Bild wurde aktualisiert', msg.data.original.name);
+            // $rootScope.pop('success', 'Ein Bild wurde aktualisiert', msg.data.original.name);
         break;
         case 'created':
           // TODO not broadcast / fired why?!
@@ -261,6 +281,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
     getUploadModal: getUploadModal,
     saveOne: saveOne,
     saveAll: saveAll,
+    saveAllBlocks: saveAllBlocks,
     remove: remove,
     add: add,
     addBlock: addBlock,

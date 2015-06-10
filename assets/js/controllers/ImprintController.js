@@ -41,6 +41,10 @@ jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sails
 
   $scope.sendMail = function() {
 
+    var cc = $scope.email.from;
+    var target = 'pascal@jumplink.eu';
+    var from = $scope.email.from;
+
     var html = ''
     +'<dl>'
       +'<dt>Absender</dt>'
@@ -53,7 +57,7 @@ jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sails
 
     var text = String(html).replace(/<[^>]+>/gm, '');
 
-    $sailsSocket.post('/email/send', {from: $scope.email.from, to: $scope.email.from+',nvcux@t-online.de', subject:'Kontaktanfrage von '+$scope.email.name+': '+$scope.email.subject, text: text, html: html}).success(function(data, status, headers, config){
+    $sailsSocket.post('/email/send', {from: $scope.email.from, to: target+','+cc, subject:'Kontaktanfrage von '+$scope.email.name+': '+$scope.email.subject, text: text, html: html}).success(function(data, status, headers, config){
       if(!$rootScope.authenticated) {
         $rootScope.pop('success', 'E-Mail wurde versendet.');
       }

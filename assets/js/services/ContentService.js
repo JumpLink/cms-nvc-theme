@@ -180,13 +180,19 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
 
   var fix = function(content, cb) {
 
-    if(angular.isDefined(content)) content.name = generateName(content.title);
+    if(angular.isDefined(content)) {
+      content.name = generateName(content.title);
 
-    if(!content.type || content.type === "") {
-      content.type = 'fix';
+      if(!content.type || content.type === "") {
+        $log.warn("Fix content type not set, set it to dynamic");
+        content.type = 'dynamic';
+      }
+    } else {
+       if(cb) return cb("content not set");
+       return null;
     }
 
-    if(cb) cb(null, content);
+    if(cb) return cb(null, content);
     else return content;
   }
 
@@ -336,7 +342,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
       "Warn: On trying to resolve all "+page+" contents! Not found, content is empty!"
     ];
     var query = {
-      page: page,
+      page: page
     };
     var url = '/content/findAllWithImage?page='+page;
     if(type) {

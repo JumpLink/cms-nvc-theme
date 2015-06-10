@@ -6,6 +6,8 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
   $scope.html = ContentService.getShowHtml();
   $scope.dropdown = GalleryService.getDropdown();
 
+  console.log($scope.contents);
+
   var page = $state.current.name;
 
   GalleryService.setEditModal($scope);
@@ -135,21 +137,10 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     }
   };
 
-
-  $scope.save = function(image) {
+  $scope.saveImage = function(image) {
     var contentname = 'test';
     if($rootScope.authenticated) {
-      if(angular.isUndefined(image)) {  // save all image
-        GalleryService.saveAll($scope.images, page, contentname, function (err, images) {
-          if(err) {
-            $log.error (err, images);
-            $rootScope.pop('error', err, images);
-          } else {
-            $rootScope.pop('success', 'Bilder wurden aktualisiert', '');
-          }
-
-        });
-      } else { // save just this member
+      if(angular.isDefined(image)) {  
         GalleryService.saveOne(image, page, contentname, function (err, image) {
           if(err) {
             $log.error (err, image);
@@ -162,17 +153,47 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     }
   };
 
+
+  $scope.save = function() {
+    var contentname = 'test';
+    if($rootScope.authenticated) {
+      GalleryService.saveAllBlocks($scope.images, page, function (err, images) {
+        if(err) {
+          $log.error (err, images);
+          $rootScope.pop('error', err, images);
+        } else {
+          $log.debug ("Bilder wurden aktualisiert", images);
+          $rootScope.pop('success', 'Bilder wurden aktualisiert', '');
+          ContentService.save($scope.contents, page, function(err, contents) {
+            if(err) {
+              $log.error("Error: On save content!", err);
+              if(cb) return cb(err);
+              return err;
+            } else {
+              $log.debug ('Contentblocks wurden aktualisiert', contents);
+              $rootScope.pop('success', 'Contentblocks wurden aktualisiert', '');
+            }
+          });
+        }
+      });
+    }
+  };
+
   // http://stackoverflow.com/questions/21702375/angularjs-ng-click-over-ng-click
   $scope.stopPropagation = function (event) {
      event.stopPropagation();
   };
+
+  $scope.goToImage = function (image) {
+    $state.go('layout.gallery-fullscreen', {id:image.id});
+  }
 
   /* ==== Drag and Drop Stuff ==== */
   $scope.onDragOnImageComplete = function(index, image, evt, content) {
     if(image == null) {
       $log.debug("*click*", index);
       var image = $scope.images[content.name][index];
-      $state.go('layout.gallery-fullscreen', {id:image.id});
+      $scope.goToImage(image);
     }
   };
 
@@ -191,7 +212,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
     // var index = $scope.images[content.name].indexOf(image);
 
-    if(image.content != content.name) {
+    if(image !== null && image.content != content.name) {
       $log.debug("Move image from one content block to another:\n\t"+image.content+" => "+content.name);
       var content_from = image.content;
       var content_to = content.name;
@@ -199,7 +220,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
         if(err) $rootScope.pop('error', "Bild konnte nicht verschoben werden", err);
         else {
           result.array_to[result.index_to].content = content_to;
-          $rootScope.pop('success', "Bild erfolgreich verschoben", content_from+"`=> "+content_to);
+          $rootScope.pop('success', "Bild erfolgreich verschoben", content_from+" => "+content_to);
         }
         $scope.$apply();
       });

@@ -1,5 +1,12 @@
 jumplink.cms.service('SortableService', function ($log) {
 
+  var resetPosition = function (array) {
+    for (var i = array.length - 1; i >= 0; i--) {
+      array[i].position = i;
+    };
+    return array;
+  }
+
   /*
    * Swap two elements within the object array (called objects) and adjust the position
    */
@@ -33,6 +40,8 @@ jumplink.cms.service('SortableService', function ($log) {
         }
     }
     array.splice(new_index, 0, array.splice(old_index, 1)[0]);
+
+    array = resetPosition(array);
 
     if(cb) cb(null, array);
     else return array;
@@ -195,6 +204,7 @@ jumplink.cms.service('SortableService', function ($log) {
   // }
 
   return {
+    resetPosition: resetPosition,
     swap: swap,
     moveObjectToAnotherArray: moveObjectToAnotherArray,
     move: move,

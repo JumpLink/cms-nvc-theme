@@ -53,18 +53,35 @@ var fallbackEvents = function (req, res, next, force, showLegacyToast) {
 }
 
 var fallbackGallery = function (req, res, next, force, showLegacyToast) {
+  var page = 'layout.gallery';
+  var type = 'dynamic';
+
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
     if(err) { return res.serverError(err); }
-    var query = {
-      where: {
-        site: config.name
-      },
-      sort: 'position'
-    };
-    Gallery.find(query).exec(function found(err, results) {
-      images = results;
-      return ThemeService.view(req, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, images: images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}});
+    var site = config.name;
+    ContentService.resolveAllWithImage(page, site, type, function (err, contents_images) {
+      if(err) { return res.serverError(err); }
+      // sails.log.debug(contents_images);
+      Navigation.find({where:{page:page, site:config.name}, sort: 'position'}).exec(function found(err, navs) {
+        if(err) { return res.serverError(err); }
+        return ThemeService.view(req, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, contents: contents_images.contents, images: contents_images.images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}, navs: navs});
+      });
     });
+
+    // var query = {
+    //   where: {
+    //     site: config.name
+    //   },
+    //   sort: 'position'
+    // };
+
+    // Gallery.find(query).exec(function found(err, images) {
+    //   if(err) { return res.serverError(err); }
+    //   Navigation.find({where:{page:page, site:config.name}, sort: 'position'}).exec(function found(err, navs) {
+    //     if(err) { return res.serverError(err); }
+    //     return ThemeService.view(req, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, images: images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}, navs: navs});
+    //   });
+    // });
   });
 }
 

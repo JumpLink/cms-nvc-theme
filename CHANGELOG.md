@@ -56,3 +56,6 @@ TODO
 
 0.0.1
   * Initiale Version
+
+Bekannte Bugs
+ * Wenn ein Bild verschoben wurde, lässt es sich nicht mehr anklicken / öffnen
