@@ -83,6 +83,9 @@ module.exports = function(grunt) {
 
     //- ngDraggable: https://github.com/fatlinesofcode/ngDraggable
     'assets/third-party/ngDraggable/ngDraggable.js',
+
+    //-oh https://github.com/JumpLink/angular-toggle-switch
+    'assets/third-party/angular-bootstrap-toggle-switch/angular-toggle-switch.js',
   
     //- Bring in the socket.io client
     'assets/third-party/socket.io-client/socket.io.js',

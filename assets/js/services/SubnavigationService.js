@@ -32,7 +32,16 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     });
   };
 
-  var add = function(navs, data, cb) {
+  var create = function(page) {
+    var data = {
+      target: "",
+      name: "",
+      page: page
+    };
+    return data;
+  }
+
+  var append = function(navs, data, cb) {
 
     if(!data || !data.target) data.target = "";
     if(!data || !data.name) data.name = "";
@@ -40,12 +49,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
 
     $log.debug("data", data);
 
-    SortableService.add(navs, data, function (err, navs, new_index) {
-      if(err) cb (err);
-      else {
-        edit(navs, cb);
-      }
-    });
+    SortableService.append(navs, data, cb);
   };
 
 
@@ -152,7 +156,9 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     subscribe: subscribe,
     setEditModal: setEditModal,
     getEditModal: getEditModal,
-    add: add,
+    create: create,
+    append: append,
+    add: append,
     swap: swap,
     moveForward: moveForward,
     moveBackward: moveBackward,

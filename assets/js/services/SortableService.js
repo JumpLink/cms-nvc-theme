@@ -175,14 +175,6 @@ jumplink.cms.service('SortableService', function ($log) {
     return index;
   }
 
-  // var onDragComplete = function(index, object, event, onClick) {
-  //   if(object == null) {
-  //     $log.debug("*click*", index);
-  //     if(onClick) onClick();
-  //   }
-  //   $log.debug("onDragComplete, object:", object, "index", index);
-  // }
-
   /*
    * Function for Drag and Drop functionality.
    * Moves an moveable element with the moveFunction (e.g. to swap or insert the obkect).
@@ -198,11 +190,6 @@ jumplink.cms.service('SortableService', function ($log) {
     return moveFunction(objects, dragObjectIndex, dropObjectIndex, cb);
   }
 
-  // var onDropOnAreaComplete = function(objects, object, event) {
-  //   var index = objects.indexOf(image);
-  //   $log.debug("onDropOnAreaComplete, object:", object, "index", index);
-  // }
-
   return {
     resetPosition: resetPosition,
     swap: swap,
@@ -212,8 +199,6 @@ jumplink.cms.service('SortableService', function ($log) {
     moveBackward: moveBackward,
     remove: remove,
     append: append,
-    // onDragComplete: onDragComplete,
     dropMove: dropMove,
-    // onDropOnAreaComplete: onDropOnAreaComplete
   };
 });

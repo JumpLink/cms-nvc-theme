@@ -10,10 +10,11 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
   var setEditModal = function($scope) {
     editModal = $modal({title: 'Inhaltsblock bearbeiten', template: 'contentmodal', show: false});
     editModal.$scope.ok = false;
+    editModal.$scope.changeName = false;
 
     editModal.$scope.$watch('content.title', function(newValue, oldValue) {
       // $log.debug("Content in Content Modal changed!", "new", newValue, "old", oldValue);
-      if(angular.isDefined(editModal.$scope.content)) editModal.$scope.content.name = generateName(newValue);
+      if(editModal.$scope.changeName && angular.isDefined(editModal.$scope.content)) editModal.$scope.content.name = generateName(newValue);
     });
 
     editModal.$scope.$on('modal.hide',function(event, editModal) {
@@ -86,7 +87,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
 
   var createEdit = function(contents, page, cb) {
     var data = create(page);
-    edit(data, cb);
+    edit(data, cb, true);
   }
 
   var swap = function(contents, index_1, index_2, cb) {
@@ -110,10 +111,12 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     }
   }
 
-  var edit = function(content, cb) {
+  var edit = function(content, cb, changeName) {
     $log.debug("edit", content);
     editModal.$scope.content = content;
     editModal.$scope.callback = cb;
+    if(changeName) editModal.$scope.changeName = changeName;
+    else editModal.$scope.changeName = false;
     //- Show when some event occurs (use $promise property to ensure the template has been loaded)
     editModal.$promise.then(editModal.show);
   }
@@ -178,6 +181,9 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     return name;
   }
 
+  /*
+   * Validate and fix content to make it saveable
+   */
   var fix = function(content, cb) {
 
     if(angular.isDefined(content)) {
@@ -185,7 +191,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
 
       if(!content.type || content.type === "") {
         $log.warn("Fix content type not set, set it to dynamic");
-        content.type = 'dynamic';
+        content.type = 'fix';
       }
     } else {
        if(cb) return cb("content not set");
@@ -196,6 +202,9 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     else return content;
   }
 
+  /*
+   * Validate and fix all contents to make them saveable
+   */
   var fixEach = function(contents, cb) {
     for (var i = contents.length - 1; i >= 0; i--) {
       contents[i] = fix(contents[i]);

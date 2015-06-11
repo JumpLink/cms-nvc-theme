@@ -86,7 +86,11 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
   $scope.edit = function(index, content) {
     if($rootScope.authenticated) {
       ContentService.edit(content, function(err) {
-        if(err) $log.error("Error: On edit content!", err);
+        if(err) {
+          if(err === 'discarded') $log.warn("Edit content ", err);
+          else $log.error("Error: On edit content!", err);
+        }
+
       });
     }
   }
@@ -186,7 +190,7 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
   }
 
   $scope.onDropOnNavComplete = function(dropnavindex, dragnav, event) {
-    SortableService.onDropComplete($scope.navs, dropnavindex, dragnav, event, function(err, navs) {
+    SortableService.dropMove($scope.navs, dropnavindex, dragnav, event, function(err, navs) {
       $scope.navs = navs;
     });
   }
