@@ -1,4 +1,4 @@
-jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log, $sailsSocket, $filter, $modal, SortableService) {
+jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log, $sailsSocket, $filter, $modal, SortableService, UtilityService) {
 
   var editModal = null;
 
@@ -52,7 +52,6 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     SortableService.append(navs, data, cb);
   };
 
-
   var swap = function(navs, index_1, index_2, cb) {
     return SortableService.swap(contents, index_1, index_2, cb);
   };
@@ -83,9 +82,15 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
   };
 
   var remove = function(navs, index, nav, page, cb) {
-    if(typeof(index) === 'undefined' || index === null) {
+
+    if((angular.isUndefined(nav) || nav === null) && angular.isDefined(index)) {
+      nav = navs[index];
+    }
+
+    if(angular.isUndefined(index) || index === null) {
       index = navs.indexOf(nav);
     }
+
     navs = removeFromClient(navs, index, nav);
     // if nav has an id it is saved on database, if not, not
     if(nav.id) {
@@ -99,6 +104,18 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
       });;
     }
   };
+
+  var removeByTarget = function (navs, target, page, cb) {
+    $log.debug("remove subnavigation by target "+target);
+    var index = UtilityService.findKeyValue(navs, 'target', target);
+    if(index > -1) {
+      $log.debug("subnavigation found "+index);
+      remove(navs, index, null, page, cb);
+    } else {
+      if(cb) cb("Subnavigation not found");
+    }
+    
+  }
 
   var fix = function(fixed, object, index, cb) {
     console.log(object);
@@ -165,6 +182,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     edit: edit,
     removeFromClient: removeFromClient,
     remove: remove,
+    removeByTarget: removeByTarget,
     save: save,
     resolve: resolve
   };

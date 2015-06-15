@@ -209,7 +209,7 @@ i.fa.img-dropdown {
 @import "./../third-party/bootstrap/less/modals.less";
 @import "./../third-party/bootstrap/less/tooltip.less";
 @import "./../third-party/bootstrap/less/popovers.less";
-@import "./../third-party/bootstrap/less/carousel.less";
+//@import "./../third-party/bootstrap/less/carousel.less";
 
 // Utility classes
 @import "./../third-party/bootstrap/less/utilities.less";
@@ -240,19 +240,6 @@ ul[rn-carousel] {
   }
 }
 
-// .rn-carousel-indicator {
-//   margin-top: -19px;
-// }
-
-// // slider
-.center-slider {
-  height: 100%;
-  // center image: http://davidwalsh.name/css-vertical-center
-  .rn-carousel-container {
-    top: 50%;
-    transform: translateY(-50%);
-  }
-}
 .rn-carousel-control {
   &.rn-carousel-control-prev:before {
     color: white;
@@ -482,6 +469,7 @@ ul[rn-carousel] {
 body {
   padding-top: 70px;
   background-color: white;
+  width: 100% !important;
   &.home {
     // background-color: black;
   }

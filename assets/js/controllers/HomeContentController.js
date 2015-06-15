@@ -23,6 +23,13 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
       "Error: Konnte Inhaltsblock nicht erzeugen",
       "Error: Konnte Inhaltsblock nicht hinzufügen",
     ];
+
+    var successes = [
+      "Neuen Inhaltsblock erfolgreich hinzugefügt",
+      "Neue Subnavigation erfolgreich hinzugefügt",
+      "Neuen Block erfolgreich hinzugefügt",
+    ];
+
     if($rootScope.authenticated) {
       ContentService.createEdit($scope.contents, page, function(err, content) {
         if(err) {
@@ -36,9 +43,19 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
               $rootScope.pop('error', errors[1], err);
               $scope.$apply();
             } else {
-              $scope.contents = contents;
-              $rootScope.pop('success', 'Neuer Inhaltsblock wurde hinzugefügt', content.title);
+              // $scope.contents = contents;
+              // $rootScope.pop('success', successes[0], content.title);
               $scope.$apply();
+              SubnavigationService.append($scope.navs, {page:page, target: content.name, name: content.title}, function(err, navs) {
+                if(err) {
+                  $log.error(errors[2], err);
+                  $rootScope.pop('error', errors[2], err);
+                } else {
+                  // $scope.navs = navs;
+                  $rootScope.pop('success', successes[2], content.title);
+                  $scope.$apply();
+                }
+              });
             }
           });  
         }
@@ -112,7 +129,19 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
         }
         else{
           $rootScope.pop('success', 'Inhaltsblock wurde entfernt', "");
-          $scope.contents = contents;
+          // $scope.contents = contents;
+
+          SubnavigationService.removeByTarget($scope.navs, content.name, page, function (err, navs) {
+            if(err) {
+              $log.error("Error: On remove subnavigation!", err);
+              $rootScope.pop('error', 'Subnavigation konnte nicht entfernt werden', "");
+            }
+            else{
+              $rootScope.pop('success', 'Subnavigation wurde entfernt', "");
+              
+            }
+          });
+
         }
       });
     }

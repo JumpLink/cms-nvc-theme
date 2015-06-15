@@ -1,12 +1,11 @@
-jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, $state, Fullscreen, $sailsSocket, $stateParams, contents_images, navs, config, $modal, $log, $location, $state, SortableService, GalleryService, ContentService, SubnavigationService) {
+jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, $state, Fullscreen, $sailsSocket, $stateParams, contents_images, navs, config, $modal, $log, $location, $state, SortableService, GalleryService, ContentService, SubnavigationService, HistoryService) {
   $scope.images = contents_images.images;;
   $scope.config = config;
   $scope.contents = contents_images.contents;
   $scope.navs = navs;
   $scope.html = ContentService.getShowHtml();
   $scope.dropdown = GalleryService.getDropdown();
-
-  console.log($scope.contents);
+  $scope.goTo = HistoryService.goToHashPosition;
 
   var page = $state.current.name;
 
@@ -24,7 +23,32 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     $scope.html = ContentService.toogleShowHtml($scope.contents);
   };
 
-  $scope.remove = function(image, content) {
+  $scope.removeContent = function(index, content) {
+    if($rootScope.authenticated) {
+      ContentService.remove($scope.contents, index, content, page, function (err, contents) {
+        if(err) {
+          $log.error("Error: On remove content!", err);
+          $rootScope.pop('error', 'Inhaltsblock konnte nicht entfernt werden', "");
+        }
+        else{
+          $rootScope.pop('success', 'Inhaltsblock wurde entfernt', "");
+          // $scope.contents = contents;
+          SubnavigationService.removeByTarget($scope.navs, content.name, page, function (err, navs) {
+            if(err) {
+              $log.error("Error: On remove subnavigation!", err);
+              $rootScope.pop('error', 'Subnavigation konnte nicht entfernt werden', "");
+            }
+            else{
+              $rootScope.pop('success', 'Subnavigation wurde entfernt', "");
+              
+            }
+          });
+        }
+      });
+    }
+  };
+
+  $scope.removeImage = function(image, content) {
     if($rootScope.authenticated) {
       GalleryService.remove($scope.images[content.name], null, image, page, function (err, images) {
         if(err) {
@@ -38,6 +62,18 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     }
   };
 
+  $scope.removeNav = function(index, nav) {
+    if($rootScope.authenticated) {
+      SubnavigationService.remove($scope.navs, index, nav, page, function (err, navs) {
+        if(err) $log.error("Error: On remove subnavigation!", err);
+        else {
+          $log.debug("remove done!");
+          $scope.navs = navs;
+        }
+      });
+    }
+  }
+
   var addImage = function() {
     if($rootScope.authenticated) {
       GalleryService.add(function(err, image) {
@@ -50,7 +86,17 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     var errors = [
       "Error: Konnte Inhaltsblock nicht erzeugen",
       "Error: Konnte Inhaltsblock nicht hinzufügen",
+      "Error: Konnte subnavigation nicht hinzufügen",
+      "Error: Konnte Bilderblock nicht hinzufügen"
     ];
+
+    var successes = [
+      "Neuen Inhaltsblock erfolgreich hinzugefügt",
+      "Neue Subnavigation erfolgreich hinzugefügt",
+      "Neuen Bilderblock erfolgreich hinzugefügt",
+      "Neuen Block erfolgreich hinzugefügt",
+    ];
+
     if($rootScope.authenticated) {
       ContentService.createEdit($scope.contents, page, function(err, content) {
         if(err) {
@@ -61,16 +107,33 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
           ContentService.append($scope.contents, content, function (err, contents) {
             if(err) {
               $log.error(errors[1], err);
-              $rootScope.pop('error', errors[1], err);
+              // $rootScope.pop('error', errors[1], err);
               $scope.$apply();
             } else {
-              $scope.contents = contents;
-              $rootScope.pop('success', 'Neuer Inhaltsblock wurde hinzugefügt', content.title);
+              // $scope.contents = contents;
+              // $rootScope.pop('success', successes[0], content.title);
               $scope.$apply();
 
-              GalleryService.addBlock($scope.images, content, function(err, imageBock) {
-                if(err) $log.error("Error: On add image block!", err);
-                $log.debug("add done!", content, imageBock);
+              SubnavigationService.append($scope.navs, {page:page, target: content.name, name: content.title}, function(err, navs) {
+                if(err) {
+                  $log.error(errors[2], err);
+                  $rootScope.pop('error', errors[2], err);
+                } else {
+                  // $scope.navs = navs;
+                  // $rootScope.pop('success', successes[1], content.name);
+                  $scope.$apply();
+
+                  // also add an image block to content block
+                  GalleryService.addBlock($scope.images, content, function(err, imageBock) {
+                    if(err) {
+                      $log.error(errors[3], err);
+                      $rootScope.pop('error', errors[3], err);
+                    } else {
+                      $rootScope.pop('success', successes[3], content.name);
+                      $scope.$apply();
+                    }
+                  });
+                }
               });
             }
           });  
@@ -81,9 +144,9 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
   $scope.addNav = function() {
     if($rootScope.authenticated) {
-      SubnavigationService.add($scope.navs, {page:page}, function(err, content) {
-        if(err) $log.error("Error: On add content!", err);
-        $log.debug("add done!", content);
+      SubnavigationService.append($scope.navs, {page:page}, function(err, navs) {
+        if(err) $log.error("Error: On add subnavigation!", err);
+        // $log.debug("add done on subnavigation!", '');
       });
     }
   };
@@ -163,7 +226,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
           $rootScope.pop('error', err, images);
         } else {
           $log.debug ("Bilder wurden aktualisiert", images);
-          $rootScope.pop('success', 'Bilder wurden aktualisiert', '');
+          $rootScope.pop('success', 'Bilder wurden auf dem Server gespeichert', '');
           ContentService.save($scope.contents, page, function(err, contents) {
             if(err) {
               $log.error("Error: On save content!", err);
@@ -171,7 +234,17 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
               return err;
             } else {
               $log.debug ('Contentblocks wurden aktualisiert', contents);
-              $rootScope.pop('success', 'Contentblocks wurden aktualisiert', '');
+              $rootScope.pop('success', 'Contentblocks wurden auf dem Server gespeichert', '');
+              SubnavigationService.save($scope.navs, page, function(err, navs) {
+                if(err) {
+                  $log.error("Error: On save subnavigations!", err);
+                  if(cb) return cb(err);
+                  return err;
+                } else {
+                  $log.debug ('Subnavigation wurde aktualisiert', contents);
+                  $rootScope.pop('success', 'Subnavigation wurde auf dem Server gespeichert', '');
+                }
+              });
             }
           });
         }
@@ -220,7 +293,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
         if(err) $rootScope.pop('error', "Bild konnte nicht verschoben werden", err);
         else {
           result.array_to[result.index_to].content = content_to;
-          $rootScope.pop('success', "Bild erfolgreich verschoben", content_from+" => "+content_to);
+          // $rootScope.pop('success', "Bild erfolgreich verschoben", content_from+" => "+content_to);
         }
         $scope.$apply();
       });

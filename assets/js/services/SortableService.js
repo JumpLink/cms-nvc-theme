@@ -1,4 +1,4 @@
-jumplink.cms.service('SortableService', function ($log) {
+jumplink.cms.service('SortableService', function (UtilityService, $log) {
 
   var resetPosition = function (array) {
     for (var i = array.length - 1; i >= 0; i--) {
@@ -63,7 +63,6 @@ jumplink.cms.service('SortableService', function ($log) {
       // $log.debug("old objects", objects);
       objects.push(new_object);
       // $log.debug("new objects", objects);
-
       if(cb) return cb(null, objects, new_index);
       else return objects;
     }
@@ -84,7 +83,7 @@ jumplink.cms.service('SortableService', function ($log) {
     $log.debug("new_object", new_object);
 
     if(unique && new_object[uniqueKey]) {
-      uniqueIndex = findKeyValue(objects, uniqueKey, new_object[uniqueKey]);
+      uniqueIndex = UtilityService.findKeyValue(objects, uniqueKey, new_object[uniqueKey]);
       if(uniqueIndex > -1) {
         return error(errors[0], objects, uniqueIndex, cb);
       } else {
@@ -164,6 +163,9 @@ jumplink.cms.service('SortableService', function ($log) {
     else return objects;
   }
 
+  /*
+   * find value by key in array
+   */
   var findKeyValue = function (objects, key, value) {
     $log.debug("findKeyValue", key, value);
     var index = -1;

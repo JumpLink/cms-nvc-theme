@@ -13,7 +13,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
     },
     {
       "text": "<i class=\"fa fa-trash\"></i>&nbsp;Löschen",
-      "click": "$dropdown.hide();$dropdown.destroy();remove(image);" // TODO delay
+      "click": "$dropdown.hide();$dropdown.destroy();removeImage(image);" // TODO delay
     },
     {
       "text": "<i class=\"fa fa-floppy-o\"></i>&nbsp;Speichern",
