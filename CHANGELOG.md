@@ -1,8 +1,3 @@
-TODO
-  * Galerie erweitert
-    * Es können jetzt Überschriften angelegt werden
-    * Die Bilder jetzt per Drag and Drop zwischen den Überschriften verschoben werden
-
 0.0.2
   * Allgemein
     * Update aller Third-Pary-Module auf ihre aktuellste Version
@@ -22,6 +17,10 @@ TODO
       * https://github.com/JumpLink/cms/commit/981d7a5fd776f2573aeecd2a232297bf11ac9e55
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/7c39b439bc5dc35338b28ba8e0528470be222b40
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/991860c9bd43f67e917bc23cfb8b9216b33e11c9
+    * Subnavigationsunterpunkt wird nun automatisch mit hinzugefügt wenn ein neuer Contentblock hinzugefügt wird
+      * https://github.com/JumpLink/cms-bootstrap-theme/commit/9a1d22e5f40464b44bb694b065f577b6c50e84fe
+    * In vielen Dialogen/Formularen wird das Inputfeld nun automatisch fokussiert
+      * https://github.com/JumpLink/cms-bootstrap-theme/commit/f5e24cb2a11bb6c9660ef7031aa6d79f8a6799ae
     * Diverse Kleinigkeiten wie Codebereinigungen, kleinerer Bugfixes, etc.
   * Startseite
     * Carousel / Slideshow mit neuster Version lauffähig gemacht
@@ -32,6 +31,10 @@ TODO
       * Zeigt die bevorstehenden Veranstaltungen an inkl. direkter Verlinkung
       * Einleitungstext kann bearbeitet werden
   * Gallery
+    * Es können jetzt Überschriften angelegt werden
+    * Die Bilder jetzt per Drag and Drop zwischen den Überschriften verschoben werden
+      * https://github.com/JumpLink/cms-bootstrap-theme/commit/cf2ec1b0213607feb4ed97507c1f669684a04293
+      * https://github.com/JumpLink/cms-bootstrap-theme/commit/99b36eea93ecfcbe132485061502c9f3ed92d546
     * Probleme beim Upload von Bildern behoben
       * https://github.com/JumpLink/cms/commit/4c2093f4fb355202c4f2b5de6e4a43ce38d6bc52
     * Bilder können jetzt per Drag and Drop sortiert werden

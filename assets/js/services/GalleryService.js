@@ -1,4 +1,4 @@
-jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $async, $filter, Fullscreen, SortableService, FileUploader, $modal, $log) {
+jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $async, $filter, Fullscreen, SortableService, ContentService, FileUploader, $modal, $log) {
 
   var editModal = null, uploadModal = null, fullscreenImage = null;
 
@@ -34,7 +34,17 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
     return editModal;
   };
 
-  var setUploadModal = function($scope, images, cb) {
+  var prepairUploadModal = function (uploadModal, imageBlocks, contentBlocks) {
+    
+    uploadModal.$scope.imageBlocks = imageBlocks;
+    uploadModal.$scope.selects = getSelects(imageBlocks, contentBlocks);
+    if(uploadModal.$scope.selects.length > 0)
+      uploadModal.$scope.selected = uploadModal.$scope.selects[0].value;
+
+    return uploadModal;
+  }
+
+  var setUploadModal = function($scope, imageBlocks, contentBlocks, cb) {
 
     $scope.uploader = new FileUploader({url: 'gallery/upload', removeAfterUpload: true});
     $scope.uploader.filters.push({
@@ -47,17 +57,26 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
 
     $scope.uploader.onCompleteItem = function(fileItem, response, status, headers) {
       //fileItem.member.image = response.files[0].uploadedAs;
-      console.log(fileItem, response, status, headers);
+      $log.debug(fileItem, response, status, headers);
       // WORKAROUND until the socket method works
-      response.forEach(function (file, index, files) {
-        var last_position = images[images.length-1].position;
+      response.files.forEach(function (file, index, files) {
+
+        var selected = uploadModal.$scope.selected;
+        var imageBlocks = uploadModal.$scope.imageBlocks;
+        var currentImages = imageBlocks[selected];
+
+        $log.debug("selected", selected, "imageBlocks", imageBlocks, "currentImages", currentImages);
+
+        var last_position = 0;
+        if(currentImages.length > 0) last_position = currentImages[currentImages.length-1].position;
         if($rootScope.authenticated) $rootScope.pop('success', 'Ein Bild wurde hochgeladen', file.original.name);
         if(typeof file.position === 'undefined') {
           last_position++;
           file.position = last_position;
+          file.content = selected;
         }
         
-        images.push(file);
+        currentImages.push(file);
       });
     };
 
@@ -67,8 +86,24 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
     }
 
     uploadModal = $modal({scope: $scope, title: 'Bilder hinzufügen', uploader: $scope.uploader, template: 'gallery/uploadimagesmodal', show: false});
+    uploadModal = prepairUploadModal(uploadModal, imageBlocks, contentBlocks);
+
     return getUploadModal();
   };
+
+  var getSelects = function (imageBlocks, contentBlocks) {
+    var blockNames = Object.keys(imageBlocks);
+    var result = [];
+    // console.log("contentBlocks", contentBlocks);
+    blockNames.forEach(function (blockName, index, array) {
+      var label = ContentService.getByName(contentBlocks, blockName).title || blockName; // TODO WARNING slow!
+      result.push({
+        label: label,
+        value: blockName
+      });
+    });
+    return result;
+  }
 
   var getUploadModal = function() {
     return uploadModal;
@@ -172,9 +207,11 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
     }
   };
 
-  var add = function(cb) {
+  var add = function(imageBlocks, contentBlocks, cb) {
     // $log.debug("add");
     uploadModal.$promise.then(uploadModal.show);
+
+    uploadModal = prepairUploadModal(uploadModal, imageBlocks, contentBlocks);
 
     uploadModal.$scope.$on('modal.hide',function(){
       $log.debug("upload modal closed");

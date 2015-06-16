@@ -10,7 +10,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
   var page = $state.current.name;
 
   GalleryService.setEditModal($scope);
-  GalleryService.setUploadModal($scope, $scope.images);
+  GalleryService.setUploadModal($scope, $scope.images, $scope.contents);
   GalleryService.subscribe();
 
   ContentService.setEditModal($scope);
@@ -76,7 +76,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
   var addImage = function() {
     if($rootScope.authenticated) {
-      GalleryService.add(function(err, image) {
+      GalleryService.add($scope.images, $scope.contents, function(err, image) {
         if(err) $log.error("Error: On image content!", err);
       });
     }

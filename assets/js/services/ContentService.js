@@ -1,4 +1,4 @@
-jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket, $filter, $modal, SortableService, focus) {
+jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket, $filter, $modal, SortableService, UtilityService, focus) {
 
   var showHtml = false;
   var editModal = null;
@@ -68,6 +68,15 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     };
     if(cb) cb(null, contents);
     else return contents;
+  }
+
+  var getByName = function (contents, name) {
+    var index = UtilityService.findKeyValue(contents, 'name', name);
+    if(index > -1) {
+      return contents[index];
+    } else {
+      return null;
+    }
   }
 
   var create = function(data) {
@@ -422,6 +431,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     resolve: resolve,
     resolveAll: resolveAll,
     resolveOne: resolveOne,
-    resolveAllWithImage: resolveAllWithImage
+    resolveAllWithImage: resolveAllWithImage,
+    getByName: getByName
   };
 });
