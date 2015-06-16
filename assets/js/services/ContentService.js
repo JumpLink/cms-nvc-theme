@@ -1,4 +1,4 @@
-jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket, $filter, $modal, SortableService) {
+jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket, $filter, $modal, SortableService, focus) {
 
   var showHtml = false;
   var editModal = null;
@@ -70,14 +70,14 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     else return contents;
   }
 
-  var create = function(page) {
-    var data = {
-      content: "",
-      title: "",
-      name: "",
-      type: "dynamic",
-      page: page
-    };
+  var create = function(data) {
+
+    if(!data || !data.content) data.content = "";
+    if(!data || !data.title) data.title = "";
+    if(!data || !data.name) data.name = "";
+    if(!data || !data.type) data.type = "dynamic";
+    if(!data || !data.page) cb("Page not set.")
+
     return data;
   }
 
@@ -86,7 +86,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
   }
 
   var createEdit = function(contents, page, cb) {
-    var data = create(page);
+    var data = create({page:page});
     edit(data, cb, true);
   }
 
@@ -117,6 +117,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     editModal.$scope.callback = cb;
     if(changeName) editModal.$scope.changeName = changeName;
     else editModal.$scope.changeName = false;
+    focus('contentedittitle');
     //- Show when some event occurs (use $promise property to ensure the template has been loaded)
     editModal.$promise.then(editModal.show);
   }

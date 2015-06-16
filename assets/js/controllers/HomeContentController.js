@@ -102,7 +102,7 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
 
   $scope.edit = function(index, content) {
     if($rootScope.authenticated) {
-      ContentService.edit(content, function(err) {
+      ContentService.edit(content, function(err, content) {
         if(err) {
           if(err === 'discarded') $log.warn("Edit content ", err);
           else $log.error("Error: On edit content!", err);

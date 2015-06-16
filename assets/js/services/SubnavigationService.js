@@ -1,4 +1,4 @@
-jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log, $sailsSocket, $filter, $modal, SortableService, UtilityService) {
+jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log, $sailsSocket, $filter, $modal, SortableService, UtilityService, focus) {
 
   var editModal = null;
 
@@ -32,20 +32,18 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     });
   };
 
-  var create = function(page) {
-    var data = {
-      target: "",
-      name: "",
-      page: page
-    };
+  var create = function(data) {
+
+    if(!data || !data.target) data.target = "";
+    if(!data || !data.name) data.name = "";
+    if(!data || !data.page) cb("Page not set.")
+
     return data;
   }
 
   var append = function(navs, data, cb) {
 
-    if(!data || !data.target) data.target = "";
-    if(!data || !data.name) data.name = "";
-    if(!data || !data.page) cb("Page not set.")
+    data = create(data);
 
     $log.debug("data", data);
 
@@ -69,6 +67,12 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     editModal.$scope.navs = navs;
     //- Show when some event occurs (use $promise property to ensure the template has been loaded)
     editModal.$promise.then(editModal.show);
+
+    if(angular.isDefined(editModal.$scope.navs) && editModal.$scope.navs.length > 0) {
+      var index = Number(editModal.$scope.navs.length-1);
+      // $log.debug("focus last subnavigationeditname", index);
+      focus('subnavigationeditname'+index);
+    }
 
     editModal.$scope.$on('modal.hide',function(){
       $log.debug("edit navigation modal closed");

@@ -1,24 +1,11 @@
-jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, config,  moment, $sailsSocket, $modal, $datepicker, EventService, FileUploader, HistoryService, $log) {
+jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, config, EventService, $state, HistoryService, $log) {
+  var page = $state.current.name;
   $scope.events = events;
   $scope.config = config;
-  $scope.uploader = new FileUploader({url: 'timeline/upload', removeAfterUpload: true});
   $scope.goTo = HistoryService.goToHashPosition;
-  var typeChooserModal = $modal({scope: $scope, title: 'Typ wählen', template: 'events/typechoosermodal', show: false});
-  var editEventModal = $modal({scope: $scope, title: 'Ereignis bearbeiten', uploader: $scope.uploader, template: 'events/editeventmodal', show: false});
-  var types = ['lecture', 'panel discussion', 'travel', 'info', 'food', 'other'];
-
-  $scope.uploader.onCompleteItem = function(fileItem, response, status, headers) {
-    fileItem.event.download = response.files[0].uploadedAs;
-  };
-
-  $scope.uploader.onProgressItem = function(fileItem, progress) {
-    console.info('onProgressItem', fileItem, progress);
-  };
-
-  $scope.upload = function(fileItem, event) {
-    fileItem.event = event;
-    fileItem.upload();
-  };
+  $scope.chooseType = EventService.chooseType;
+  var modals = EventService.setModals($scope);
+  EventService.subscribe();
 
   $scope.save = function(event, eventName) {
     if($rootScope.authenticated) {
@@ -45,32 +32,38 @@ jumplink.cms.controller('TimelineController', function($rootScope, $scope, event
   };
 
   $scope.add = function() {
-    if($rootScope.authenticated) {
-      if($scope.events.after.length > 0) {
-        var newEvent = angular.copy($scope.events.after[0]);
-        newEvent.from = moment();
-        newEvent.from.add(1, 'hours');
-        newEvent.from.minutes(0);
-        delete newEvent.to;
-        delete newEvent.id;
-        $scope.events.after.push(newEvent);
-        $scope.edit(newEvent);
-      } else {
-        $log.debug("Es gibt keine anstehenden Veranstaltungen zum duplizieren: ");
-        $log.debug($scope.events.after);
-      }
-    }
-  };
+    var errors = [
+      "Error: Konnte Ereignis nicht erzeugen",
+      "Error: Konnte Ereignis nicht hinzufügen",
+    ];
 
-  var removeFromClient = function (event, eventName) {
-    $log.debug("removeFromClient", event, eventName);
-    var index = $scope.events[eventName].indexOf(event);
-    if (index > -1) {
-      $scope.events[eventName].splice(index, 1);
-    } else {
-      $log.debug("not found");
+    var successes = [
+      "Neues Ereignis erfolgreich hinzugefügt",
+    ];
+
+    if($rootScope.authenticated) {
+      EventService.createEdit($scope.events, {page:page}, function(err, event) {
+        if(err) {
+          $log.error(errors[0], err);
+          $rootScope.pop('error', errors[0], err);
+          $scope.$apply();
+        } else {
+          $log.debug("start append");
+          EventService.append($scope.events, event, function (err, events) {
+            if(err) {
+              $log.error(errors[1], err);
+              $rootScope.pop('error', errors[1], err);
+              $scope.$apply();
+            } else {
+              $scope.events = events;
+              $rootScope.pop('success', successes[0], event.title);
+              $scope.$apply();
+            }
+          });  
+        }
+      });
     }
-  };
+  }
 
   // TODO use async "not found"-callback is fired after value was found
   var findEvent = function(id, callback) {
@@ -92,98 +85,35 @@ jumplink.cms.controller('TimelineController', function($rootScope, $scope, event
   };
 
   $scope.remove = function(event, eventName) {
-    $log.debug("$scope.remove", event, eventName);
     if($rootScope.authenticated) {
-      if(eventName == "after" && $scope.events["after"].length <= 1) {
-        $log.debug("Das letzte noch anstehende Ereignis kann nicht gelöscht werden.");
-      } else {
-        if(event.id) {
-          $log.debug(event);
-          $sailsSocket.delete('/timeline/'+event.id).success(function(users, status, headers, config) {
-            removeFromClient(event, eventName);
-          });
-        } else {
-          removeFromClient(event, eventName);
-        }
-      }
+      EventService.remove($scope.events, event, eventName, function (err, events) {
+        if(err) $log.error(err);
+      });
     }
   };
 
   $scope.refresh = function() {
-    var allEvents = EventService.merge(events.unknown, events.before, events.after);
-
-    $log.debug("allEvents.length", allEvents.length);
-    $scope.events = EventService.transform(allEvents);
-    $log.debug("refreshed");
+    $scope.events = EventService.refresh($scope.events);
   };
 
   $scope.edit = function(event, eventName) {
     if($rootScope.authenticated) {
-      editEventModal.$scope.event = event;
-      editEventModal.$scope.eventName = eventName;
-      //- Show when some event occurs (use $promise property to ensure the template has been loaded)
-      editEventModal.$promise.then(editEventModal.show);
+      EventService.edit(event, eventName, function(err, event) {
+        if(err) {
+          if(err === 'discarded') {
+            $log.debug("Edit event ", err);
+          } else {
+            $log.error("Error: On edit event!", err);
+          }
+        }
+      });
     }
-  };
+  }
 
   $scope.openTypeChooserModal = function(event) {
     if($rootScope.authenticated) {
-      typeChooserModal.$scope.event = event;
-      //- Show when some event occurs (use $promise property to ensure the template has been loaded)
-      typeChooserModal.$promise.then(typeChooserModal.show);
+      EventService.openTypeChooserModal(event);
     }
   };
-
-  $scope.chooseType = function(event, type, hide) {
-    event.type = type;
-    hide();
-  };
-
-  $sailsSocket.subscribe('timeline', function(msg){
-    $log.debug(msg);
-
-    switch(msg.verb) {
-      case 'updated':
-        if($rootScope.authenticated) {
-          $rootScope.pop('success', 'Ein Ereignis wurde aktualisiert', msg.data.title);
-        }
-        findEvent(msg.id, function(error, event, eventPart, index) {
-          if(error) $log.debug(error);
-          else event = msg.data;
-          $scope.refresh();
-        });
-      break;
-      case 'created':
-        if($rootScope.authenticated) {
-          $rootScope.pop('success', 'Ein Ereignis wurde erstellt', msg.data.title);
-        }
-        $scope.events['before'].push(msg.data);
-        $scope.refresh();
-      break;
-      case 'removedFrom':
-        if($rootScope.authenticated) {
-          $rootScope.pop('success', 'Ein Ereignis wurde entfernt', msg.data.title);
-        }
-        findEvent(msg.id, function(error, event, eventPart, index) {
-          if(error) $log.debug(error);
-          else removeFromClient(event, eventPart);
-        });
-      break;
-      case 'destroyed':
-        if($rootScope.authenticated) {
-          $rootScope.pop('success', 'Ein Ereignis wurde gelöscht', msg.data.title);
-        }
-        findEvent(msg.id, function(error, event, eventPart, index) {
-          if(error) $log.debug(error);
-          else removeFromClient(event, eventPart);
-        });
-      break;
-      case 'addedTo':
-        if($rootScope.authenticated) {
-          $rootScope.pop('success', 'Ein Ereignis wurde hinzugefügt', msg.data.title);
-        }
-      break;
-    }
-  });
 
 });
