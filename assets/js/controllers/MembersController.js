@@ -60,16 +60,20 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
     }
   }
 
-  var saveMember = function (member) {
+  var saveMember = function (member, cb) {
     if(angular.isUndefined(member.id)) {
       // create member
       $sailsSocket.post('/member', member).success(function(data, status, headers, config) {
-        // $log.debug(data);
+        if(angular.isArray(data)) data = data[0];
+        $log.debug(data);
+        if(cb) cb(null, data);
       });
     } else {
       // update member
       $sailsSocket.put('/member/'+member.id, member).success(function(data, status, headers, config) {
-        // $log.debug(data);
+        if(angular.isArray(data)) data = data[0];
+        $log.debug(data);
+        if(cb) cb(null, data);
       });
     }
   }
@@ -78,10 +82,22 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
     if($rootScope.authenticated) {
       if(angular.isUndefined(member)) {  // save all members
         angular.forEach($scope.members, function(member, index) {
-          saveMember(member);
+          saveMember(member, function (err, result) {
+            if(err) {
+              $rootScope.pop('error', member.name, "Konnte Mitglied nicht speichern.", member.name);
+            } else {
+              $rootScope.pop('success', "Mitglied erfolgreich auf dem Server gespeichert.", member.name);
+            }
+          });
         });
       } else { // save just this member
-        saveMember(member);
+        saveMember(member, function (err, result) {
+          if(err) {
+            $rootScope.pop('error', member.name, "Konnte Mitglied nicht speichern.", member.name);
+          } else {
+            $rootScope.pop('success', "Mitglied erfolgreich auf dem Server gespeichert.", member.name);
+          }
+        });
       }
     }
   }
