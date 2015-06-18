@@ -1,29 +1,39 @@
 jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, config, EventService, $state, HistoryService, $log) {
   var page = $state.current.name;
-  $scope.events = events;
+  $scope.events = events; // TODO rename to eventBlocks
   $scope.config = config;
   $scope.goTo = HistoryService.goToHashPosition;
   $scope.chooseType = EventService.chooseType;
   var modals = EventService.setModals($scope);
-  EventService.subscribe();
+  EventService.subscribe(); // TODO not working anymore
 
-  $scope.save = function(event, eventName) {
+  $scope.save = function(event, eventBlockName) {
+    var errors = [
+      "TimelineController: Can't save event.",
+      "TimelineController: Can't save eventBlocks."
+    ];
+    var sussces = [
+      'Ereignis wurde auf dem Server gespeichert.',
+      'Timeline wurde auf dem Server gespeichert.'
+    ];
     if($rootScope.authenticated) {
       // save just this event if defined
-      if(angular.isDefined(event) && angular.isDefined(eventName)) {
-        EventService.save(event, eventName, function (err, savedEvent) {
-          if(err) $log.error("TimelineController: Can't save event:", err);
+      if(angular.isDefined(event) && angular.isDefined(eventBlockName)) {
+        EventService.saveOne($scope.events, eventBlockName, event, function (err, savedEvent) {
+          if(err) $log.error(errors[0], err);
           else {
             event = savedEvent;
-            $log.debug("TimelineController: Event saved!", events);
+            $log.debug(sussces[0], event);
+            $rootScope.pop('success', sussces[0], event.title);
           }
         });
-      } else { // save all events
-        EventService.saveAll($scope.events, function (err, savedEvents) {
-          if(err) $log.error("TimelineController: Can't save events:", err);
+      } else { // save all eventBlocks
+        EventService.saveBlocks($scope.events, function (err, savedEvents) {
+          if(err) $log.error(errors[1], err);
           else {
             $scope.events = savedEvents;
-            $log.debug("TimelineController: Events saved!", events);
+            $log.debug(sussces[1], events);
+            $rootScope.pop('success', sussces[1], '');
           }
         });
       }
@@ -84,10 +94,15 @@ jumplink.cms.controller('TimelineController', function($rootScope, $scope, event
     });
   };
 
-  $scope.remove = function(event, eventName) {
+  $scope.remove = function(event, eventBlockName) {
     if($rootScope.authenticated) {
-      EventService.remove($scope.events, event, eventName, function (err, events) {
-        if(err) $log.error(err);
+      EventService.remove($scope.events, event, eventBlockName, function (err, events) {
+        if(err) {
+          $log.error(err);
+          $rootScope.pop('error', "Ereignis konnte nicht entfernt werden.", event.name);
+        } else {
+          $rootScope.pop('success', 'Ereignis erfolgreich entfernt', '');
+        }
       });
     }
   };
@@ -96,9 +111,9 @@ jumplink.cms.controller('TimelineController', function($rootScope, $scope, event
     $scope.events = EventService.refresh($scope.events);
   };
 
-  $scope.edit = function(event, eventName) {
+  $scope.edit = function(event, eventBlockName) {
     if($rootScope.authenticated) {
-      EventService.edit(event, eventName, function(err, event) {
+      EventService.edit(event, eventBlockName, function(err, event) {
         if(err) {
           if(err === 'discarded') {
             $log.debug("Edit event ", err);

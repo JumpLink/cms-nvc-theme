@@ -75,10 +75,10 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
     }
   }
 
-  var edit = function(event, eventName, cb) {
+  var edit = function(event, eventBlockName, cb) {
     $log.debug("edit", event);
     editModal.$scope.event = event;
-    // editModal.$scope.eventName = eventName;
+    // editModal.$scope.eventBlockName = eventBlockName;
     editModal.$scope.callback = cb;
     editModal.$scope.ok = false;
 
@@ -108,26 +108,26 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
     return {unknown:unknown, before:before, after:after};
   }
 
-  var removeFromClient = function (events, event, eventName, cb) {
-    $log.debug("removeFromClient", event, eventName);
-    var index = events[eventName].indexOf(event);
+  var removeFromClient = function (events, event, eventBlockName, cb) {
+    $log.debug("removeFromClient", event, eventBlockName);
+    var index = events[eventBlockName].indexOf(event);
     if (index > -1) {
-      events[eventName].splice(index, 1);
+      events[eventBlockName].splice(index, 1);
       if(cb) cb(null, events);
     } else {
       if(cb) cb("no event on client site found to remove", events);
     }
   };
 
-  var remove = function(events, event, eventName, cb) {
-    $log.debug("remove event", event, eventName);
+  var remove = function(events, event, eventBlockName, cb) {
+    $log.debug("remove event", event, eventBlockName);
     if(event.id) {
       $log.debug(event);
       $sailsSocket.delete('/timeline/'+event.id).success(function(users, status, headers, config) {
-        removeFromClient(events, event, eventName, cb);
+        removeFromClient(events, event, eventBlockName, cb);
       });
     } else {
-      removeFromClient(events, event, eventName, cb);
+      removeFromClient(events, event, eventBlockName, cb);
     }
   };
 
@@ -193,31 +193,32 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
     else return objects;
   }
 
-  var refresh = function(events) {
-    var allEvents = merge(events.unknown, events.before, events.after);
+  var refresh = function(eventBlocks) {
+    var allEvents = merge(eventBlocks.unknown, eventBlocks.before, eventBlocks.after);
     $log.debug("allEvents.length", allEvents.length);
-    events = transform(allEvents);
+    eventBlocks = transform(allEvents);
     $log.debug("refreshed");
-    return events;
+    return eventBlocks;
   };
 
-  var save = function (event, eventName, cb) {
+  var saveOne = function (eventBlocks, eventBlockName, event, cb) {
     var errors = [
       "EventService: Can't save event.",
       "EventService: Can't save event, event to update not found.",
       "EventService: Can't save event, parameters undefind.",
     ]
-    if(angular.isDefined(event) && angular.isDefined(eventName) && angular.isDefined(cb)) {
+    if(angular.isDefined(event) && angular.isDefined(eventBlockName) && angular.isDefined(cb)) {
       event = fix(event);
       if(angular.isUndefined(event.id)) {
+        // create because id is undefined
         $sailsSocket.post('/timeline', event).success(function(data, status, headers, config) {
           if(angular.isArray(data)) data = data[0];
           $log.debug("event created", event, data);
-          var index = $scope.events[eventName].indexOf(event);
+          var index = eventBlocks[eventBlockName].indexOf(event);
           if (index > -1) {
-            $scope.events[eventName][index] = data;
-            $log.debug($scope.events[eventName][index]);
-            cb(null, $scope.events[eventName][index]);
+            eventBlocks[eventBlockName][index] = data;
+            $log.debug(eventBlocks[eventBlockName][index]);
+            cb(null, eventBlocks[eventBlockName][index]);
           } else {
             cb(errors[1]);
           }
@@ -227,6 +228,7 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
           cb(errors[0]);
         });
       } else {
+        // update because id is defined
         $sailsSocket.put('/timeline/'+event.id, event).success(function(data, status, headers, config) {
           if(angular.isArray(data)) data = data[0];
           $log.debug("event updated", event, data);
@@ -242,23 +244,31 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
     }
   };
 
-  var saveAll = function(events, cb) {
+  var saveAllInBlock = function(eventBlocks, eventBlockName, cb) {
+    $async.map(eventBlocks[eventBlockName], function (event, cb) {
+      saveOne(eventBlocks, eventBlockName, event, cb);
+    }, cb);
+  }
+
+
+  var saveBlocks = function(eventBlocks, cb) {
     var errors = [
-      "EventService: Can't save event(s), parameters undefind."
+      "EventService: Can't save eventBlocks, parameters undefind."
     ]
     // save just this event if defined
-    if(angular.isDefined(events) && angular.isDefined(cb)) {
+    if(angular.isDefined(eventBlocks) && angular.isDefined(cb)) {
 
-      $async.map(['after', 'before', 'unknown'], function (eventPart, cb) {
-        $async.map(events[eventPart], function (event, cb) {
-          save(event, eventPart, cb);
-        }, cb);
-      }, function(err, events) {
+      $async.map(['after', 'before', 'unknown'], function (eventBlockName, cb) {
+        saveAllInBlock(eventBlocks, eventBlockName, cb);
+        // $async.map(eventBlocks[eventBlockName], function (event, cb) {
+        //   saveOne((eventBlocks, eventBlockName, event, cb);
+        // }, cb);
+      }, function(err, eventBlocksArray) {
         if(err) cb(err);
         else {
-          var allEvents = merge(events[0], events[1], events[2]);
-          events = transform(allEvents);
-          cb(null, events);
+          var allEvents = merge(eventBlocksArray[0], eventBlocksArray[1], eventBlocksArray[2]);
+          eventBlocks = transform(allEvents);
+          cb(null, eventBlocks);
         }
       });
     } else {
@@ -285,7 +295,7 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
           if($rootScope.authenticated) {
             $rootScope.pop('success', 'Ein Ereignis wurde aktualisiert', msg.data.title);
           }
-          findEvent(msg.id, function(error, event, eventPart, index) {
+          findEvent(msg.id, function(error, event, eventBlock, index) {
             if(error) $log.debug(error);
             else event = msg.data;
             $scope.refresh();
@@ -302,18 +312,18 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
           if($rootScope.authenticated) {
             $rootScope.pop('success', 'Ein Ereignis wurde entfernt', msg.data.title);
           }
-          findEvent(msg.id, function(error, event, eventPart, index) {
+          findEvent(msg.id, function(error, event, eventBlock, index) {
             if(error) $log.debug(error);
-            else EventService.removeFromClient($scope.events, event, eventPart);
+            else EventService.removeFromClient($scope.events, event, eventBlock);
           });
         break;
         case 'destroyed':
           if($rootScope.authenticated) {
             $rootScope.pop('success', 'Ein Ereignis wurde gelöscht', msg.data.title);
           }
-          findEvent(msg.id, function(error, event, eventPart, index) {
+          findEvent(msg.id, function(error, event, eventBlock, index) {
             if(error) $log.debug(error);
-            else EventService.removeFromClient($scope.events, event, eventPart);
+            else EventService.removeFromClient($scope.events, event, eventBlock);
           });
         break;
         case 'addedTo':
@@ -331,10 +341,11 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
     merge: merge,
     append: append,
     transform: transform,
-    save: save,
+    saveOne: saveOne,
+    saveAllInBlock: saveAllInBlock,
+    saveBlocks: saveBlocks,
     edit: edit,
     createEdit: createEdit,
-    saveAll: saveAll,
     fixEach: fixEach,
     resolve: resolve,
     setModals: setModals,
