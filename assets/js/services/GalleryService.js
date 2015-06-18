@@ -287,8 +287,9 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
           $log.debug(msg.data);
         break;
         case 'destroyed':
-          if($rootScope.authenticated)
-            $rootScope.pop('success', 'Ein Bild wurde gelöscht', "");
+          if($rootScope.authenticated) {
+            // $rootScope.pop('success', 'Ein Bild wurde gelöscht', "");
+          }
           $log.debug(msg.data);
         break;
         case 'addedTo':

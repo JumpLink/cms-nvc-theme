@@ -48,9 +48,10 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     }
   };
 
-  $scope.removeImage = function(image, content) {
+  $scope.removeImage = function(image) {
+    $log.debug("removeImage", "image", image);
     if($rootScope.authenticated) {
-      GalleryService.remove($scope.images[content.name], null, image, page, function (err, images) {
+      GalleryService.remove($scope.images[image.content], null, image, page, function (err, images) {
         if(err) {
           $log.error("Error: On remove content!", err);
           $rootScope.pop('error', 'Bild konnte nicht entfernt werden', "");
@@ -201,10 +202,9 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
   };
 
   $scope.saveImage = function(image) {
-    var contentname = 'test';
     if($rootScope.authenticated) {
       if(angular.isDefined(image)) {  
-        GalleryService.saveOne(image, page, contentname, function (err, image) {
+        GalleryService.saveOne(image, page, image.name, function (err, image) {
           if(err) {
             $log.error (err, image);
             $rootScope.pop('error', err, image);
@@ -218,7 +218,6 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
 
   $scope.save = function() {
-    var contentname = 'test';
     if($rootScope.authenticated) {
       GalleryService.saveAllBlocks($scope.images, page, function (err, images) {
         if(err) {
