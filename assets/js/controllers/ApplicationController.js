@@ -31,6 +31,24 @@ jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $s
   // $log.debug("$scope.maxBirthdayDate)", $scope.maxBirthdayDate);
 
   $scope.upload = function() {
+
+    var cc = 'pascal@jumplink.eu';
+    var to = $scope.member.email
+    var from = $scope.member.email;
+    var subject = 'Aufnahmeantrag von '+$scope.member.vorname+' '+$scope.member.name;
+    var html = ''
+    +'<dl>'
+      +'<dt>Absender</dt>'
+      +'<dd><a href="mailto:'+from+'">'+from+'</a></dd>'
+      +'<dt>Betreff</dt>'
+      +'<dd>'+subject+'</dd>'
+    +'</dl>'
+    +'<br>'
+    +'Bitte drucken Sie den Aufnahmeantrag aus und schicken Sie ihn an den Nautischen Verein Cuxhaven e.V.';
+    var text = String(html).replace(/<[^>]+>/gm, '');
+    var attachmentFilename = 'aufnahmeantrag_'+$scope.member.vorname+'_'+$scope.member.name;
+    attachmentFilename = attachmentFilename.toLowerCase();
+
     $rootScope.pop('info', 'Aufnahmeantrag wird bearbeitet');
     $scope.webodf.refresh(function() {
       $scope.webodf.upload(function(error, response ) {
@@ -45,27 +63,8 @@ jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $s
             // $log.debug(data);
             $rootScope.pop('success', 'Aufnahmeantrag erfolgreich erzeugt');
              var htmlPath = data.target;
-            // callback(null, resInfo, data, status, headers, config);
-            var attachmentFilename = 'aufnahmeantrag_'+$scope.member.vorname+'_'+$scope.member.name;
-            attachmentFilename = attachmentFilename.toLowerCase();
 
-            var to = $scope.member.email+',nvcux@t-online.de';
-            var subject = 'Aufnahmeantrag von '+$scope.member.vorname+' '+$scope.member.name;
-            var from = $scope.member.email;
-
-            var html = ''
-            +'<dl>'
-              +'<dt>Absender</dt>'
-              +'<dd><a href="mailto:'+from+'">'+from+'</a></dd>'
-              +'<dt>Betreff</dt>'
-              +'<dd>'+subject+'</dd>'
-            +'</dl>'
-            +'<br>'
-            +'Bitte drucken Sie den Aufnahmeantrag aus und schicken Sie ihn an den Nautischen Verein Cuxhaven e.V.';
-
-            var text = String(html).replace(/<[^>]+>/gm, '');
-
-            $sailsSocket.post('/email/send', {from: from, to: to, subject: subject, text: text, html: html, attachments: [{filename: attachmentFilename+".pdf", path:pdfPath}, {filename: attachmentFilename+".html", path:htmlPath}, {filename: attachmentFilename+".odt", path:odtPath}]}).success(function(data, status, headers, config){
+            $sailsSocket.post('/email/send', {from: from, to:  to+','+cc, subject: subject, text: text, html: html, attachments: [{filename: attachmentFilename+".pdf", path:pdfPath}, {filename: attachmentFilename+".html", path:htmlPath}, {filename: attachmentFilename+".odt", path:odtPath}]}).success(function(data, status, headers, config){
               if(!$rootScope.authenticated) {
                 $rootScope.pop('success', 'E-Mail wurde versendet.');
               }
