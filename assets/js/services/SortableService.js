@@ -2,7 +2,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
 
   var resetPosition = function (array) {
     for (var i = array.length - 1; i >= 0; i--) {
-      array[i].position = i;
+      array[i].position = i+1;
     };
     return array;
   }
@@ -29,7 +29,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
   }
 
   /*
-   * Insert new object to postion and move the underlying objects one index back
+   * Insert new object to position and move the underlying objects one index back
    * http://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
    */
   var move = function (array, old_index, new_index, cb) {
@@ -55,7 +55,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
       "Unique key '"+uniqueKey+"' already exist"
     ]
     var new_index = objects.length;
-    var new_position = 0;
+    var new_position = 1;
     var new_object;
     var uniqueIndex = -1;
 

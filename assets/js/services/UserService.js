@@ -7,17 +7,16 @@ jumplink.cms.service('UserService', function ($rootScope, $sailsSocket, $log) {
       $log.debug("update user: sailsSocket.put('/user/"+user.id+"..'");
       $sailsSocket.put('/user/'+user.id, user).success(function(data, status, headers, config) {
         $log.debug(data, status, headers, config);
-        if(angular.isDefined(data.password))
-          delete data.password;
+        if(angular.isDefined(data) && angular.isDefined(data.password)) delete data.password;
         callback(null, data, status, headers, config)
       });
     } else {
       // create user
       $log.debug("create user: sailsSocket.post('/user..");
       $sailsSocket.post('/user', user).success(function(data, status, headers, config) {
-        $log.debug(data, status, headers, config);
-        if(angular.isDefined(data.password))
-          delete data.password;
+        // TODO FIXME data ist not the request result ?!
+        $log.debug("data", data, "status", status, "headers", headers, "config", config);
+        if(angular.isDefined(data) && angular.isDefined(data.password)) delete data.password;
         callback(null, data, status, headers, config)
       });
     }
