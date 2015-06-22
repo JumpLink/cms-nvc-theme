@@ -2,6 +2,12 @@
 #/assets/files/
 #/assets/images/
 
+# builds
+assets/js/app.concat.js
+assets/js/app.annotated.js
+assets/js/app.min.js
+assets/styles/app.css 
+
 # Logs
 logs
 *.log
