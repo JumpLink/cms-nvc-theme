@@ -1,5 +1,6 @@
-jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sailsSocket, imprint, navs, $location, $anchorScroll, $state, $log) {
+jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sailsSocket, imprint, navs, config, $location, $anchorScroll, $state, $log) {
   var page = $state.current.name;
+  // $scope.config = config;
   $scope.imprint = imprint;
   $scope.navs = navs;
 
@@ -42,7 +43,7 @@ jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sails
   $scope.sendMail = function() {
 
     var cc = $scope.email.from;
-    var to = 'pascal@jumplink.eu';
+    var to = config.email;
     var from = $scope.email.from;
     var subject = 'Kontaktanfrage von '+$scope.email.name+': '+$scope.email.subject;
 

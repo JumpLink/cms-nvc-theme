@@ -1,7 +1,8 @@
 // Aufnahmeantrag
-jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $sailsSocket, moment, $filter, application, $state, $log) {
+jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $sailsSocket, moment, $filter, application, config, $state, $log) {
   var page = $state.current.name;
   var date = moment(); // now
+  
   $scope.html = false;
   $scope.application = application;
 
@@ -32,7 +33,7 @@ jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $s
 
   $scope.upload = function() {
 
-    var cc = 'pascal@jumplink.eu';
+    var cc = config.email;
     var to = $scope.member.email
     var from = $scope.member.email;
     var subject = 'Aufnahmeantrag von '+$scope.member.vorname+' '+$scope.member.name;

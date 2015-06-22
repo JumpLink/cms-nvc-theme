@@ -303,6 +303,10 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
         var statename = 'layout.application';
         var name = 'application';
         return ContentService.resolveOne(statename, name);
+      },
+      config: function(ConfigService) {
+        var statename = 'layout.application';
+        return ConfigService.resolve(statename);
       }
     }
     , views: {
@@ -332,6 +336,10 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
         var statename = 'layout.imprint';
         var name = 'imprint';
         return ContentService.resolveOne(statename, name);
+      },
+      config: function(ConfigService) {
+        var statename = 'layout.imprint';
+        return ConfigService.resolve(statename);
       }
     }
     , views: {

@@ -128,162 +128,166 @@ var fallbackLinks = function (req, res, next, force, showLegacyToast) {
 }
 
 var fallbackImprint = function (req, res, next, force, showLegacyToast) {
-  var imprint = null, emailIsSend = null;
+  MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, siteConf) {
+  if(err) { return res.serverError(err); }
+    var imprint = null, emailIsSend = null;
 
-  var view = function (req, host, url, form, useragent, emailIsSend) {
-    MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
-      if(err) { return res.serverError(err); }
-      Navigation.find({page:'layout.imprint', site:config.name}).exec(function found(err, navs) {
-        Content.find({name:'imprint', site:config.name}).exec(function found(err, results) {
+    var view = function (req, host, url, form, useragent, emailIsSend) {
+      Navigation.find({page:'layout.imprint', site:siteConf.name}).exec(function found(err, navs) {
+        Content.find({name:'imprint', site:siteConf.name}).exec(function found(err, results) {
           if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content))  imprint = results[0].content;
           return ThemeService.view(req, 'views/fallback/imprint/content.jade', res, {showLegacyToast: showLegacyToast, force: force, emailIsSend: emailIsSend, host: host, url: url, imprint: imprint, form: form, useragent: useragent, title: 'Nautischer Verein Cuxhaven e.V. - Impressum', config: {paths: sails.config.paths}, navs: navs });
         });
       });
-    });
-  }
-
-  var form = {
-    name: {
-      value: null,
-      $invalid: null,
-      $valid: null,
-      $error: {
-        required: false,
-        email: false
-      }
-    },
-    from:  {
-      value: null,
-      $invalid: null,
-      $valid: null,
-      $error: {
-        required: false,
-      }
-    },
-    subject: {
-      value: null,
-      $invalid: null,
-      $valid: null,
-      $error: {
-        required: false,
-        email: false
-      }
-    },
-    content:  {
-      value: null,
-      $invalid: null,
-      $valid: null,
-      $error: {
-        required: false,
-        email: false
-      }
-    }
-  };
-
-  if(req.method == 'POST') {
-    if(req.body) {
-      if(req.params.name)
-        form.name.value = req.params.name;
-      if(req.params.from)
-        form.from.value = req.params.from;
-      if(req.params.subject)
-        form.subject.value = req.params.subject;
-      if(req.params.content)
-        form.content.value = req.params.content;
     }
 
-    if(req.body) {
-      if(req.body.name)
-        form.name.value = req.body.name;
-      if(req.body.from)
-        form.from.value = req.body.from;
-      if(req.body.subject)
-        form.subject.value = req.body.subject;
-      if(req.body.content)
-        form.content.value = req.body.content;
-    }
-
-    if(!form.name.value) {
-      form.name.$error.required = true;
-      form.name.$invalid = true;
-      form.name.$valid = !form.name.$invalid;
-    } else {
-      form.name.$error.required = false;
-      form.name.$invalid = false;
-      form.name.$valid = !form.name.$invalid;
-    }
-
-    if(!form.from.value) {
-      form.from.$error.required = true;
-      form.from.$invalid = true;
-      form.from.$valid = !form.from.$invalid;
-    } else {
-      form.from.$error.required = false;
-      form.from.$invalid = false;
-      form.from.$valid = !form.from.$invalid;
-    }
-
-    if(!validator.isEmail(form.from.value)) {
-      form.from.$error.email = true;
-      form.from.$invalid = true;
-      form.from.$valid = !form.from.$invalid;
-    } else {
-      form.from.$error.email = false;
-      form.from.$invalid = false;
-      form.from.$valid = !form.from.$invalid;
-    }
-
-    if(!form.subject.value) {
-      form.subject.$error.required = true;
-      form.subject.$invalid = true;
-      form.subject.$valid = !form.subject.$invalid;
-    } else {
-      form.subject.$error.required = false;
-      form.subject.$invalid = false;
-      form.subject.$valid = !form.subject.$invalid;
-    }
-
-    if(!form.content.value) {
-      form.content.$error.required = true;
-      form.content.$invalid = true;
-      form.content.$valid = !form.content.$invalid;
-    } else {
-      form.content.$error.required = false;
-      form.content.$invalid = false;
-      form.content.$valid = !form.content.$invalid;
-    }
-
-    if(form.name.$valid && form.from.$valid && form.subject.$valid && form.content.$valid) {
-
-      var html = ''
-      +'<dl>'
-        +'<dt>Absender</dt>'
-        +'<dd><a href="mailto:'+form.from.value+'">'+form.from.value+'</a></dd>'
-        +'<dt>Betreff</dt>'
-        +'<dd>'+form.subject.value+'</dd>'
-      +'</dl>'
-      +'<br>'
-      +form.content.value;
-
-      var text = String(html).replace(/<[^>]+>/gm, '');
-
-      EmailService.send(from = form.from.value, to = form.from.value+",nvcux@t-online.de", subject = 'Kontaktanfrage von '+form.name.value+': '+form.subject.value, text = text, html = html, attachments = null, function(error, info) {
-        var emailResult = {from:from, subject:subject, text:text, html:html, attachments:attachments, error:error, info:info};
-        if(emailResult.error) {
-          emailIsSend = false;
-        } else {
-          emailIsSend = true;
+    var form = {
+      name: {
+        value: null,
+        $invalid: null,
+        $valid: null,
+        $error: {
+          required: false,
+          email: false
         }
-        view(req, req.host, req.path, form, req.useragent, emailIsSend);
-      });
-    } else {
-      emailIsSend = false;
-      view(req, req.host, req.path, form, req.useragent, emailIsSend);
-    }
+      },
+      from:  {
+        value: null,
+        $invalid: null,
+        $valid: null,
+        $error: {
+          required: false,
+        }
+      },
+      subject: {
+        value: null,
+        $invalid: null,
+        $valid: null,
+        $error: {
+          required: false,
+          email: false
+        }
+      },
+      content:  {
+        value: null,
+        $invalid: null,
+        $valid: null,
+        $error: {
+          required: false,
+          email: false
+        }
+      }
+    };
 
-  } else {
-    view(req, req.host, req.path, form, req.useragent, null);
-  }
+    if(req.method == 'POST') {
+      if(req.body) {
+        if(req.params.name)
+          form.name.value = req.params.name;
+        if(req.params.from)
+          form.from.value = req.params.from;
+        if(req.params.subject)
+          form.subject.value = req.params.subject;
+        if(req.params.content)
+          form.content.value = req.params.content;
+      }
+
+      if(req.body) {
+        if(req.body.name)
+          form.name.value = req.body.name;
+        if(req.body.from)
+          form.from.value = req.body.from;
+        if(req.body.subject)
+          form.subject.value = req.body.subject;
+        if(req.body.content)
+          form.content.value = req.body.content;
+      }
+
+      if(!form.name.value) {
+        form.name.$error.required = true;
+        form.name.$invalid = true;
+        form.name.$valid = !form.name.$invalid;
+      } else {
+        form.name.$error.required = false;
+        form.name.$invalid = false;
+        form.name.$valid = !form.name.$invalid;
+      }
+
+      if(!form.from.value) {
+        form.from.$error.required = true;
+        form.from.$invalid = true;
+        form.from.$valid = !form.from.$invalid;
+      } else {
+        form.from.$error.required = false;
+        form.from.$invalid = false;
+        form.from.$valid = !form.from.$invalid;
+      }
+
+      if(!validator.isEmail(form.from.value)) {
+        form.from.$error.email = true;
+        form.from.$invalid = true;
+        form.from.$valid = !form.from.$invalid;
+      } else {
+        form.from.$error.email = false;
+        form.from.$invalid = false;
+        form.from.$valid = !form.from.$invalid;
+      }
+
+      if(!form.subject.value) {
+        form.subject.$error.required = true;
+        form.subject.$invalid = true;
+        form.subject.$valid = !form.subject.$invalid;
+      } else {
+        form.subject.$error.required = false;
+        form.subject.$invalid = false;
+        form.subject.$valid = !form.subject.$invalid;
+      }
+
+      if(!form.content.value) {
+        form.content.$error.required = true;
+        form.content.$invalid = true;
+        form.content.$valid = !form.content.$invalid;
+      } else {
+        form.content.$error.required = false;
+        form.content.$invalid = false;
+        form.content.$valid = !form.content.$invalid;
+      }
+
+      if(form.name.$valid && form.from.$valid && form.subject.$valid && form.content.$valid) {
+
+        var from = form.from.value;
+        var cc = form.from.value;
+        var to = siteConf.email.address+","+cc;
+        var subject = 'Kontaktanfrage von '+form.name.value+': '+form.subject.value;
+        var attachments = null;
+        var html = ''
+        +'<dl>'
+          +'<dt>Absender</dt>'
+          +'<dd><a href="mailto:'+form.from.value+'">'+form.from.value+'</a></dd>'
+          +'<dt>Betreff</dt>'
+          +'<dd>'+form.subject.value+'</dd>'
+        +'</dl>'
+        +'<br>'
+        +form.content.value;
+        var text = String(html).replace(/<[^>]+>/gm, '');
+
+        EmailService.send(req.session.uri.host, from, to, subject, text, html, attachments, function(error, info) {
+          var emailResult = {from:from, subject:subject, text:text, html:html, attachments:attachments, error:error, info:info};
+          if(emailResult.error) {
+            emailIsSend = false;
+          } else {
+            emailIsSend = true;
+          }
+          view(req, req.host, req.path, form, req.useragent, emailIsSend);
+        });
+      } else {
+        emailIsSend = false;
+        view(req, req.host, req.path, form, req.useragent, emailIsSend);
+      }
+
+    } else {
+      view(req, req.host, req.path, form, req.useragent, null);
+    }
+  });
 
 }
 
