@@ -66,7 +66,7 @@ jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $w
 
   // http://stackoverflow.com/questions/18608161/angularjs-variable-set-in-ng-init-undefined-in-scope
   $rootScope.$watch('authenticated', function () {
-    $log.debug("authenticated: "+$rootScope.authenticated);
+    // $log.debug("authenticated: "+$rootScope.authenticated);
     if($rootScope.authenticated) {
       $rootScope.mainStyle = {'padding-bottom':'50px'};
       $rootScope.toasterPositionClass = 'toast-bottom-right-with-toolbar';

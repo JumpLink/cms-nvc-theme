@@ -188,9 +188,9 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     url: '/gallery/fs/:id'
     , resolve:{
       image: function($sailsSocket, $stateParams, $log) {
-        $log.debug("$stateParams", $stateParams);
+        // $log.debug("$stateParams", $stateParams);
         return $sailsSocket.get('/gallery/'+$stateParams.id).then (function (data) {
-          $log.debug('/gallery/'+$stateParams.id, data);
+          // $log.debug('/gallery/'+$stateParams.id, data);
           return data.data;
         });
       },
@@ -388,7 +388,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     , resolve:{
       themeSettings: function($sailsSocket, $log) {
         return $sailsSocket.get('/theme/find').then (function (data) {
-          $log.log(data);
+          // $log.log(data);
           return data.data;
         }, function error (resp){
           $log.error(resp);

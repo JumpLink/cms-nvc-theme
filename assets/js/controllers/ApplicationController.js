@@ -54,11 +54,11 @@ jumplink.cms.controller('ApplicationController', function($rootScope, $scope, $s
     $scope.webodf.refresh(function() {
       $scope.webodf.upload(function(error, response ) {
         if(error) $log.debug(error);
-        $log.debug(response);
+        // $log.debug(response);
         var odtFilename = response.files[0].uploadedAs;
         var odtPath = response.files[0].fd;
         $sailsSocket.put("/document/convert/", {filename: odtFilename, extension: 'pdf'}).success(function(data, status, headers, config){
-          $log.debug(data);
+          // $log.debug(data);
            var pdfPath = data.target;
           $sailsSocket.put("/document/convert/", {filename: odtFilename, extension: 'html'}).success(function(data, status, headers, config){
             // $log.debug(data);
