@@ -62,3 +62,4 @@
 
 Bekannte Bugs
  * Wenn ein Bild verschoben wurde, lässt es sich nicht mehr anklicken / öffnen
+ * Noch nicht gespeicherte Bilder können nicht entfernt werden

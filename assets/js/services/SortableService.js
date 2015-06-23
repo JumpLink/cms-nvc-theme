@@ -80,7 +80,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
       position: new_position,
     }
     angular.extend(new_object, data);
-    $log.debug("new_object", new_object);
+    // $log.debug("new_object", new_object);
 
     if(unique && new_object[uniqueKey]) {
       uniqueIndex = UtilityService.findKeyValue(objects, uniqueKey, new_object[uniqueKey]);
@@ -104,7 +104,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
     ];
 
     var errorParamsNotSet = function () {
-      $log.debug(errors[0], object, index_from, array_from, array_to);
+      $log.error(errors[0], object, index_from, array_from, array_to);
       return cb(errors[0]);
     }
 
@@ -155,7 +155,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
     if(typeof(index) === 'undefined' || index === null) {
       index = objects.indexOf(object);
     }
-    $log.debug("remove from client", index, object);
+    // $log.debug("remove from client", index, object);
     if (index > -1) {
       objects.splice(index, 1);
     }
@@ -167,7 +167,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
    * find value by key in array
    */
   var findKeyValue = function (objects, key, value) {
-    $log.debug("findKeyValue", key, value);
+    // $log.debug("findKeyValue", key, value);
     var index = -1;
     for (var i = objects.length - 1; i >= 0 && index <= -1; i--) {
       if(objects[i][key] === value) {
@@ -188,7 +188,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
 
     var dragObjectIndex = objects.indexOf(dragObject);
     var dropObject = objects[dropObjectIndex];
-    $log.debug("dropMove, dragObject:", dragObject, "dragObjectIndex", dragObjectIndex, "dropObject", dropObject, "dropObjectIndex", dropObjectIndex);
+    // $log.debug("dropMove, dragObject:", dragObject, "dragObjectIndex", dragObjectIndex, "dropObject", dropObject, "dropObjectIndex", dropObjectIndex);
     return moveFunction(objects, dragObjectIndex, dropObjectIndex, cb);
   }
 

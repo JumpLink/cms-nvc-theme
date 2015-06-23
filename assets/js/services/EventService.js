@@ -76,7 +76,7 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
   }
 
   var edit = function(event, eventBlockName, cb) {
-    $log.debug("edit", event);
+    // $log.debug("edit", event);
     editModal.$scope.event = event;
     // editModal.$scope.eventBlockName = eventBlockName;
     editModal.$scope.callback = cb;
@@ -109,7 +109,7 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
   }
 
   var removeFromClient = function (events, event, eventBlockName, cb) {
-    $log.debug("removeFromClient", event, eventBlockName);
+    // $log.debug("removeFromClient", event, eventBlockName);
     var index = events[eventBlockName].indexOf(event);
     if (index > -1) {
       events[eventBlockName].splice(index, 1);
@@ -120,7 +120,7 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
   };
 
   var remove = function(events, event, eventBlockName, cb) {
-    $log.debug("remove event", event, eventBlockName);
+    // $log.debug("remove event", event, eventBlockName);
     if(event.id) {
       $log.debug(event);
       $sailsSocket.delete('/timeline/'+event.id).success(function(users, status, headers, config) {
@@ -179,7 +179,7 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
     if(!object.name || object.name === "") {
       // Set object.name to object.title but only the letters in lower case
       object.name = object.title.toLowerCase().replace(/[^a-z]+/g, '');
-      $log.debug("set object.name to", object.name);
+      // $log.debug("set object.name to", object.name);
     }
     if(cb) cb(null, object);
     else return object;
@@ -195,9 +195,9 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
 
   var refresh = function(eventBlocks) {
     var allEvents = merge(eventBlocks.unknown, eventBlocks.before, eventBlocks.after);
-    $log.debug("allEvents.length", allEvents.length);
+    // $log.debug("allEvents.length", allEvents.length);
     eventBlocks = transform(allEvents);
-    $log.debug("refreshed");
+    // $log.debug("refreshed");
     return eventBlocks;
   };
 
@@ -213,11 +213,11 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
         // create because id is undefined
         $sailsSocket.post('/timeline', event).success(function(data, status, headers, config) {
           if(angular.isArray(data)) data = data[0];
-          $log.debug("event created", event, data);
+          // $log.debug("event created", event, data);
           var index = eventBlocks[eventBlockName].indexOf(event);
           if (index > -1) {
             eventBlocks[eventBlockName][index] = data;
-            $log.debug(eventBlocks[eventBlockName][index]);
+            // $log.debug(eventBlocks[eventBlockName][index]);
             cb(null, eventBlocks[eventBlockName][index]);
           } else {
             cb(errors[1]);
@@ -231,7 +231,7 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
         // update because id is defined
         $sailsSocket.put('/timeline/'+event.id, event).success(function(data, status, headers, config) {
           if(angular.isArray(data)) data = data[0];
-          $log.debug("event updated", event, data);
+          // $log.debug("event updated", event, data);
           event = data;
           cb(null, event);
         }).error(function (data, status, headers, config) {

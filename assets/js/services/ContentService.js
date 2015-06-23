@@ -18,7 +18,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
     });
 
     editModal.$scope.$on('modal.hide',function(event, editModal) {
-      $log.debug("edit closed", event, editModal);
+      // $log.debug("edit closed", event, editModal);
       editModal.$scope.changeName = false;
       if(editModal.$scope.ok) {
         return validateContent(editModal.$scope.content, editModal.$scope.callback);
@@ -239,7 +239,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
         //- $log.debug ("save response from /content/replaceall", data, status, headers, config);
         if(data != null && typeof(data) !== "undefined") {
           content = data;
-          $log.debug (content);
+          // $log.debug (content);
           if(cb) cb(null, content);
         } else {
           $log.error(errors[0]);
@@ -268,7 +268,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
         //- $log.debug ("save response from /content/replaceall", data, status, headers, config);
         if(data != null && typeof(data) !== "undefined") {
           contents = $filter('orderBy')(data, 'position');
-          $log.debug (data);
+          // $log.debug (data);
           if(cb) cb(null, contents);
         } else {
           $log.error(errors[0]);
@@ -357,7 +357,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
    * get all contents for page including images for each content.name 
    */
   var resolveAllWithImage = function(page, type, cb, next) {
-    $log.debug("resolveAllWithImage");
+    // $log.debug("resolveAllWithImage");
     var errors = [
       "Error: On trying to resolve all with page: "+page+" and type: "+type,
       "Warn: On trying to resolve all "+page+" contents! Not found, content is empty!"

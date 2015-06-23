@@ -57,7 +57,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
 
     $scope.uploader.onCompleteItem = function(fileItem, response, status, headers) {
       //fileItem.member.image = response.files[0].uploadedAs;
-      $log.debug(fileItem, response, status, headers);
+      // $log.debug(fileItem, response, status, headers);
       // WORKAROUND until the socket method works
       response.files.forEach(function (file, index, files) {
 
@@ -65,7 +65,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
         var imageBlocks = uploadModal.$scope.imageBlocks;
         var currentImages = imageBlocks[selected];
 
-        $log.debug("selected", selected, "imageBlocks", imageBlocks, "currentImages", currentImages);
+        // $log.debug("selected", selected, "imageBlocks", imageBlocks, "currentImages", currentImages);
 
         var last_position = 0;
         if(currentImages.length > 0) last_position = currentImages[currentImages.length-1].position;
@@ -156,7 +156,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
 
     $sailsSocket.put('/gallery/'+image.id, image).success(function(data, status, headers, config) {
       if(angular.isArray(data)) data = data[0];
-      $log.debug (data);
+      // $log.debug (data);
       if(cb) cb(null, data);
     }).
     error(function(data, status, headers, config) {
@@ -167,7 +167,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
 
   var saveAllBlocks = function(imageBlocks, page, cb) {
     var blockNames = Object.keys(imageBlocks);
-    $log.debug("saveAllBlocks","blockNames" , blockNames);
+    // $log.debug("saveAllBlocks","blockNames" , blockNames);
 
     $async.map(blockNames,
     function iterator(contentname, cb) {
@@ -194,7 +194,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
     images = SortableService.remove(images, index, image);
     // if image has an id it is saved on database, if not, not
     if(image.id) {
-      $log.debug("remove from server, too" ,image);
+      // $log.debug("remove from server, too" ,image);
       $sailsSocket.delete('/gallery/'+image.id+"?filename="+image.original.name+"&page="+page, {id:image.id, filename:image.original.name, page: page}).success(function(data, status, headers, config) {
         if(cb) cb(null, images)
       }).

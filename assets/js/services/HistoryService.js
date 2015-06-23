@@ -4,7 +4,7 @@ jumplink.cms.service('HistoryService', function ($window, $location, $anchorScro
   }
 
   var goToHashPosition = function (hash) {
-    $log.debug("go to hash", hash);
+    // $log.debug("go to hash", hash);
     $location.hash(hash);
     $anchorScroll.yOffset = 60;
     $anchorScroll();

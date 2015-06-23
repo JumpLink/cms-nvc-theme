@@ -45,7 +45,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
 
     data = create(data);
 
-    $log.debug("data", data);
+    // $log.debug("data", data);
 
     SortableService.append(navs, data, cb);
   };
@@ -63,7 +63,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
   };
 
   var edit = function(navs, cb) {
-    $log.debug("edit subnavigations", navs);
+    // $log.debug("edit subnavigations", navs);
     editModal.$scope.navs = navs;
     //- Show when some event occurs (use $promise property to ensure the template has been loaded)
     editModal.$promise.then(editModal.show);
@@ -75,7 +75,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     }
 
     editModal.$scope.$on('modal.hide',function(){
-      $log.debug("edit navigation modal closed");
+      // $log.debug("edit navigation modal closed");
       cb(null, editModal.$scope.navs);
     });
   };
