@@ -19,6 +19,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
 
     editModal.$scope.$on('modal.hide',function(event, editModal) {
       $log.debug("edit closed", event, editModal);
+      editModal.$scope.changeName = false;
       if(editModal.$scope.ok) {
         return validateContent(editModal.$scope.content, editModal.$scope.callback);
       } else {
@@ -197,7 +198,8 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
   var fix = function(content, cb) {
 
     if(angular.isDefined(content)) {
-      content.name = generateName(content.title);
+      if(angular.isUndefined(content.name) || content.name === '' || content.name === null)
+        content.name = generateName(content.title);
 
       if(!content.type || content.type === "") {
         $log.warn("Fix content type not set, set it to dynamic");
