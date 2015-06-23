@@ -31,7 +31,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
           $rootScope.pop('error', 'Inhaltsblock konnte nicht entfernt werden', "");
         }
         else{
-          $rootScope.pop('success', 'Inhaltsblock wurde entfernt', "");
+          // $rootScope.pop('success', 'Inhaltsblock wurde entfernt', "");
           // $scope.contents = contents;
           SubnavigationService.removeByTarget($scope.navs, content.name, page, function (err, navs) {
             if(err) {
@@ -39,8 +39,8 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
               $rootScope.pop('error', 'Subnavigation konnte nicht entfernt werden', "");
             }
             else{
-              $rootScope.pop('success', 'Subnavigation wurde entfernt', "");
-              
+              // $rootScope.pop('success', 'Subnavigation wurde entfernt', "");
+              $rootScope.pop('success', 'Erfolgreich entfernt', "");
             }
           });
         }
@@ -188,6 +188,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
         if(err) $log.error("Error: On edit content!", err);
         else {
           content = newContent;
+          $scope.save();
         }
       });
     }
@@ -225,7 +226,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
           $rootScope.pop('error', err, images);
         } else {
           $log.debug ("Bilder wurden aktualisiert", images);
-          $rootScope.pop('success', 'Bilder wurden auf dem Server gespeichert', '');
+          // $rootScope.pop('success', 'Bilder wurden auf dem Server gespeichert', '');
           ContentService.save($scope.contents, page, function(err, contents) {
             if(err) {
               $log.error("Error: On save content!", err);
@@ -233,7 +234,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
               return err;
             } else {
               $log.debug ('Contentblocks wurden aktualisiert', contents);
-              $rootScope.pop('success', 'Contentblocks wurden auf dem Server gespeichert', '');
+              // $rootScope.pop('success', 'Contentblocks wurden auf dem Server gespeichert', '');
               SubnavigationService.save($scope.navs, page, function(err, navs) {
                 if(err) {
                   $log.error("Error: On save subnavigations!", err);
@@ -241,7 +242,8 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
                   return err;
                 } else {
                   $log.debug ('Subnavigation wurde aktualisiert', contents);
-                  $rootScope.pop('success', 'Subnavigation wurde auf dem Server gespeichert', '');
+                  // $rootScope.pop('success', 'Subnavigation wurde auf dem Server gespeichert', '');
+                  $rootScope.pop('success', 'Galerie wurde gespeichert', '');
                 }
               });
             }
@@ -274,6 +276,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
     SortableService.dropMove($scope.images[content.name], dropimageindex, dragimage, evt, function(err, images) {
       $scope.images[content.name] = images;
+      $scope.save();
     }, SortableService.move);
   };
 
@@ -294,6 +297,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
           result.array_to[result.index_to].content = content_to;
           // $rootScope.pop('success', "Bild erfolgreich verschoben", content_from+" => "+content_to);
         }
+        $scope.save();
         $scope.$apply();
       });
     } else {
