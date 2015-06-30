@@ -31,6 +31,7 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
     ];
 
     if($rootScope.authenticated) {
+      // generates new content and opens the modal
       ContentService.createEdit($scope.contents, page, function(err, content) {
         if(err) {
           $log.error(errors[0], err);

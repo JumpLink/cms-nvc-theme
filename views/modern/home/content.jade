@@ -1,5 +1,5 @@
 #top(hidden-print, style="margin-top: -20px;width: 100%;")
-  ul(rn-carousel="", rn-carousel-controls="", rn-carousel-auto-slide="10", style="width: 100%;")
+  ul(rn-carousel="", rn-carousel-auto-slide="10", style="width: 100%;")
     li
       img(src="/assets/images/header/1.jpg", style="width: 100%;")
     li
@@ -20,6 +20,20 @@
         button.btn.btn-warning.pull-right(ng-if="authenticated", ng-click="editNavs(navs)", title="Navigation bearbeiten"): i.fa.fa-edit
     .col-md-8
       h1.page-header Startseite
+      //- Events visable on small devices or smaller
+      .hidden-lg.hidden-md
+        .panel.panel-primary(style="margin-top: 40px;")
+          .panel-heading
+            h3.panel-title.text-center Aktuelles
+          .panel-body
+            div(ng-show="html && authenticated", ng-model="news.content", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}")
+            div(ng-show="authenticated", medium-editor, ng-model="news.content", options='{"placeholder": "Optionale News hier eingeben", "buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
+            div(ng-bind-html="news.content", ng-hide="authenticated")
+            div(ng-if="events.after.length <= 0")
+              | Keine bevorstehenden Veranstaltungen
+          ul.list-group(ng-if="events.after.length > 0")
+            li.list-group-item(ng-repeat="event in events.after | orderBy:'from'")
+              a(ng-href="#/events\#{{event.name}}") {{event.title}}
       div(ng-repeat="content in contents | orderBy:'position'")
         p.btn-group.pull-right(ng-if="authenticated")
           button.btn.btn-warning(ng-click="moveBackward($index, content)", ng-disabled="$index <= 0", title="Block nach oben verschieben"): i.fa.fa-backward.fa-rotate-90
@@ -32,12 +46,12 @@
         div(ng-show="html && $root.authenticated", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}", ng-model="content.content")
         div(ng-show="$root.authenticated", medium-editor, ng-model="content.content", options='{"placeholder": "Inhalt eingeben", "buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
         div(ng-bind-html="content.content", ng-hide="$root.authenticated")
-    .col-md-2
+    //- Events visable on medium devices or larger
+    .col-md-2.hidden-xs.hidden-sm
       .panel.panel-primary(bs-affix, data-offset-top="-50", style="margin-top: 40px;")
         .panel-heading
           h3.panel-title.text-center Aktuelles
         .panel-body
-          div(ng-show="html && authenticated", ng-model="news.content", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}")
           div(ng-show="authenticated", medium-editor, ng-model="news.content", options='{"placeholder": "Optionale News hier eingeben", "buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
           div(ng-bind-html="news.content", ng-hide="authenticated")
           div(ng-if="events.after.length <= 0")
