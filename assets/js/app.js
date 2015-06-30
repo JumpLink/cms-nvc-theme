@@ -100,7 +100,7 @@ jumplink.cms = angular.module('jumplink.cms', [
 
 jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvider, $provide) {
 
-  var enableDebug = false;
+  var enableDebug = true;
 
   // source and copyright: http://stackoverflow.com/questions/25535628/disable-logging-on-angularjs
   $provide.decorator('$log', ['$delegate', function ($delegate) {
@@ -490,6 +490,30 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       , 'toolbar' : {
         templateUrl: 'toolbar'
         , controller: 'ToolbarController'
+      }
+    }
+  })
+  // cms
+  .state('layout.cms', {
+    url: '/cms'
+    , resolve:{
+      info: function(CmsService) {
+        console.log("start get cms info")
+        return CmsService.infoUser();
+      },
+    }
+    , views: {
+      'content' : {
+        templateUrl: 'cms/content'
+        , controller: 'CmsController'
+      }
+      , 'toolbar' : {
+        templateUrl: 'toolbar'
+        , controller: 'ToolbarController'
+      }
+      , 'footer' : {
+        templateUrl: 'footer'
+        , controller: 'FooterController'
       }
     }
   })

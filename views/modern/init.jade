@@ -51,6 +51,8 @@ html(lang="en", ng-app="jumplink.cms", ng-controller="AppController", ng-init="$
     script(type="text/ng-template", id="administration/settings"): include ./administration/settings.jade
     script(type="text/ng-template", id="administration/users"): include ./administration/users.jade
     script(type="text/ng-template", id="administration/user"): include ./administration/user.jade
+    //- CMS
+    script(type="text/ng-template", id="cms/content"): include ./cms/content.jade
   body(ng-class="bodyclass")
     if force != 'modern'
       noscript
