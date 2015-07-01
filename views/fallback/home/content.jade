@@ -5,7 +5,8 @@ block body
     img.img-responsive(src="/assets/images/header/slideshow.gif", width="100%")
   .container(style="min-height: 200px;")
     .row
-      .col-md-2.hidden-sm.hidden-xs
+      //- Left Subnavigation visable on medium devices or larger
+      .col-md-2.hidden-xs.hidden-sm
         .bs-sidebar(hidden-print, role="complementary")
           ul.nav.bs-sidenav
             each nav in navs
@@ -13,11 +14,26 @@ block body
                 a(href="\##{nav.target}") #{nav.name}
       .col-md-8
         h1.page-header Startseite
+        //- Events visable on small devices or smaller
+        .hidden-lg.hidden-md
+          .panel.panel-primary(style="margin-top: 40px;")
+            .panel-heading
+              h3.panel-title.text-center Aktuelles
+            .panel-body
+              div!= news.content
+              if events.after.length <= 0
+                | Keine bevorstehenden Veranstaltungen
+            if events.after.length > 0
+              ul.list-group
+                each event in events.after
+                  li.list-group-item
+                    a(href= force != null ? '/fallback/events?force='+force+"\##{event.name}" : '/fallback/events\##{event.name}') #{event.title}
         each content in contents
           h2.anchor-static-navbar(id="#{content.name}")
           h2.page-header #{content.title}
           div!= content.content
-      .col-md-2
+      //- Events visable on medium devices or larger
+      .col-md-2.hidden-xs.hidden-sm
         .panel.panel-primary(style="margin-top: 40px;")
           .panel-heading
             h3.panel-title.text-center Aktuelles
@@ -25,9 +41,9 @@ block body
             div!= news.content
             if events.after.length <= 0
               | Keine bevorstehenden Veranstaltungen
-            else
-              ul.list-group
-                each event in events.after
-                  li.list-group-item
-                    a(href= force != null ? '/fallback/events?force='+force+"\##{event.name}" : '/fallback/events\##{event.name}') #{event.title}
+          if events.after.length > 0
+            ul.list-group
+              each event in events.after
+                li.list-group-item
+                  a(href= force != null ? '/fallback/events?force='+force+"\##{event.name}" : '/fallback/events\##{event.name}') #{event.title}
   include ../footer.jade
