@@ -1,6 +1,13 @@
-.container(style="min-height: 400px;")
-  h1.page-header#links Links
-  div(ng-show="html && authenticated", ng-model="links.content", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}")
-  div(ng-show="authenticated", medium-editor, ng-model="links.content", options='{"buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
-  div(ng-bind-html="links.content", ng-hide="authenticated")
+.container-fluid(style="min-height: 400px;")
+  .row
+    .col-md-2.hidden-sm.hidden-xs
+      .bs-sidebar(hidden-print, role="complementary", data-offset-top="-50", bs-affix)
+        ul.nav.bs-sidenav
+          li(ng-repeat="nav in navs", data-target="{{'#'+nav.target}}", bs-scrollspy, data-offset="70")
+            a(ng-click="goTo(nav.target)") {{nav.name}}
+    .col-md-10
+      h1.page-header#links Links
+      div(ng-show="html && authenticated", ng-model="links.content", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}")
+      div(ng-show="authenticated", medium-editor, ng-model="links.content", options='{"buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
+      div(ng-bind-html="links.content", ng-hide="authenticated")
 adminbar(data-add="add", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")

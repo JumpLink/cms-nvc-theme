@@ -127,6 +127,16 @@ var fallbackLinks = function (req, res, next, force, showLegacyToast) {
   });
 }
 
+var fallbackCms = function (req, res, next, force, showLegacyToast) {
+  var links = null;
+  MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
+    if(err) { return res.serverError(err); }
+    CmsService.infoUser(function (error, cmsInfo) {
+      return ThemeService.view(req, 'views/fallback/cms/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, links: links, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Links', config: {paths: sails.config.paths}, cmsInfo: cmsInfo});
+    });
+  });
+}
+
 var fallbackImprint = function (req, res, next, force, showLegacyToast) {
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, siteConf) {
   if(err) { return res.serverError(err); }
@@ -311,6 +321,8 @@ var fallback = function (req, res, next, force) {
         return fallbackLinks(req, res, next, force, showLegacyToast = true);
       case "/fallback/imprint":
         return fallbackImprint(req, res, next, force, showLegacyToast = true);
+      case "/fallback/cms":
+        return fallbackCms(req, res, next, force, showLegacyToast = true);
       default:
         return fallbackHome(req, res, next, force, showLegacyToast = true);
     }

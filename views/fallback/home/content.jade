@@ -3,7 +3,7 @@ block body
   include ../toolbar.jade
   #top(style="margin-top: -20px;width: 100%;")
     img.img-responsive(src="/assets/images/header/slideshow.gif", width="100%")
-  .container(style="min-height: 200px;")
+  .container-fluid(style="min-height: 400px;")
     .row
       //- Left Subnavigation visable on medium devices or larger
       .col-md-2.hidden-xs.hidden-sm
@@ -12,6 +12,7 @@ block body
             each nav in navs
               li
                 a(href="\##{nav.target}") #{nav.name}
+      //- Main Content
       .col-md-8
         h1.page-header Startseite
         //- Events visable on small devices or smaller

@@ -13,7 +13,7 @@ block toasts
 block body
   include ../toolbar.jade
   //- Container
-  .container(style="min-height: 200px;")
+  .container-fluid(style="min-height: 400px;")
     .row
       .col-md-2.hidden-sm.hidden-xs
         .bs-sidebar(hidden-print, role="complementary")
@@ -23,12 +23,10 @@ block body
                 a(href="\##{nav.target}") #{nav.name}
       .col-md-10
         h1.anchor-static-navbar#imprint
-        .page-header
-          h1 Impressum
+        h1.page-header Impressum
         div!= imprint
         h1.anchor-static-navbar#contact
-        .page-header.hidden-print
-          h1 Kontakt
+        h1.page-header.hidden-print Kontakt
         form.hidden-print(role='form', name="form", validate, action="#contact", method="post")
           //-
           //- Name
