@@ -1,5 +1,5 @@
 doctype html
-html(lang="en", ng-app="jumplink.cms", ng-controller="AppController", ng-init="$root.authenticated = #{authenticated}; $root.user = #{user}")
+html(lang="en", ng-app="jumplink.cms", ng-controller="AppController", ng-init="$root.authenticated = #{authenticated}; $root.user = #{user}; $root.debug = false")
   head
     base(href="/")
     title Nautischer Verein Cuxhaven
@@ -54,6 +54,8 @@ html(lang="en", ng-app="jumplink.cms", ng-controller="AppController", ng-init="$
     //- CMS
     script(type="text/ng-template", id="cms/content"): include ./cms/content.jade
   body(ng-class="bodyclass")
+    script.
+      var environment = '#{config.environment}';
     if force != 'modern'
       noscript
         div(style="padding: 40px 15px;text-align: center;")

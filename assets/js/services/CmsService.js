@@ -18,7 +18,7 @@ jumplink.cms.service('CmsService', function ($log, $sailsSocket) {
           data.data = data.data[0];
           $log.warn(warns[0]);
         }
-
+        
         if(cb) return cb(null, data.data);
         else return data.data;
       }

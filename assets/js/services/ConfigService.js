@@ -1,5 +1,6 @@
 jumplink.cms.service('ConfigService', function ($sailsSocket, $filter, $log) {
 
+
   var resolve = function(page) {
     return $sailsSocket.get('/config/find').then (function (data) {
       return data.data;

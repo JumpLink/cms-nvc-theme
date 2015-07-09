@@ -98,29 +98,10 @@ jumplink.cms = angular.module('jumplink.cms', [
   , 'toggle-switch'           // AngularJS Toggle Switch: https://github.com/JumpLink/angular-toggle-switch
 ]);
 
-jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvider, $provide) {
+jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvider, $provide, $logProvider) {
 
-  var enableDebug = true;
-
-  // source and copyright: http://stackoverflow.com/questions/25535628/disable-logging-on-angularjs
-  $provide.decorator('$log', ['$delegate', function ($delegate) {
-      // Keep track of the original debug method, we'll need it later.
-      var origDebug = $delegate.debug;
-      /*
-       * Intercept the call to $log.debug() so we can add on 
-       * our enhancement. We're going to add on a date and 
-       * time stamp to the message that will be logged.
-       */
-      $delegate.debug = function () {
-          var args = [].slice.call(arguments);
-          args[0] = [new Date().toString(), ': ', args[0]].join('');
-
-          // Send on our enhanced message to the original debug method.
-          if(enableDebug) origDebug.apply(null, args)
-      };
-
-      return $delegate;
-  }]);
+  // see init.jade environment variable
+  $logProvider.debugEnabled(environment === 'development');
 
   // use the HTML5 History API
   $locationProvider.html5Mode(false);
@@ -174,10 +155,6 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('layout.gallery', {
     url: '/gallery'
     , resolve:{
-      // images: function(GalleryService) {
-      //   var statename = 'layout.gallery';
-      //   return GalleryService.resolve(statename, 'test');
-      // },
       navs: function(SubnavigationService) {
         var statename = 'layout.gallery';
         return SubnavigationService.resolve(statename);
@@ -497,8 +474,8 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   .state('layout.cms', {
     url: '/cms'
     , resolve:{
-      info: function(CmsService) {
-        console.log("start get cms info")
+      info: function(CmsService, $log) {
+        $log.debug("start get cms info");
         return CmsService.infoUser();
       },
     }
