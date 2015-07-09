@@ -60,4 +60,6 @@
         ul.list-group(ng-if="events.after.length > 0")
           li.list-group-item(ng-repeat="event in events.after | orderBy:'from'")
             a(ng-href="#/events\#{{event.name}}") {{event.title}}
+            small  am {{event.from | amDateFormat:'DD.MM.YY'}} um {{event.from | amDateFormat:'HH:mm'}} Uhr {{event.subtext}}
+
 adminbar(data-add="addContent", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")

@@ -26,7 +26,7 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
 
   var setModals = function($scope) {
 
-    editModal = $modal({title: 'Ereignis bearbeiten',template: 'events/editeventmodal', show: false});
+    editModal = $modal({title: 'Ereignis bearbeiten', template: 'events/editeventmodal', show: false});
     editModal.$scope.ok = false;
     editModal.$scope.uploader = new FileUploader({url: 'timeline/upload', removeAfterUpload: true});
     editModal.$scope.openTypeChooserModal = openTypeChooserModal;
