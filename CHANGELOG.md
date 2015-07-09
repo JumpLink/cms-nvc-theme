@@ -28,7 +28,7 @@
     * An neues dynamisches Content-Block-System angepasst
     * An neues dynamisches Subnavigation-System angepasst
     * Neue Rubrik "Aktuelles"
-      * Zeigt die bevorstehenden Veranstaltungen an inkl. direkter Verlinkung
+      * Zeigt die bevorstehenden Veranstaltungen an inkl. direkter Verlinkung und einem Untertext
       * Einleitungstext kann bearbeitet werden
   * Gallery
     * Es können jetzt Überschriften angelegt werden
@@ -52,7 +52,8 @@
     * Die Uhrzeit wird bei Ereignissen jetzt immer angezeigt
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/c57d2acf99976832117e0e3ad3bcf6e5c7b36178
     * Neue dynamische Subnavigation eingebaut
-    * Es kann nun direkt auf Veranstaltungen verlinkt werden 
+    * Es kann nun direkt auf Veranstaltungen verlinkt werden
+    * Untertexte können nun hinzugefügt werden
   * Vorstand / Beirat
     * Bei dem Hinzufügen eines neuen Mitglieds nicht die Daten des letzten Mitglieds als Vorlage anzeigen
       * https://github.com/JumpLink/cms-bootstrap-theme/commit/1902411b7fb936bbd81054ecd17f3a4b37cc35e7

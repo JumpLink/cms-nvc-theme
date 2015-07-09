@@ -1,15 +1,15 @@
 .container-fluid(style="min-height: 400px;")
   .row
     .col-md-2.hidden-sm.hidden-xs
-      .bs-sidebar(hidden-print, role="complementary", data-offset-top="-50", bs-affix)
-        ul.nav.bs-sidenav
-          li(ng-repeat="eventName in ['after', 'before', 'unknown']", ng-if="events[eventName].length > 0", data-target="{{'#'+eventName}}", bs-scrollspy, data-offset="70", ng-switch on="eventName")
-            a(ng-switch-when="before", ng-click="goTo(eventName)") Vergangene Veranstaltungen
-            a(ng-switch-when="after", ng-click="goTo(eventName)") Anstehende Veranstaltungen
-            a(ng-switch-default, ng-click="goTo(eventName)") Weitere
-            ul.nav
-              li(ng-repeat="event in events[eventName] | orderBy:'from':eventName === 'before' ? true : false", data-target="{{'#'+event.name}}", bs-scrollspy, data-offset="70", )
-                a(ng-click="goTo(event.name)", title="{{event.title}}") {{event.title}}
+      //- .bs-sidebar(hidden-print, role="complementary", data-offset-top="-50", bs-affix)
+      //-   ul.nav.bs-sidenav
+      //-     li(ng-repeat="eventName in ['after', 'before', 'unknown']", ng-if="events[eventName].length > 0", data-target="{{'#'+eventName}}", bs-scrollspy, data-offset="70", ng-switch on="eventName")
+      //-       a(ng-switch-when="before", ng-click="goTo(eventName)") Vergangene Veranstaltungen
+      //-       a(ng-switch-when="after", ng-click="goTo(eventName)") Anstehende Veranstaltungen
+      //-       a(ng-switch-default, ng-click="goTo(eventName)") Weitere
+      //-       ul.nav
+      //-         li(ng-repeat="event in events[eventName] | orderBy:'from':eventName === 'before' ? true : false", data-target="{{'#'+event.name}}", bs-scrollspy, data-offset="70", )
+      //-           a(ng-click="goTo(event.name)", title="{{event.title}}") {{event.title}}
     .col-md-10
       span(ng-repeat="eventName in ['after', 'before', 'unknown']", ng-if="events[eventName].length > 0", ng-switch on="eventName")
         h1.page-header(id="{{eventName}}", ng-switch-when="before") Vergangene Veranstaltungen / Archiv
