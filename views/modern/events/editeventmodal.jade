@@ -10,16 +10,15 @@
           .input-group
             .input-group-addon
               i.fa.fa-header
-            input#eventtitle.form-control(type='text',  name="title", ng-model="event.title", required, placeholder='Titel eingeben')
+            input#eventtitle.form-control(type='text', name="title", ng-model="event.title", required, placeholder='Titel eingeben')
           span.form-control-feedback(ng-hide="eventform.title.$error.required", title="Alles Okay!"): i.fa.fa-check
           span.form-control-feedback(ng-show="eventform.title.$error.required", title="Bitte geben Sie hier Ihren Titel ein."): i.fa.fa-exclamation-triangle
+        .form-group
           label(for='eventsubtext') Untertext
           .input-group
             .input-group-addon
               i.fa.fa-header
-            input#eventsubtext.form-control(type='text',  name="subtext", ng-model="event.subtext", required, placeholder='Untertext eingeben')
-          span.form-control-feedback(ng-hide="eventform.subtext.$error.required", title="Alles Okay!"): i.fa.fa-check
-          span.form-control-feedback(ng-show="eventform.subtext.$error.required", title="Bitte geben Sie hier Ihren Titel ein."): i.fa.fa-exclamation-triangle
+            input#eventsubtext.form-control(type='text', name="subtext", ng-model="event.subtext", placeholder='Untertext eingeben')
         .form-group
           label(for='person') Person
           .input-group
