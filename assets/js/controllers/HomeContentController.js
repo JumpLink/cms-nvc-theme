@@ -116,7 +116,7 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
   $scope.editNavs = function(navs) {
     if($rootScope.authenticated) {
       SubnavigationService.edit(navs, function(err) {
-        if(err) $log.error("Error: On edit subnavigations!", err);
+        if(err) $log.error("[HomeContentController.js] Error: On edit subnavigations!", err);
       });
     }
   }
@@ -212,6 +212,7 @@ jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $w
     }
   }
 
+  // TODO move to own drag and drops sortable navigation directive 
   $scope.onDragOnNavComplete = function(index, nav, evt) {
     if(nav == null) {
       $log.debug("*click*", index);

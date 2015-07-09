@@ -33,6 +33,8 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
    * http://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
    */
   var move = function (array, old_index, new_index, cb) {
+    $log.debug("[SortableService] move");
+
     if (new_index >= array.length) {
         var k = new_index - array.length;
         while ((k--) + 1) {
@@ -100,7 +102,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
   var moveObjectToAnotherArray = function(object, index_from, array_from, array_to, cb, replaceData) {
 
     var errors = [
-      "Function parameters not correctly set"
+      "[SortableService] Error: Function parameters not correctly set"
     ];
 
     var errorParamsNotSet = function () {
@@ -188,7 +190,7 @@ jumplink.cms.service('SortableService', function (UtilityService, $log) {
 
     var dragObjectIndex = objects.indexOf(dragObject);
     var dropObject = objects[dropObjectIndex];
-    // $log.debug("dropMove, dragObject:", dragObject, "dragObjectIndex", dragObjectIndex, "dropObject", dropObject, "dropObjectIndex", dropObjectIndex);
+    $log.debug("[SortableService] dropMove, dragObject:", dragObject, "dragObjectIndex", dragObjectIndex, "dropObject", dropObject, "dropObjectIndex", dropObjectIndex);
     return moveFunction(objects, dragObjectIndex, dropObjectIndex, cb);
   }
 

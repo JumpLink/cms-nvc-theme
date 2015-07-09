@@ -14,7 +14,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
   var subscribe = function() {
     // called on content changes
     $sailsSocket.subscribe('navigation', function(msg){
-      $log.debug("Navigation event!", msg);
+      $log.debug("[SubnavigationService] Navigation event!", msg);
       switch(msg.verb) {
         case 'updated':
           if($rootScope.authenticated) {
@@ -45,7 +45,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
 
     data = create(data);
 
-    // $log.debug("data", data);
+    // $log.debug("[SubnavigationService] data", data);
 
     SortableService.append(navs, data, cb);
   };
@@ -63,19 +63,19 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
   };
 
   var edit = function(navs, cb) {
-    // $log.debug("edit subnavigations", navs);
+    // $log.debug("[SubnavigationService] edit subnavigations", navs);
     editModal.$scope.navs = navs;
     //- Show when some event occurs (use $promise property to ensure the template has been loaded)
     editModal.$promise.then(editModal.show);
 
     if(angular.isDefined(editModal.$scope.navs) && editModal.$scope.navs.length > 0) {
       var index = Number(editModal.$scope.navs.length-1);
-      // $log.debug("focus last subnavigationeditname", index);
+      // $log.debug("[SubnavigationService] focus last subnavigationeditname", index);
       focus('subnavigationeditname'+index);
     }
 
     editModal.$scope.$on('modal.hide',function(){
-      // $log.debug("edit navigation modal closed");
+      // $log.debug("[SubnavigationService] edit navigation modal closed");
       cb(null, editModal.$scope.navs);
     });
   };
@@ -98,7 +98,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
     navs = removeFromClient(navs, index, nav);
     // if nav has an id it is saved on database, if not, not
     if(nav.id) {
-      $log.debug("remove from server, too" ,nav);
+      $log.debug("[SubnavigationService] remove from server, too" ,nav);
       $sailsSocket.delete('/navigation/'+nav.id+"?page="+page, {id:nav.id, page: page}).success(function(data, status, headers, config) {
         if(cb) cb(null, navs)
       }).
@@ -110,10 +110,10 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
   };
 
   var removeByTarget = function (navs, target, page, cb) {
-    $log.debug("remove subnavigation by target "+target);
+    $log.debug("[SubnavigationService] remove subnavigation by target "+target);
     var index = UtilityService.findKeyValue(navs, 'target', target);
     if(index > -1) {
-      $log.debug("subnavigation found "+index);
+      $log.debug("[SubnavigationService] subnavigation found "+index);
       remove(navs, index, null, page, cb);
     } else {
       if(cb) cb("Subnavigation not found");
@@ -165,10 +165,10 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
         return null;
       }
       data.data = $filter('orderBy')(data.data, 'position');
-      $log.debug(data);
+      $log.debug("[SubnavigationService]", data);
       return data.data;
     }, function error (resp){
-      $log.error("Error: On trying to resolve "+page+" navs!", resp);
+      $log.error("[SubnavigationService] Error: On trying to resolve "+page+" navs!", resp);
     });
   };
 

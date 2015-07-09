@@ -175,7 +175,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
   $scope.moveBackwardNav = function(index, nav) {
     SortableService.moveBackward(index, $scope.navs, function(err, navs) {
-      if(err) $log.error("Error: On move content backward!", err);
+      if(err) $log.error("[GalleryContentController.js] Error: On move content backward!", err);
       else $scope.navs = navs;
     });
   };
@@ -185,7 +185,7 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
   $scope.editContent = function(index, content) {
     if($rootScope.authenticated) {
       ContentService.edit(content, function(err, newContent) {
-        if(err) $log.error("Error: On edit content!", err);
+        if(err) $log.error("[GalleryContentController.js] Error: On edit content!", err);
         else {
           content = newContent;
           $scope.save();
@@ -197,10 +197,10 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
   $scope.editNavs = function(navs) {
     if($rootScope.authenticated) {
       SubnavigationService.edit(navs, function(err) {
-        if(err) $log.error("Error: On edit subnavigations!", err);
+        if(err) $log.error("[GalleryContentController.js] Error: On edit subnavigations!", err);
       });
     }
-  };
+  }
 
   $scope.saveImage = function(image) {
     if($rootScope.authenticated) {
@@ -303,10 +303,27 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
     } else {
       $log.debug("Move image within the content block:\n\t"+content.name);
     }
-    
-
 
   };
+
+  // TODO move to own drag and drops sortable navigation directive 
+  $scope.onDragOnNavComplete = function(index, nav, evt) {
+    if(nav == null) {
+      $log.debug("*click*", index);
+    }
+    $log.debug("onDragOnNavComplete, nav:", nav, "index", index);
+  }
+
+  $scope.onDropOnNavComplete = function(dropnavindex, dragnav, event) {
+    SortableService.dropMove($scope.navs, dropnavindex, dragnav, event, function(err, navs) {
+      $scope.navs = navs;
+    });
+  }
+
+  $scope.onDropOnAreaComplete = function(nav, evt) {
+    var index = $scope.navs.indexOf(nav);
+    // $log.debug("onDropOnAreaComplete, nav:", nav, "index", index);
+  }
 
   $scope.addDropdownActions = {
     'addImage': addImage,
