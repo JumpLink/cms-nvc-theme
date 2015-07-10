@@ -35,6 +35,7 @@
           ul.list-group(ng-if="events.after.length > 0")
             li.list-group-item(ng-repeat="event in events.after | orderBy:'from'")
               a(ng-href="#/events\#{{event.name}}") {{event.title}}
+              small  am {{event.from | amDateFormat:'DD.MM.YY'}} um {{event.from | amDateFormat:'HH:mm'}} Uhr {{event.subtext}}
       div(ng-repeat="content in contents | orderBy:'position'")
         p.btn-group.pull-right(ng-if="authenticated")
           button.btn.btn-warning(ng-click="moveBackward($index, content)", ng-disabled="$index <= 0", title="Block nach oben verschieben"): i.fa.fa-backward.fa-rotate-90

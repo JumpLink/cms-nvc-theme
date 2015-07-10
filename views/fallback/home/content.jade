@@ -29,6 +29,7 @@ block body
                 each event in events.after
                   li.list-group-item
                     a(href= force != null ? '/fallback/events?force='+force+"\##{event.name}" : '/fallback/events\##{event.name}') #{event.title}
+                    small  am #{event.from.format("DD.MM.YY")} um #{event.from.format("HH:mm")} Uhr #{event.subtext}
         each content in contents
           h2.anchor-static-navbar(id="#{content.name}")
           h2.page-header #{content.title}
@@ -47,4 +48,5 @@ block body
               each event in events.after
                 li.list-group-item
                   a(href= force != null ? '/fallback/events?force='+force+"\##{event.name}" : '/fallback/events\##{event.name}') #{event.title}
+                  small  am #{event.from.format("DD.MM.YY")} um #{event.from.format("HH:mm")} Uhr #{event.subtext}
   include ../footer.jade
