@@ -6,12 +6,7 @@ block body
   .container-fluid(style="min-height: 400px;")
     .row
       //- Left Subnavigation visable on medium devices or larger
-      .col-md-2.hidden-xs.hidden-sm
-        .bs-sidebar(hidden-print, role="complementary")
-          ul.nav.bs-sidenav
-            each nav in navs
-              li
-                a(href="\##{nav.target}") #{nav.name}
+      include ../Subnavigation.jade
       //- Main Content
       .col-md-8
         h1.page-header Startseite
