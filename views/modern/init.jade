@@ -54,8 +54,7 @@ html(lang="en", ng-app="jumplink.cms", ng-controller="AppController", ng-init="$
     //- CMS
     script(type="text/ng-template", id="cms/content"): include ./cms/content.jade
   body(ng-class="bodyclass")
-    script.
-      var environment = '#{config.environment}';
+    include ./variables.jade
     if force != 'modern'
       noscript
         div(style="padding: 40px 15px;text-align: center;")

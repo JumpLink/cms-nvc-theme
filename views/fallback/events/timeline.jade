@@ -4,24 +4,24 @@ block body
   .container-fluid(style="min-height: 400px;")
     .row
       .col-md-2.hidden-sm.hidden-xs
-        .bs-sidebar(hidden-print, role="complementary")
-          ul.nav.bs-sidenav
-            each eventName in ['after', 'before', 'unknown']
-              li
-                case eventName
-                  when 'before'
-                    if events.before.length > 0
-                      a(href="\##{eventName}") Vergangene
-                  when 'after'
-                    if events.after.length > 0
-                      a(href="\##{eventName}") Anstehende
-                  default
-                    if events.unknown.length > 0
-                      a(href="\##{eventName}") Weitere
-                ul.nav(style="display: block;")
-                  each event, index in events[eventName]
-                    li
-                      a(href="\##{event.name}") #{event.title}
+        //- .bs-sidebar(hidden-print, role="complementary")
+        //-   ul.nav.bs-sidenav
+        //-     each eventName in ['after', 'before', 'unknown']
+        //-       li
+        //-         case eventName
+        //-           when 'before'
+        //-             if events.before.length > 0
+        //-               a(href="\##{eventName}") Vergangene
+        //-           when 'after'
+        //-             if events.after.length > 0
+        //-               a(href="\##{eventName}") Anstehende
+        //-           default
+        //-             if events.unknown.length > 0
+        //-               a(href="\##{eventName}") Weitere
+        //-         ul.nav(style="display: block;")
+        //-           each event, index in events[eventName]
+        //-             li
+        //-               a(href="\##{event.name}") #{event.title}
       .col-md-10
         each eventName in ['after', 'before', 'unknown']
           h1.anchor-static-navbar(id="#{eventName}")
