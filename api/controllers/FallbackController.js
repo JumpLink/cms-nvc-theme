@@ -3,7 +3,7 @@ var moment = require('moment');
 moment.locale('de');
 
 var updateBrowser = function (req, res, next, force) {
-  return ThemeService.view(req, 'views/fallback/browser.jade', res, {force: force, host: req.host, url: req.path, useragent: req.useragent, title: 'Ihr Browser wird nicht unterstützt' });
+  return ThemeService.view(req.session.uri.host, 'views/fallback/browser.jade', res, {force: force, host: req.host, url: req.path, useragent: req.useragent, title: 'Ihr Browser wird nicht unterstützt' });
 }
 
 var fallbackHome = function (req, res, next, force, showLegacyToast) {
@@ -21,7 +21,7 @@ var fallbackHome = function (req, res, next, force, showLegacyToast) {
             if(err) { return res.serverError(err); }
             // sails.log.debug(results);
             events = EventService.transform(results);
-            return ThemeService.view(req, 'views/fallback/home/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, contents: contents, news:news, events:events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Startseite', config: {paths: sails.config.paths}, navs: navs});
+            return ThemeService.view(req.session.uri.host, 'views/fallback/home/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, contents: contents, news:news, events:events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Startseite', config: {paths: sails.config.paths}, navs: navs});
           });
         });
       });
@@ -35,7 +35,7 @@ var fallbackMembers = function (req, res, next, force, showLegacyToast) {
     if(err) { return res.serverError(err); }
     Member.find({site:config.name}).exec(function found(err, results) {
       members = MemberService.sort(results);
-      return ThemeService.view(req, 'views/fallback/members/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, members: members, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Vorstand / Beirat', config: {paths: sails.config.paths} });
+      return ThemeService.view(req.session.uri.host, 'views/fallback/members/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, members: members, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Vorstand / Beirat', config: {paths: sails.config.paths} });
     });
   }); 
 }
@@ -47,7 +47,7 @@ var fallbackEvents = function (req, res, next, force, showLegacyToast) {
     Timeline.find({site:config.name}).exec(function found(err, results) {
       // sails.log.debug(results);
       events = EventService.transform(results);
-      return ThemeService.view(req, 'views/fallback/events/timeline.jade', res,  {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, events: events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Veranstaltungen', config: {paths: sails.config.paths} });
+      return ThemeService.view(req.session.uri.host, 'views/fallback/events/timeline.jade', res,  {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, events: events, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Veranstaltungen', config: {paths: sails.config.paths} });
     });
   }); 
 }
@@ -64,7 +64,7 @@ var fallbackGallery = function (req, res, next, force, showLegacyToast) {
       // sails.log.debug(contents_images);
       Navigation.find({where:{page:page, site:config.name}, sort: 'position'}).exec(function found(err, navs) {
         if(err) { return res.serverError(err); }
-        return ThemeService.view(req, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, contents: contents_images.contents, images: contents_images.images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}, navs: navs});
+        return ThemeService.view(req.session.uri.host, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, contents: contents_images.contents, images: contents_images.images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}, navs: navs});
       });
     });
 
@@ -79,7 +79,7 @@ var fallbackGallery = function (req, res, next, force, showLegacyToast) {
     //   if(err) { return res.serverError(err); }
     //   Navigation.find({where:{page:page, site:config.name}, sort: 'position'}).exec(function found(err, navs) {
     //     if(err) { return res.serverError(err); }
-    //     return ThemeService.view(req, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, images: images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}, navs: navs});
+    //     return ThemeService.view(req.session.uri.host, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, images: images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}, navs: navs});
     //   });
     // });
   });
@@ -111,7 +111,7 @@ var fallbackApplication = function (req, res, next, force, showLegacyToast) {
       if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) {
         application = results[0].content;
       }
-      return ThemeService.view(req, 'views/fallback/application/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, application: application, member: member, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Aufnahmeantrag', config: {paths: sails.config.paths} });
+      return ThemeService.view(req.session.uri.host, 'views/fallback/application/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, application: application, member: member, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Aufnahmeantrag', config: {paths: sails.config.paths} });
     });
   });
 }
@@ -122,7 +122,7 @@ var fallbackLinks = function (req, res, next, force, showLegacyToast) {
     if(err) { return res.serverError(err); }
     Content.find({name:'links', site:config.name}).exec(function found(err, results) {
       if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content)) links = results[0].content;
-      return ThemeService.view(req, 'views/fallback/links/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, links: links, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Links', config: {paths: sails.config.paths} });
+      return ThemeService.view(req.session.uri.host, 'views/fallback/links/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, links: links, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Links', config: {paths: sails.config.paths} });
     });
   });
 }
@@ -132,7 +132,7 @@ var fallbackCms = function (req, res, next, force, showLegacyToast) {
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
     if(err) { return res.serverError(err); }
     CmsService.infoUser(function (error, cmsInfo) {
-      return ThemeService.view(req, 'views/fallback/cms/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, links: links, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Links', config: {paths: sails.config.paths}, cmsInfo: cmsInfo});
+      return ThemeService.view(req.session.uri.host, 'views/fallback/cms/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, links: links, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Links', config: {paths: sails.config.paths}, cmsInfo: cmsInfo});
     });
   });
 }
@@ -146,7 +146,7 @@ var fallbackImprint = function (req, res, next, force, showLegacyToast) {
       Navigation.find({page:'layout.imprint', site:siteConf.name}).exec(function found(err, navs) {
         Content.find({name:'imprint', site:siteConf.name}).exec(function found(err, results) {
           if(UtilityService.isDefined(results) && UtilityService.isDefined(results[0]) && UtilityService.isDefined(results[0].content))  imprint = results[0].content;
-          return ThemeService.view(req, 'views/fallback/imprint/content.jade', res, {showLegacyToast: showLegacyToast, force: force, emailIsSend: emailIsSend, host: host, url: url, imprint: imprint, form: form, useragent: useragent, title: 'Nautischer Verein Cuxhaven e.V. - Impressum', config: {paths: sails.config.paths}, navs: navs });
+          return ThemeService.view(req.session.uri.host, 'views/fallback/imprint/content.jade', res, {showLegacyToast: showLegacyToast, force: force, emailIsSend: emailIsSend, host: host, url: url, imprint: imprint, form: form, useragent: useragent, title: 'Nautischer Verein Cuxhaven e.V. - Impressum', config: {paths: sails.config.paths}, navs: navs });
         });
       });
     }
@@ -355,7 +355,7 @@ var signin = function(req, res, next) {
 
   var ok = function () {
     // TODO use toast for flash
-    return ThemeService.view(req, 'views/fallback/signin.jade', res,  { showLegacyToast: false, flash: req.session.flash });
+    return ThemeService.view(req.session.uri.host, 'views/fallback/signin.jade', res,  { showLegacyToast: false, flash: req.session.flash });
   }
 
   var force = null; // modern | fallback
