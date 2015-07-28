@@ -79,7 +79,7 @@ module.exports = function(grunt) {
     'assets/third-party/ng-filters/dist/angular-filters.js',
   
     //- angular-file-upload: https://github.com/nervgh/angular-file-upload
-    'assets/third-party/angular-file-upload/angular-file-upload.js',
+    'assets/third-party/angular-file-upload/dist/angular-file-upload.min.js',
 
     //- ngDraggable: https://github.com/fatlinesofcode/ngDraggable
     'assets/third-party/ngDraggable/ngDraggable.js',
@@ -105,7 +105,7 @@ module.exports = function(grunt) {
     
     concat: {
       options: {
-        separator: ';'
+        separator: ';\n'
       },
       dist: {
         src: jsFiles,
