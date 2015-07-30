@@ -7,7 +7,5 @@
             a(ng-click="goTo(nav.target)") {{nav.name}}
     .col-md-10
       h1.page-header#links Links
-      div(ng-show="html && authenticated", ng-model="links.content", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}")
-      div(ng-show="authenticated", medium-editor, ng-model="links.content", options='{"buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
-      div(ng-bind-html="links.content", ng-hide="authenticated")
+      jl-content(data-authenticated="authenticated", data-content="links.content", data-html="html")
 adminbar(data-add="add", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")
