@@ -96,6 +96,19 @@ jumplink.cms = angular.module('jumplink.cms', [
   , 'angular-filters'         // Useful filters for AngularJS: https://github.com/niemyjski/angular-filters
   , 'ngDraggable'             // Drag and drop module for Angular JS: https://github.com/fatlinesofcode/ngDraggable
   , 'toggle-switch'           // AngularJS Toggle Switch: https://github.com/JumpLink/angular-toggle-switch
+  , 'ngAsync'
+  , 'ngFocus'
+  , 'ngHistory'
+  , 'jumplink.cms.content'
+  , 'jumplink.cms.sortable'
+  , 'jumplink.cms.utilities'
+  , 'jumplink.cms.subnavigation'
+  , 'jumplink.cms.info'
+  , 'jumplink.cms.config'
+  , 'jumplink.cms.event'
+  , 'jumplink.cms.user'
+  , 'jumplink.cms.theme'
+  , 'jumplink.cms.gallery'
 ]);
 
 jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvider, $provide, $logProvider) {
