@@ -36,7 +36,7 @@
           .input-group
             .input-group-addon
               i.fa.fa-calendar
-            input#formdate.form-control(title="Von Datum", type='text', ng-model='event.from', data-max-date='{{event.to}}', placeholder='Datum', data-template-url="datepicker", bs-datepicker='bs-datepicker')
+            input#formdate.form-control(title="Von Datum", type='text', ng-model='event.from', data-max-date='{{event.to}}', placeholder='Datum', data-template-url="/views/modern/datepicker.jade", bs-datepicker='bs-datepicker')
             span.input-group-btn
               button.btn.btn-danger(type="button", title="löschen", ng-click="event.from = ''")
                 i.fa.fa-trash
@@ -44,7 +44,7 @@
           .input-group
             .input-group-addon
               i.fa.fa-clock-o
-            input#fromtime.form-control(title="Von Uhrzeit", type='text', ng-model='event.from', placeholder='Uhrzeit', data-template-url="timepicker", bs-timepicker='bs-timepicker')
+            input#fromtime.form-control(title="Von Uhrzeit", type='text', ng-model='event.from', placeholder='Uhrzeit', data-template-url="/views/modern/timepicker.jade", bs-timepicker='bs-timepicker')
             span.input-group-btn
               button.btn.btn-danger(type="button", title="löschen", ng-click="event.from = ''")
                 i.fa.fa-trash
@@ -53,7 +53,7 @@
           .input-group
             .input-group-addon
               i.fa.fa-calendar
-            input#todate.form-control(title="Bis Datum", type='text', ng-model='event.to', data-min-date='{{event.from}}', placeholder='Datum', data-template-url="datepicker", bs-datepicker='bs-datepicker')
+            input#todate.form-control(title="Bis Datum", type='text', ng-model='event.to', data-min-date='{{event.from}}', placeholder='Datum', data-template-url="/views/modern/datepicker.jade", bs-datepicker='bs-datepicker')
             span.input-group-btn
               button.btn.btn-danger(type="button", title="löschen", ng-click="event.to = ''")
                 i.fa.fa-trash
@@ -61,7 +61,7 @@
           .input-group
             .input-group-addon
               i.fa.fa-clock-o
-            input#totime.form-control(title="Bis Uhrzeit", type='text', ng-model='event.to', placeholder='Uhrzeit', data-template-url="timepicker", bs-timepicker='bs-timepicker')
+            input#totime.form-control(title="Bis Uhrzeit", type='text', ng-model='event.to', placeholder='Uhrzeit', data-template-url="/views/modern/timepicker.jade", bs-timepicker='bs-timepicker')
             span.input-group-btn
               button.btn.btn-danger(type="button", title="löschen", ng-click="event.to = ''")
                 i.fa.fa-trash
