@@ -8,8 +8,16 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
   }
 
   var setEditModal = function($scope) {
-    editModal = $modal({title: 'Inhaltsblock bearbeiten', template: 'contentmodal', show: false});
+    editModal = $modal({title: 'Inhaltsblock bearbeiten', templateUrl: 'contentmodal', show: false});
     editModal.$scope.ok = false;
+    editModal.$scope.accept = function (hide) {
+      editModal.$scope.ok = true;
+      hide();
+    };
+    editModal.$scope.abort = function (hide) {
+      editModal.$scope.ok = false;
+      hide();
+    }
     editModal.$scope.changeName = false;
 
     editModal.$scope.$watch('content.title', function(newValue, oldValue) {
@@ -17,7 +25,7 @@ jumplink.cms.service('ContentService', function ($rootScope, $log, $sailsSocket,
       if(editModal.$scope.changeName && angular.isDefined(editModal.$scope.content)) editModal.$scope.content.name = generateName(newValue);
     });
 
-    editModal.$scope.$on('modal.hide',function(event, editModal) {
+    editModal.$scope.$on('modal.hide.before',function(event, editModal) {
       // $log.debug("edit closed", event, editModal);
       editModal.$scope.changeName = false;
       if(editModal.$scope.ok) {

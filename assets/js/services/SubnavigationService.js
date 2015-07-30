@@ -3,7 +3,7 @@ jumplink.cms.service('SubnavigationService', function ($rootScope, $window, $log
   var editModal = null;
 
   var setEditModal = function($scope) {
-    editModal = $modal({scope: $scope, title: 'Navigation bearbeiten', template: 'editsubnavigationmodal', show: false});
+    editModal = $modal({scope: $scope, title: 'Navigation bearbeiten', templateUrl: 'editsubnavigationmodal', show: false});
     return getEditModal();
   };
 

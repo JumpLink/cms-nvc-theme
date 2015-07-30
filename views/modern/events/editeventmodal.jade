@@ -2,7 +2,7 @@
   .modal-dialog
     form.modal-content(role='form', name="eventform", novalidate)
       .modal-header(ng-show='title')
-        button.close(type='button', ng-click='$hide()') ×
+        button.close(type='button', ng-click='abort($hide)') ×
         h4.modal-title(ng-bind='title')
       .modal-body
         .form-group.has-feedback(ng-class="{'has-error': eventform.title.$invalid, 'has-success': eventform.title.$valid}")
@@ -36,7 +36,7 @@
           .input-group
             .input-group-addon
               i.fa.fa-calendar
-            input#formdate.form-control(title="Von Datum", type='text', ng-model='event.from', data-max-date='{{event.to}}', placeholder='Datum', data-template="datepicker", bs-datepicker='bs-datepicker')
+            input#formdate.form-control(title="Von Datum", type='text', ng-model='event.from', data-max-date='{{event.to}}', placeholder='Datum', data-template-url="datepicker", bs-datepicker='bs-datepicker')
             span.input-group-btn
               button.btn.btn-danger(type="button", title="löschen", ng-click="event.from = ''")
                 i.fa.fa-trash
@@ -44,7 +44,7 @@
           .input-group
             .input-group-addon
               i.fa.fa-clock-o
-            input#fromtime.form-control(title="Von Uhrzeit", type='text', ng-model='event.from', placeholder='Uhrzeit', data-template="timepicker", bs-timepicker='bs-timepicker')
+            input#fromtime.form-control(title="Von Uhrzeit", type='text', ng-model='event.from', placeholder='Uhrzeit', data-template-url="timepicker", bs-timepicker='bs-timepicker')
             span.input-group-btn
               button.btn.btn-danger(type="button", title="löschen", ng-click="event.from = ''")
                 i.fa.fa-trash
@@ -53,7 +53,7 @@
           .input-group
             .input-group-addon
               i.fa.fa-calendar
-            input#todate.form-control(title="Bis Datum", type='text', ng-model='event.to', data-min-date='{{event.from}}', placeholder='Datum', data-template="datepicker", bs-datepicker='bs-datepicker')
+            input#todate.form-control(title="Bis Datum", type='text', ng-model='event.to', data-min-date='{{event.from}}', placeholder='Datum', data-template-url="datepicker", bs-datepicker='bs-datepicker')
             span.input-group-btn
               button.btn.btn-danger(type="button", title="löschen", ng-click="event.to = ''")
                 i.fa.fa-trash
@@ -61,7 +61,7 @@
           .input-group
             .input-group-addon
               i.fa.fa-clock-o
-            input#totime.form-control(title="Bis Uhrzeit", type='text', ng-model='event.to', placeholder='Uhrzeit', data-template="timepicker", bs-timepicker='bs-timepicker')
+            input#totime.form-control(title="Bis Uhrzeit", type='text', ng-model='event.to', placeholder='Uhrzeit', data-template-url="timepicker", bs-timepicker='bs-timepicker')
             span.input-group-btn
               button.btn.btn-danger(type="button", title="löschen", ng-click="event.to = ''")
                 i.fa.fa-trash
@@ -88,5 +88,5 @@
           .progress(ng-show="uploader.queue[uploader.queue.length-1].file")
             .progress-bar.progress-bar-success(role='progressbar', ng-model="uploader.queue[uploader.queue.length-1].progress", aria-valuenow='{{uploader.queue[uploader.queue.length-1].progress}}', aria-valuemin='0', aria-valuemax='100', ng-style="{ 'width': uploader.queue[uploader.queue.length-1].progress + '%' }")
       .modal-footer
-        button.btn.btn-danger(type='button', ng-click='ok=false;$hide()') Schließen
-        button.btn.btn-primary(type='submit', ng-click='ok=true;$hide()', ng-disabled="eventform.$invalid") Übernehmen
+        button.btn.btn-danger(type='button', ng-click='abort($hide)') Schließen
+        button.btn.btn-primary(type='submit', ng-click='accept($hide);', ng-disabled="eventform.$invalid") Übernehmen

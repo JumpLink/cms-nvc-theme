@@ -26,7 +26,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
   };
 
   var setEditModal = function($scope) {
-    editModal = $modal({scope: $scope, title: 'Bild bearbeiten', template: 'gallery/editimagemodal', show: false});
+    editModal = $modal({scope: $scope, title: 'Bild bearbeiten', templateUrl: 'gallery/editimagemodal', show: false});
     return getEditModal();
   };
 
@@ -85,7 +85,7 @@ jumplink.cms.service('GalleryService', function ($rootScope, $sailsSocket, $asyn
       fileItem.upload();
     }
 
-    uploadModal = $modal({scope: $scope, title: 'Bilder hinzufügen', uploader: $scope.uploader, template: 'gallery/uploadimagesmodal', show: false});
+    uploadModal = $modal({scope: $scope, title: 'Bilder hinzufügen', uploader: $scope.uploader, templateUrl: 'gallery/uploadimagesmodal', show: false});
     uploadModal = prepairUploadModal(uploadModal, imageBlocks, contentBlocks);
 
     return getUploadModal();

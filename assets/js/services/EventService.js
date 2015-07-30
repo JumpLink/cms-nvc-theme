@@ -26,8 +26,16 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
 
   var setModals = function($scope) {
 
-    editModal = $modal({title: 'Ereignis bearbeiten', template: 'events/editeventmodal', show: false});
+    editModal = $modal({title: 'Ereignis bearbeiten', templateUrl: 'events/editeventmodal', show: false});
     editModal.$scope.ok = false;
+    editModal.$scope.accept = function (hide) {
+      editModal.$scope.ok = true;
+      hide();
+    };
+    editModal.$scope.abort = function (hide) {
+      editModal.$scope.ok = false;
+      hide();
+    }
     editModal.$scope.uploader = new FileUploader({url: 'timeline/upload', removeAfterUpload: true});
     editModal.$scope.openTypeChooserModal = openTypeChooserModal;
 
@@ -44,11 +52,10 @@ jumplink.cms.service('EventService', function (moment, UtilityService, $sailsSoc
       fileItem.upload();
     };
 
-    typeModal = $modal({title: 'Typ wählen', template: 'events/typechoosermodal', show: false});
+    typeModal = $modal({title: 'Typ wählen', templateUrl: 'events/typechoosermodal', show: false});
     typeModal.$scope.chooseType = chooseType;
-    
 
-    editModal.$scope.$on('modal.hide',function(event, editModal) {
+    editModal.$scope.$on('modal.hide.before',function(event, editModal) {
       $log.debug("edit closed", event, editModal);
       if(editModal.$scope.ok) {
         return validate(editModal.$scope.event, editModal.$scope.callback);
