@@ -7,7 +7,7 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
       return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
     }
   });
-  var editMemberModal = $modal({scope: $scope, title: 'Person bearbeiten', uploader: $scope.uploader, templateUrl: 'members/editmembermodal', show: false});
+  var editMemberModal = $modal({scope: $scope, title: 'Person bearbeiten', uploader: $scope.uploader, templateUrl: '/views/modern/members/editmodal.jade', show: false});
 
   $scope.upload = function(fileItem, member) {
     fileItem.member = member;

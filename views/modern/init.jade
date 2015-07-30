@@ -28,48 +28,6 @@ html(lang="en", ng-app="jumplink.cms", ng-controller="AppController", ng-init="$
         meta(http-equiv="refresh" content="0; url="+url+"?force=noscript")
     //- Stylesheets
     link(href='/assets/styles/app.css', rel='stylesheet')
-
-    //- Templates
-    //- general
-    script(type="text/ng-template", id="layout"): include ./layout.jade
-    script(type="text/ng-template", id="toolbar"): include ./toolbar.jade
-    script(type="text/ng-template", id="footer"): include ./footer.jade
-    script(type="text/ng-template", id="sidebar"): include ./sidebar.jade
-    script(type="text/ng-template", id="adminbar"): include ./adminbar.jade
-    //- script(type="text/ng-template", id="datepicker"): include ./datepicker.jade
-    script(type="text/ng-template", id="timepicker"): include ./timepicker.jade
-    script(type="text/ng-template", id="dropdown"): include ./dropdown.jade
-    script(type="text/ng-template", id="select"): include ./select.jade
-    script(type="text/ng-template", id="contentmodal"): include ./contentmodal.jade
-    script(type="text/ng-template", id="editsubnavigationmodal"): include ./editsubnavigationmodal.jade
-    //- home
-    script(type="text/ng-template", id="home/content"): include ./home/content.jade
-    //- gallery
-    script(type="text/ng-template", id="gallery/content"): include ./gallery/content.jade
-    script(type="text/ng-template", id="gallery/fullscreen"): include ./gallery/fullscreen.jade
-    script(type="text/ng-template", id="gallery/slider"): include ./gallery/slider.jade
-    script(type="text/ng-template", id="gallery/toolbar"): include ./gallery/toolbar.jade
-    script(type="text/ng-template", id="gallery/editimagemodal"): include ./gallery/editimagemodal.jade
-    script(type="text/ng-template", id="gallery/uploadimagesmodal"): include ./gallery/uploadimagesmodal.jade
-    //- events
-    script(type="text/ng-template", id="events/timeline"): include ./events/timeline.jade
-    script(type="text/ng-template", id="events/typechoosermodal"): include ./events/typechoosermodal.jade
-    script(type="text/ng-template", id="events/editeventmodal"): include ./events/editeventmodal.jade
-    //- members
-    script(type="text/ng-template", id="members/content"): include ./members/content.jade
-    script(type="text/ng-template", id="members/editmembermodal"): include ./members/editmembermodal.jade
-    //- application
-    script(type="text/ng-template", id="application/content"): include ./application/content.jade
-    //- imprint
-    script(type="text/ng-template", id="imprint/content"): include ./imprint/content.jade
-    //- links
-    script(type="text/ng-template", id="links/content"): include ./links/content.jade
-    //- admin
-    script(type="text/ng-template", id="administration/settings"): include ./administration/settings.jade
-    script(type="text/ng-template", id="administration/users"): include ./administration/users.jade
-    script(type="text/ng-template", id="administration/user"): include ./administration/user.jade
-    //- CMS
-    script(type="text/ng-template", id="cms/content"): include ./cms/content.jade
   body(ng-class="bodyclass")
     include ./variables.jade
     if force != 'modern'

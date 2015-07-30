@@ -109,6 +109,7 @@ jumplink.cms = angular.module('jumplink.cms', [
   , 'jumplink.cms.user'
   , 'jumplink.cms.theme'
   , 'jumplink.cms.gallery'
+  , 'jumplink.cms.admin'
 ]);
 
 jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvider, $provide, $logProvider) {
@@ -125,7 +126,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
   // LAYOUT
   .state('layout', {
     abstract: true
-    , templateUrl: "layout"
+    , templateUrl: '/views/modern/layout.jade'
     , controller: 'LayoutController'
   })
   // HOME
@@ -151,15 +152,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'home/content'
+        templateUrl: '/views/modern/home/content.jade'
         , controller: 'HomeContentController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'footer'
+        templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
     }
@@ -183,15 +184,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'gallery/content'
+        templateUrl: '/views/modern/gallery/content.jade'
         , controller: 'GalleryContentController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'footer'
+        templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
     }
@@ -213,15 +214,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'gallery/fullscreen'
+        templateUrl: '/views/modern/gallery/fullscreen.jade'
         , controller: 'GalleryFullscreenController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
       // , 'footer' : {
-      //   templateUrl: 'footer'
+      //   templateUrl: '/views/modern/footer.jade'
       //   , controller: 'FooterController'
       // }
     }
@@ -240,11 +241,11 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'gallery/slider'
+        templateUrl: '/views/modern/gallery/slider.jade'
         , controller: 'GallerySlideController'
       }
       , 'toolbar' : {
-        templateUrl: 'gallery/toolbar'
+        templateUrl: '/views/modern/gallery/toolbar.jade'
         , controller: 'ToolbarController'
       }
     }
@@ -264,15 +265,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'events/timeline'
+        templateUrl: '/views/modern/events/timeline.jade'
         , controller: 'TimelineController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'footer'
+        templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
     }
@@ -291,19 +292,19 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'members/content'
+        templateUrl: '/views/modern/members/content.jade'
         , controller: 'MembersController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'footer'
+        templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
       // 'adminbar': {
-      //   templateUrl: 'adminbar'
+      //   templateUrl: '/views/modern/adminbar.jade'
       // }
     }
   })
@@ -323,15 +324,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'application/content'
+        templateUrl: '/views/modern/application/content.jade'
         , controller: 'ApplicationController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'footer'
+        templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
     }
@@ -356,15 +357,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'imprint/content'
+        templateUrl: '/views/modern/imprint/content.jade'
         , controller: 'ImprintController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'footer'
+        templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
     }
@@ -381,15 +382,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'links/content'
+        templateUrl: '/views/modern/links/content.jade'
         , controller: 'LinksController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'footer'
+        templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
     }
@@ -409,11 +410,11 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'administration/settings'
+        templateUrl: '/views/modern/administration/settings.jade'
         , controller: 'AdminController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
     }
@@ -431,11 +432,11 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'administration/users'
+        templateUrl: '/views/modern/administration/users.jade'
         , controller: 'UsersController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
     }
@@ -454,11 +455,11 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'administration/user'
+        templateUrl: '/views/modern/administration/user.jade'
         , controller: 'UserController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
     }
@@ -474,11 +475,11 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'administration/user'
+        templateUrl: '/views/modern/administration/user.jade'
         , controller: 'UserController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
     }
@@ -494,15 +495,15 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
     , views: {
       'content' : {
-        templateUrl: 'cms/content'
+        templateUrl: '/views/modern/cms/content.jade'
         , controller: 'CmsController'
       }
       , 'toolbar' : {
-        templateUrl: 'toolbar'
+        templateUrl: '/views/modern/toolbar.jade'
         , controller: 'ToolbarController'
       }
       , 'footer' : {
-        templateUrl: 'footer'
+        templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
     }

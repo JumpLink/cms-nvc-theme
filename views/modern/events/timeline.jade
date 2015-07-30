@@ -11,12 +11,12 @@
       //-         li(ng-repeat="event in events[eventName] | orderBy:'from':eventName === 'before' ? true : false", data-target="{{'#'+event.name}}", bs-scrollspy, data-offset="70", )
       //-           a(ng-click="goTo(event.name)", title="{{event.title}}") {{event.title}}
     .col-md-10
-      span(ng-repeat="eventName in ['after', 'before', 'unknown']", ng-if="events[eventName].length > 0", ng-switch on="eventName")
+      span(ng-repeat="eventName in ['after', 'before', 'unknown']", ng-if="events[eventName].length > 0", ng-switch="eventName")
         h1.page-header(id="{{eventName}}", ng-switch-when="before") Vergangene Veranstaltungen / Archiv
         h1.page-header(id="{{eventName}}", ng-switch-when="after") Anstehende Veranstaltungen
         h1.page-header(id="{{eventName}}", ng-switch-default) Weitere unsortiere Veranstaltungen
         ul.timeline
-          li(ng-repeat="event in events[eventName] | orderBy:'from':eventName === 'before' ? true : false", ng-class="{'timeline-inverted':$index%2}", ng-switch, on="event.type")
+          li(ng-repeat="event in events[eventName] | orderBy:'from':eventName === 'before' ? true : false", ng-class="{'timeline-inverted':$index%2}", ng-switch="event.type")
             //- Timerline type
             //- Vortrag
             .timeline-badge.success(ng-switch-when="lecture", ng-click="openTypeChooserModal(event)")
