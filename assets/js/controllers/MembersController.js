@@ -7,7 +7,7 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
       return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
     }
   });
-  var editMemberModal = $modal({scope: $scope, title: 'Person bearbeiten', uploader: $scope.uploader, template: 'members/editmembermodal', show: false});
+  var editMemberModal = $modal({scope: $scope, title: 'Person bearbeiten', uploader: $scope.uploader, templateUrl: 'members/editmembermodal', show: false});
 
   $scope.upload = function(fileItem, member) {
     fileItem.member = member;
@@ -26,8 +26,12 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
     }
   }
 
+  $scope.abort = function(hide) {
+    hide();
+  }
+
   $scope.members = members;
-  $scope.remove = function(member) {
+  $scope.remove = function(member, hide) {
     if($rootScope.authenticated) {
       if($scope.members.length > 2) {
         if(member.id) {
@@ -40,6 +44,7 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
         }
       }
     }
+    hide();
   }
 
   $scope.add = function() {
@@ -78,7 +83,7 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
     }
   }
 
-  $scope.save = function(member) {
+  $scope.save = function(member, hide) {
     if($rootScope.authenticated) {
       if(angular.isUndefined(member)) {  // save all members
         angular.forEach($scope.members, function(member, index) {
@@ -100,6 +105,7 @@ jumplink.cms.controller('MembersController', function($rootScope, $scope, member
         });
       }
     }
+    hide();
   }
 
   $scope.edit = function(member) {

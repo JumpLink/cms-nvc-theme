@@ -2,7 +2,7 @@
   .modal-dialog
     .modal-content
       .modal-header(ng-show='title')
-        button.close(type='button', ng-click='$hide()') ×
+        button.close(type='button', ng-click='abort($hide)') ×
         h4.modal-title(ng-bind='title')
       .modal-body
         form(role='form')
@@ -39,6 +39,6 @@
             div
               img.img-circle(ng-hide="uploader.queue[uploader.queue.length-1].file", width="140", height="140", ng-src='assets/images/members/{{member.image}}', style='width: 140px; height: 140px;')
       .modal-footer
-        button.btn.btn-danger(type='button', ng-click='remove(member);$hide()') Löschen
-        button.btn.btn-primary(type='button', ng-click='save(member);$hide()') Speichern
-        button.btn.btn-success(type='button', ng-click='$hide()') Schließen
+        button.btn.btn-danger(type='button', ng-click='remove(member, $hide)') Löschen
+        button.btn.btn-primary(type='button', ng-click='save(member, $hide)') Speichern
+        button.btn.btn-success(type='button', ng-click='abort($hide)') Schließen
