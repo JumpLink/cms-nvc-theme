@@ -37,6 +37,10 @@ jumplink.cms = angular.module('jumplink.cms', [
   , 'jumplink.cms.theme'
   , 'jumplink.cms.gallery'
   , 'jumplink.cms.admin'
+  , 'jumplink.cms.session'
+  , 'jumplink.cms.routes'
+  , 'jumplink.cms.sidebar'
+  , 'jumplink.cms.toolbar'
 ]);
 
 jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvider, $provide, $logProvider) {
@@ -81,12 +85,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/home/content.jade'
         , controller: 'HomeContentController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
-      , 'footer' : {
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
         templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
@@ -113,12 +122,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/gallery/content.jade'
         , controller: 'GalleryContentController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
-      , 'footer' : {
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
         templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
@@ -143,11 +157,16 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/gallery/fullscreen.jade'
         , controller: 'GalleryFullscreenController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
       // , 'footer' : {
       //   templateUrl: '/views/modern/footer.jade'
       //   , controller: 'FooterController'
@@ -170,11 +189,16 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/gallery/slider.jade'
         , controller: 'GallerySlideController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/gallery/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
     }
   })
   // events timeline
@@ -194,12 +218,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/events/timeline.jade'
         , controller: 'TimelineController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
-      , 'footer' : {
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
         templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
@@ -221,12 +250,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/members/content.jade'
         , controller: 'MembersController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
-      , 'footer' : {
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
         templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
@@ -253,12 +287,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/application/content.jade'
         , controller: 'ApplicationController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
-      , 'footer' : {
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
         templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
@@ -286,12 +325,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/imprint/content.jade'
         , controller: 'ImprintController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
-      , 'footer' : {
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
         templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
@@ -311,12 +355,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/links/content.jade'
         , controller: 'LinksController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
-      , 'footer' : {
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
         templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
@@ -339,11 +388,16 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/administration/settings.jade'
         , controller: 'AdminController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
     }
   })
   .state('layout.users', {
@@ -361,11 +415,16 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/administration/users.jade'
         , controller: 'UsersController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
     }
   })
   .state('layout.user', {
@@ -384,11 +443,16 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/administration/user.jade'
         , controller: 'UserController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
     }
   })
   .state('layout.new-user', {
@@ -404,11 +468,16 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/administration/user.jade'
         , controller: 'UserController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
     }
   })
   // cms
@@ -424,12 +493,17 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       'content' : {
         templateUrl: '/views/modern/cms/content.jade'
         , controller: 'CmsController'
-      }
-      , 'toolbar' : {
-        templateUrl: '/views/modern/toolbar.jade'
-        , controller: 'ToolbarController'
-      }
-      , 'footer' : {
+      },
+      'toolbar' : {
+        resolve: {
+          routes: function(RoutesService) {
+            return RoutesService.find({});
+          },
+        },
+        template: '<jltoolbar routes="routes", title="title", shorttitle="shorttitle"></jltoolbar>',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
         templateUrl: '/views/modern/footer.jade'
         , controller: 'FooterController'
       }
