@@ -1,4 +1,4 @@
-jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sailsSocket, imprint, navs, config, $location, $anchorScroll, $state, $log) {
+jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sailsSocket, imprint, navs, config, $location, $anchorScroll, $state, $log, ContentService) {
   var page = $state.current.name;
   // $scope.config = config;
   $scope.imprint = imprint;
@@ -22,12 +22,13 @@ jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sails
   }
 
   $scope.save = function() {
-    $scope.imprint.page = page;
-    $sailsSocket.put("/content/replace", $scope.imprint, function (response) {
-      if(response != null && typeof(response) !== "undefined") {
-        $log.debug (response);
+    $scope.imprint.name = 'imprint';
+    ContentService.saveOne($scope.imprint, page, function(err, imprint) {
+      if(err) {
+        $log.error("Error: On save content!", err);
+        if(angular.isDefined(cb)) return cb(err); else return err;
       } else {
-        $log.debug ("Can't save site");
+        $rootScope.pop('success', 'Content wurde aktualisiert', "");
       }
     });
 

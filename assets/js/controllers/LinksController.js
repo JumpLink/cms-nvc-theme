@@ -1,6 +1,7 @@
 jumplink.cms.controller('LinksController', function($rootScope, $scope, $sailsSocket, links, $location, $anchorScroll, $state, $log) {
   var page = $state.current.name;
   $scope.links = links;
+  $log.debug($scope.links);
 
   $scope.goTo = function (hash) {
     $location.hash(hash);
@@ -14,12 +15,13 @@ jumplink.cms.controller('LinksController', function($rootScope, $scope, $sailsSo
 
   $scope.save = function() {
     $scope.links.page = page;
-    ContentService.saveOne($scope.news, page, function(err, contents) {
+    $scope.links.name = 'links';
+    ContentService.saveOne($scope.links, page, function(err, links) {
       if(err) {
         $log.error("Error: On save content!", err);
-        if(cb) return cb(err); else return err; }
-      else {
-        $rootScope.pop('success', 'Links-Text wurde aktualisiert', "");
+        if(angular.isDefined(cb)) return cb(err); else return err;
+      } else {
+        $rootScope.pop('success', 'Content wurde aktualisiert', "");
       }
     });
   }
