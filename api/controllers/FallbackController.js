@@ -301,48 +301,28 @@ var fallbackImprint = function (req, res, next, force, showLegacyToast) {
 
 }
 
-var fallback = function (req, res, next, force) {
-
-  var ok = function (req, res, next, force) {
-    switch(req.path) {
-      case "/fallback/browser":
-        return updateBrowser(req, res, next, force, showLegacyToast = false);
-      case "/fallback/home":
-        return fallbackHome(req, res, next, force, showLegacyToast = true);
-      case "/fallback/members":
-        return fallbackMembers(req, res, next, force, showLegacyToast = true);
-      case "/fallback/events":
-        return fallbackEvents(req, res, next, force, showLegacyToast = true);
-      case "/fallback/gallery":
-        return fallbackGallery(req, res, next, force, showLegacyToast = true);
-      case "/fallback/application":
-        return fallbackApplication(req, res, next, force, showLegacyToast = true);
-      case "/fallback/links":
-        return fallbackLinks(req, res, next, force, showLegacyToast = true);
-      case "/fallback/imprint":
-        return fallbackImprint(req, res, next, force, showLegacyToast = true);
-      case "/fallback/cms":
-        return fallbackCms(req, res, next, force, showLegacyToast = true);
-      default:
-        return fallbackHome(req, res, next, force, showLegacyToast = true);
-    }
-  }
-
-  // var force = null; // modern | fallback
-  if(req.param('force'))
-    force = req.param('force');
-  if(req.query.force)
-    force = req.query.force;
-
-  // sails.log.debug('force', force);
-
-  if(UseragentService.isModern(req, force)) {
-    if(force != null && typeof force != 'undefined')
-      return res.redirect('/?force='+force);
-    else
-      return res.redirect('/');
-  } else {
-    return ok(req, res, next, force);
+var fallback = function (req, res, next, forceParam, route) {
+  switch(req.path) {
+    case "/fallback/browser":
+      return updateBrowser(req, res, next, forceParam, showLegacyToast = false);
+    case "/fallback/home":
+      return fallbackHome(req, res, next, forceParam, showLegacyToast = true);
+    case "/fallback/members":
+      return fallbackMembers(req, res, next, forceParam, showLegacyToast = true);
+    case "/fallback/events":
+      return fallbackEvents(req, res, next, forceParam, showLegacyToast = true);
+    case "/fallback/gallery":
+      return fallbackGallery(req, res, next, forceParam, showLegacyToast = true);
+    case "/fallback/application":
+      return fallbackApplication(req, res, next, forceParam, showLegacyToast = true);
+    case "/fallback/links":
+      return fallbackLinks(req, res, next, forceParam, showLegacyToast = true);
+    case "/fallback/imprint":
+      return fallbackImprint(req, res, next, forceParam, showLegacyToast = true);
+    case "/fallback/cms":
+      return fallbackCms(req, res, next, forceParam, showLegacyToast = true);
+    default:
+      return fallbackHome(req, res, next, forceParam, showLegacyToast = true);
   }
 }
 
