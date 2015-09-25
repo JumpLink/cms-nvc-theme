@@ -330,33 +330,9 @@ var fallback = function (req, res, next, forceParam, route) {
    * fallback html page to allow browser to auto-fill e-mail and password
    */
 var signin = function(req, res, next) {
-
-  sails.log('signin(req, res, next)');
-
-  var ok = function () {
-    // TODO use toast for flash
-    return ThemeService.view(req.session.uri.host, 'views/fallback/signin.jade', res,  { showLegacyToast: false, flash: req.session.flash });
-  }
-
-  var force = null; // modern | fallback
-
-  if(req.param('force'))
-    force = req.param('force');
-
-  if(req.query.force)
-    force = req.query.force;
-
-  // sails.log.debug('force', force);
-
-  if((UseragentService.supported(req) || force == 'modern') && (force != 'fallback' && force != 'noscript')) {
-    return ok(req, res, next);
-  } else {
-    if(force != null)
-      return res.redirect('/fallback/home?force='+force);
-    else
-      return res.redirect('/fallback/home');
-  }
-
+  var host = req.session.uri.host;
+  var flash = req.session.flash;
+  return ThemeService.view(host, 'views/fallback/signin.jade', res,  { showLegacyToast: false, flash: flash });
 }
 
 module.exports = {
