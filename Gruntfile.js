@@ -65,6 +65,7 @@ module.exports = function(grunt) {
     'assets/third-party/js-beautify/js/lib/beautify-html.js',
   
     //- angular-leaflet-directive: https://github.com/tombatossals/angular-leaflet-directive
+    'assets/third-party/angular-simple-logger/dist/index.js',
     'assets/third-party/leaflet/dist/leaflet-src.js',
     'assets/third-party/Leaflet.label/dist/leaflet.label-src.js',
     'assets/third-party/angular-leaflet-directive/dist/angular-leaflet-directive.js',
