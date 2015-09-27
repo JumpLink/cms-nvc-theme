@@ -2,11 +2,17 @@ var validator = require('validator');
 var moment = require('moment');
 moment.locale('de');
 
-var updateBrowser = function (req, res, next, force) {
+/**
+ * 
+ */
+exports.browser = function (req, res, next, force) {
   return ThemeService.view(req.session.uri.host, 'views/fallback/browser.jade', res, {force: force, host: req.host, url: req.path, useragent: req.useragent, title: 'Ihr Browser wird nicht unterstützt' });
 }
 
-var fallbackHome = function (req, res, next, force, showLegacyToast) {
+/**
+ * 
+ */
+exports.layoutHome = function (req, res, next, force, showLegacyToast) {
   sails.log.debug("fallbackHome");
   var about = null, goals = null, page = 'layout.home', events;
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
@@ -29,7 +35,10 @@ var fallbackHome = function (req, res, next, force, showLegacyToast) {
   });
 }
 
-var fallbackMembers = function (req, res, next, force, showLegacyToast) {
+/**
+ * 
+ */
+exports.layoutMembers = function (req, res, next, force, showLegacyToast) {
   var members;
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
     if(err) { return res.serverError(err); }
@@ -40,7 +49,10 @@ var fallbackMembers = function (req, res, next, force, showLegacyToast) {
   }); 
 }
 
-var fallbackEvents = function (req, res, next, force, showLegacyToast) {
+/**
+ * 
+ */
+exports.layoutEvents = function (req, res, next, force, showLegacyToast) {
   var events;
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
     if(err) { return res.serverError(err); }
@@ -52,10 +64,12 @@ var fallbackEvents = function (req, res, next, force, showLegacyToast) {
   }); 
 }
 
-var fallbackGallery = function (req, res, next, force, showLegacyToast) {
+/**
+ * 
+ */
+exports.layoutGallery = function (req, res, next, force, showLegacyToast) {
   var page = 'layout.gallery';
   var type = 'dynamic';
-
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
     if(err) { return res.serverError(err); }
     var site = config.name;
@@ -67,25 +81,13 @@ var fallbackGallery = function (req, res, next, force, showLegacyToast) {
         return ThemeService.view(req.session.uri.host, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, contents: contents_images.contents, images: contents_images.images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}, navs: navs});
       });
     });
-
-    // var query = {
-    //   where: {
-    //     site: config.name
-    //   },
-    //   sort: 'position'
-    // };
-
-    // Gallery.find(query).exec(function found(err, images) {
-    //   if(err) { return res.serverError(err); }
-    //   Navigation.find({where:{page:page, site:config.name}, sort: 'position'}).exec(function found(err, navs) {
-    //     if(err) { return res.serverError(err); }
-    //     return ThemeService.view(req.session.uri.host, 'views/fallback/gallery/content.jade', res, {showLegacyToast: showLegacyToast, force: force, host: req.host, url: req.path, images: images, useragent: req.useragent, title: 'Nautischer Verein Cuxhaven e.V. - Galerie', config: {paths: sails.config.paths}, navs: navs});
-    //   });
-    // });
   });
 }
 
-var fallbackApplication = function (req, res, next, force, showLegacyToast) {
+/**
+ * 
+ */
+exports.layoutApplication = function (req, res, next, force, showLegacyToast) {
   var application = null;
 
   var member = {
@@ -116,7 +118,10 @@ var fallbackApplication = function (req, res, next, force, showLegacyToast) {
   });
 }
 
-var fallbackLinks = function (req, res, next, force, showLegacyToast) {
+/**
+ * 
+ */
+exports.layoutLinks = function (req, res, next, force, showLegacyToast) {
   var links = null;
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
     if(err) { return res.serverError(err); }
@@ -127,7 +132,10 @@ var fallbackLinks = function (req, res, next, force, showLegacyToast) {
   });
 }
 
-var fallbackCms = function (req, res, next, force, showLegacyToast) {
+/**
+ * 
+ */
+exports.layoutCms = function (req, res, next, force, showLegacyToast) {
   var links = null;
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, config) {
     if(err) { return res.serverError(err); }
@@ -137,7 +145,10 @@ var fallbackCms = function (req, res, next, force, showLegacyToast) {
   });
 }
 
-var fallbackImprint = function (req, res, next, force, showLegacyToast) {
+/**
+ * 
+ */
+exports.layoutImprint = function (req, res, next, force, showLegacyToast) {
   MultisiteService.getCurrentSiteConfig(req.session.uri.host, function (err, siteConf) {
   if(err) { return res.serverError(err); }
     var imprint = null, emailIsSend = null;
@@ -298,46 +309,13 @@ var fallbackImprint = function (req, res, next, force, showLegacyToast) {
       view(req, req.host, req.path, form, req.useragent, null);
     }
   });
-
 }
 
-var fallback = function (req, res, next, forceParam, route) {
-  switch(req.path) {
-    case "/fallback/browser":
-      return updateBrowser(req, res, next, forceParam, showLegacyToast = false);
-    case "/fallback/home":
-      return fallbackHome(req, res, next, forceParam, showLegacyToast = true);
-    case "/fallback/members":
-      return fallbackMembers(req, res, next, forceParam, showLegacyToast = true);
-    case "/fallback/events":
-      return fallbackEvents(req, res, next, forceParam, showLegacyToast = true);
-    case "/fallback/gallery":
-      return fallbackGallery(req, res, next, forceParam, showLegacyToast = true);
-    case "/fallback/application":
-      return fallbackApplication(req, res, next, forceParam, showLegacyToast = true);
-    case "/fallback/links":
-      return fallbackLinks(req, res, next, forceParam, showLegacyToast = true);
-    case "/fallback/imprint":
-      return fallbackImprint(req, res, next, forceParam, showLegacyToast = true);
-    case "/fallback/cms":
-      return fallbackCms(req, res, next, forceParam, showLegacyToast = true);
-    default:
-      return fallbackHome(req, res, next, forceParam, showLegacyToast = true);
-  }
-}
-
-  /*
-   * fallback html page to allow browser to auto-fill e-mail and password
-   */
-var signin = function(req, res, next) {
+/*
+ * fallback html page to allow browser to auto-fill e-mail and password
+ */
+exports.signin = function(req, res, next) {
   var host = req.session.uri.host;
   var flash = req.session.flash;
   return ThemeService.view(host, 'views/fallback/signin.jade', res,  { showLegacyToast: false, flash: flash });
 }
-
-module.exports = {
-  updateBrowser: updateBrowser
-  , fallback: fallback
-  , signin: signin
-};
-

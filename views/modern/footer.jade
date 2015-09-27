@@ -25,6 +25,6 @@ img(src="/assets/images/footer.png", width="100%", height="auto")
           dd: a(ui-sref='layout.cms') JumpLink CMS
         dl.dl-horizontal
           dt: | Extras
-          dd(ng-hide="$root.authenticated"): a(href="/signin") Administration anmelden
+          dd(ng-hide="$root.authenticated"): a(onclick='window.open("/signin","_self")') Administration anmelden
           dd(ng-show="$root.authenticated"): a(ng-click="logout()") Administration abmelden
           dd: a(href="/?force=legacy") Kompatibilitätsmodus erzwingen

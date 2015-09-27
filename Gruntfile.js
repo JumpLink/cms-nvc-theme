@@ -96,7 +96,7 @@ module.exports = function(grunt) {
     'assets/third-party/jumplink-cms-angular/src/**/*.js',
 
     'assets/js/app.js',
-    'assets/js/translations.js',
+    'assets/js/config/*.js',
     'assets/js/services/*.js',
     'assets/js/controllers/*.js',
     'assets/js/directives/*.js',
