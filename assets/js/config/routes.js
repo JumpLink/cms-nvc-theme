@@ -7,6 +7,11 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
 
   $stateProvider.state('layout', {
     abstract: true,
+    resolve: {
+      authenticated: function (SessionService) {
+        return SessionService.isAuthenticated();
+      }
+    },
     templateUrl: '/views/modern/layout.jade',
     controller: 'LayoutController'
   });
@@ -42,7 +47,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             return RoutesService.find({});
           },
         },
-        template: '<jl-toolbar routes="routes", title="title", shorttitle="shorttitle", position="position", fluid="fluid", name="name"></jl-toolbar>',
+        template: '<jl-toolbar data-routes="routes", data-title="title", data-shorttitle="shorttitle", data-position="position", data-fluid="fluid", data-name="name", data-filter="filter"></jl-toolbar>',
         controller: 'ToolbarController'
       },
       'footer' : {
@@ -74,7 +79,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             return RoutesService.find({});
           },
         },
-        template: '<jl-toolbar routes="routes", title="title", shorttitle="shorttitle", position="position", fluid="fluid", name="name"></jl-toolbar>',
+        template: '<jl-toolbar data-routes="routes", data-title="title", data-shorttitle="shorttitle", data-position="position", data-fluid="fluid", data-name="name", data-filter="filter"></jl-toolbar>',
         controller: 'ToolbarController'
       },
       'footer' : {
@@ -107,7 +112,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             return RoutesService.find({});
           },
         },
-        template: '<jl-toolbar routes="routes", title="title", shorttitle="shorttitle", position="position", fluid="fluid", name="name"></jl-toolbar>',
+        template: '<jl-toolbar data-routes="routes", data-title="title", data-shorttitle="shorttitle", data-position="position", data-fluid="fluid", data-name="name", data-filter="filter"></jl-toolbar>',
         controller: 'ToolbarController'
       },
       'footer' : {
@@ -144,7 +149,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             return RoutesService.find({});
           },
         },
-        template: '<jl-toolbar routes="routes", title="title", shorttitle="shorttitle", position="position", fluid="fluid", name="name"></jl-toolbar>',
+        template: '<jl-toolbar data-routes="routes", data-title="title", data-shorttitle="shorttitle", data-position="position", data-fluid="fluid", data-name="name", data-filter="filter"></jl-toolbar>',
         controller: 'ToolbarController'
       },
       'footer' : {
@@ -178,7 +183,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             return RoutesService.find({});
           },
         },
-        template: '<jl-toolbar routes="routes", title="title", shorttitle="shorttitle", position="position", fluid="fluid", name="name"></jl-toolbar>',
+        template: '<jl-toolbar data-routes="routes", data-title="title", data-shorttitle="shorttitle", data-position="position", data-fluid="fluid", data-name="name", data-filter="filter"></jl-toolbar>',
         controller: 'ToolbarController'
       },
       'footer' : {
@@ -208,7 +213,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             return RoutesService.find({});
           },
         },
-        template: '<jl-toolbar routes="routes", title="title", shorttitle="shorttitle", position="position", fluid="fluid", name="name"></jl-toolbar>',
+        template: '<jl-toolbar data-routes="routes", data-title="title", data-shorttitle="shorttitle", data-position="position", data-fluid="fluid", data-name="name", data-filter="filter"></jl-toolbar>',
         controller: 'ToolbarController'
       },
       'footer' : {
@@ -246,7 +251,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             return RoutesService.find({});
           },
         },
-        template: '<jl-toolbar routes="routes", title="title", shorttitle="shorttitle", position="position", fluid="fluid", name="name"></jl-toolbar>',
+        template: '<jl-toolbar data-routes="routes", data-title="title", data-shorttitle="shorttitle", data-position="position", data-fluid="fluid", data-name="name", data-filter="filter"></jl-toolbar>',
         controller: 'ToolbarController'
       },
       'footer' : {
@@ -279,7 +284,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             return RoutesService.find({});
           },
         },
-        template: '<jl-toolbar routes="routes", title="title", shorttitle="shorttitle", position="position", fluid="fluid", name="name"></jl-toolbar>',
+        template: '<jl-toolbar data-routes="routes", data-title="title", data-shorttitle="shorttitle", data-position="position", data-fluid="fluid", data-name="name", data-filter="filter"></jl-toolbar>',
         controller: 'ToolbarController'
       },
     }
@@ -346,7 +351,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
             return RoutesService.find({});
           },
         },
-        template: '<jl-toolbar routes="routes", title="title", shorttitle="shorttitle", position="position", fluid="fluid", name="name"></jl-toolbar>',
+        template: '<jl-toolbar data-routes="routes", data-title="title", data-shorttitle="shorttitle", data-position="position", data-fluid="fluid", data-name="name", data-filter="filter"></jl-toolbar>',
         controller: 'ToolbarController'
       }
     }
@@ -450,6 +455,65 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
     }
   });
 
+  // Signin
+  routeOptions.layoutSignin = {
+    resolve: {
+      routes: function(RoutesService) {
+        return RoutesService.find({});
+      },
+      authenticated: function (SessionService) {
+        return SessionService.isAuthenticated();
+      },
+    },
+    views: {
+      'content' : {
+        templateUrl: '/views/modern/signin.jade',
+        controller: 'SigninController'
+      },
+      'toolbar' : {
+        templateUrl: '/views/modern/toolbar.jade',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
+        templateUrl: '/views/modern/footer.jade',
+        controller: 'ToolbarController'
+      }
+    }
+  };
+
+  routeOptions.layoutBrowser = {
+    resolve: {
+      routes: function(RoutesService) {
+        return RoutesService.find({});
+      },
+      authenticated: function (SessionService) {
+        return SessionService.isAuthenticated();
+      },
+      force: function ($stateParams) {
+        if(angular.isString($stateParams.force)) {
+          return $stateParams.force;
+        } else {
+          return null;
+        }
+      },
+    },
+    views: {
+      'content' : {
+        templateUrl: '/views/modern/browser.jade',
+        controller: 'BrowserController'
+      },
+      'toolbar' : {
+        templateUrl: '/views/modern/toolbar.jade',
+        controller: 'ToolbarController'
+      },
+      'footer' : {
+        templateUrl: '/views/modern/footer.jade',
+        controller: 'ToolbarController'
+      }
+    }
+  };
+
+
   /**
    * Load optional addional states.
    * WARNING: Very experimental and dangerous.
@@ -486,7 +550,11 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
       // If options are set, init state
       if(angular.isDefined(options.url) && angular.isDefined(options.resolve) && angular.isDefined(options.views)) {
         // console.log("New Route", routes[i].state.name, options);
-        $stateProvider.state(routes[i].state.name, options);
+        if(typeof(routes[i].state.name) === 'string' && routes[i].state.name.length > 0) {
+          $stateProvider.state(routes[i].state.name, options);
+        } else {
+          console.error("No valid route", routes[i]);
+        }
       }
       //set alternative urls as redirects
       if(angular.isArray(routes[i].alternativeUrls)) {

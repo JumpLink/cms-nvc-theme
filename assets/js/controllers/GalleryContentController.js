@@ -1,4 +1,5 @@
-jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, $state, Fullscreen, $sailsSocket, $stateParams, contents_images, navs, config, $modal, $log, $location, $state, SortableService, GalleryService, ContentService, SubnavigationService, HistoryService) {
+jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, authenticated, $state, Fullscreen, $sailsSocket, $stateParams, contents_images, navs, config, $modal, $log, $location, $state, SortableService, GalleryService, ContentService, SubnavigationService, HistoryService) {
+  $rootScope.authenticated = authenticated;
   $scope.images = contents_images.images;;
   $scope.config = config;
   $scope.contents = contents_images.contents;
@@ -10,7 +11,27 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
   var page = $state.current.name;
 
   GalleryService.setEditModal($scope);
-  GalleryService.setUploadModal($scope, $scope.images, $scope.contents);
+  var imageOptions = {
+    path: config.paths.gallery,
+    thumbnail: {
+      path: config.paths.gallery,
+      width: 300
+    },
+    rescrop: {
+      path: config.paths.gallery,
+      width: 1200,
+      cropwidth: 1200,
+      cropheight: 1200
+    }
+  };
+  GalleryService.setUploadModal($scope, $scope.images, $scope.contents, imageOptions,
+    function (uploadModal) {
+      $log.debug("[GalleryContentController.uploadModalSetted]");
+    },
+    function onCompleteCallback (response, status, headers) {
+      $log.debug("[GalleryContentController.onCompleteCallback]", response, status, headers);
+    }
+  );
   GalleryService.subscribe();
 
   ContentService.setEditModal($scope);
@@ -77,8 +98,9 @@ jumplink.cms.controller('GalleryContentController', function($rootScope, $scope,
 
   var addImage = function() {
     if($rootScope.authenticated) {
-      GalleryService.add($scope.images, $scope.contents, function(err, image) {
+      GalleryService.add($scope.images, $scope.contents, function(err) {
         if(err) $log.error("Error: On image content!", err);
+        $scope.save()
       });
     }
   };

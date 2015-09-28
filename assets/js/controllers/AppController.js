@@ -78,21 +78,6 @@ jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $w
   });
   generalSubscribes();
 
-  $rootScope.fullscreenIsSupported = Fullscreen.isSupported();
-  $rootScope.isFullscreen = false;
-  Fullscreen.$on('FBFullscreen.change', function(evt, isFullscreenEnabled){
-    $rootScope.isFullscreen = isFullscreenEnabled == true;
-    $rootScope.$apply();
-  });
-
-  $rootScope.toggleFullscreen = function () {
-    if (Fullscreen.isEnabled()) {
-      Fullscreen.cancel();
-    } else {
-      Fullscreen.all();
-    }
-  };
-
   // TODO loading animation on $stateChangeStart
     $rootScope.$on('$stateChangeStart',
   function(event, toState, toParams, fromState, fromParams){

@@ -1,5 +1,6 @@
-jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $window, contents, navs, events, news, $state, $log, $modal, HistoryService, ContentService, SubnavigationService, SortableService) {
+jumplink.cms.controller('HomeContentController', function($rootScope, $scope, $window, authenticated, contents, navs, events, news, $state, $log, $modal, HistoryService, ContentService, SubnavigationService, SortableService) {
   var page = $state.current.name;
+  $rootScope.authenticated = authenticated;
   $scope.contents = contents;
   $scope.news = news;
   $scope.navs = navs; // for left navigation with affix, scrollspy and anchor

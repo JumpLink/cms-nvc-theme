@@ -314,8 +314,10 @@ exports.layoutImprint = function (req, res, next, force, showLegacyToast) {
 /*
  * fallback html page to allow browser to auto-fill e-mail and password
  */
-exports.signin = function(req, res, next) {
+exports.layoutSignin = function(req, res, next) {
   var host = req.session.uri.host;
   var flash = req.session.flash;
   return ThemeService.view(host, 'views/fallback/signin.jade', res,  { showLegacyToast: false, flash: flash });
 }
+
+exports.signin = exports.layoutSignin;

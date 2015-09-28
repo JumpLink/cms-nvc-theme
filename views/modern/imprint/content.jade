@@ -8,9 +8,7 @@
     .col-md-10
       //- anchor
       h1.page-header#imprint Impressum
-      div(ng-show="html && authenticated", ng-model="imprint.content", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}")
-      div(ng-show="authenticated", medium-editor, ng-model="imprint.content", options='{"buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
-      div(ng-bind-html="imprint.content", ng-hide="authenticated")
+      jl-content(data-authenticated="authenticated", data-content="imprint.content", data-html="html")
       //- anchor
       h1.page-header.hidden-print#contact Kontakt
       form.hidden-print(role='form', name="form", novalidate, ng-submit="sendMail()")

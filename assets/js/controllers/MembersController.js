@@ -1,4 +1,5 @@
-jumplink.cms.controller('MembersController', function($rootScope, $scope, members, $sailsSocket, $filter, $modal, FileUploader, $log) {
+jumplink.cms.controller('MembersController', function($rootScope, authenticated, $scope, members, $sailsSocket, $filter, $modal, FileUploader, $log) {
+  $rootScope.authenticated = authenticated;
   $scope.uploader = new FileUploader({url: 'member/upload', removeAfterUpload: true});
   $scope.uploader.filters.push({
     name: 'imageFilter',

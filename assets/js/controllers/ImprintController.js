@@ -1,5 +1,6 @@
-jumplink.cms.controller('ImprintController', function($rootScope, $scope, $sailsSocket, imprint, navs, config, $location, $anchorScroll, $state, $log, ContentService) {
+jumplink.cms.controller('ImprintController', function($rootScope, $scope, authenticated, $sailsSocket, imprint, navs, config, $location, $anchorScroll, $state, $log, ContentService) {
   var page = $state.current.name;
+  $rootScope.authenticated = authenticated;
   // $scope.config = config;
   $scope.imprint = imprint;
   $scope.navs = navs;

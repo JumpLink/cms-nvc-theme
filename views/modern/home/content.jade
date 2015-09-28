@@ -27,9 +27,7 @@
           .panel-heading
             h3.panel-title.text-center Aktuelles
           .panel-body
-            div(ng-show="html && authenticated", ng-model="news.content", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}")
-            div(ng-show="authenticated", medium-editor, ng-model="news.content", options='{"placeholder": "Optionale News hier eingeben", "buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
-            div(ng-bind-html="news.content", ng-hide="authenticated")
+            jl-content(data-authenticated="authenticated", data-content="news.content", data-html="html")
             div(ng-if="events.after.length <= 0")
               | Keine bevorstehenden Veranstaltungen
           ul.list-group(ng-if="events.after.length > 0")
@@ -45,9 +43,7 @@
           button.btn.btn-warning(ng-click="moveForward($index, content)", ng-disabled="$index >= contents.length - 1", title="Block nach unten verschieben"): i.fa.fa-forward.fa-rotate-90
         h2.page-header(ng-if="$root.authenticated", id="{{content.name}}", medium-editor, ng-model="content.title", options='{"placeholder": "Titel eingeben", "disableToolbar": true, "paste.forcePlainText": true, "disableReturn": true}')
         h2.page-header(ng-if="!$root.authenticated", id="{{content.name}}", ng-bind-html="content.title")
-        div(ng-show="html && $root.authenticated", ui-ace="{workerPath: '/assets/third-party/ace-builds/src-noconflict', mode: 'html'}", ng-model="content.content")
-        div(ng-show="$root.authenticated", medium-editor, ng-model="content.content", options='{"placeholder": "Inhalt eingeben", "buttonLabels": "fontawesome", "buttons": ["bold", "italic", "underline", "anchor", "header1" , "header2", "quote", "orderedlist", "unorderedlist"]}', bind-options="mediumBindOptions")
-        div(ng-bind-html="content.content", ng-hide="$root.authenticated")
+        jl-content(data-authenticated="authenticated", data-content="content.content", data-html="html")
     //- Events visable on medium devices or larger
     .col-md-2.hidden-xs.hidden-sm
       .panel.panel-primary(bs-affix, data-offset-top="-50", style="margin-top: 40px;")

@@ -1,11 +1,16 @@
-jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, config, EventService, $state, HistoryService, $log) {
+jumplink.cms.controller('TimelineController', function($rootScope, $scope, authenticated, events, config, EventService, $state, HistoryService, $log, $window) {
   var page = $state.current.name;
+  $rootScope.authenticated = authenticated;
   $scope.events = events; // TODO rename to eventBlocks
   $scope.config = config;
   $scope.goTo = HistoryService.goToHashPosition;
   $scope.chooseType = EventService.chooseType;
-  var modals = EventService.setModals($scope);
+  var modals = EventService.setModals($scope, {}, page);
   EventService.subscribe(); // TODO not working anymore
+
+  $scope.openAttachment = function (path) {
+     $window.open(path, '_blank');
+  }
 
   $scope.save = function(event, eventBlockName) {
     var errors = [
@@ -117,10 +122,12 @@ jumplink.cms.controller('TimelineController', function($rootScope, $scope, event
         if(err) {
           if(err === 'discarded') {
             $log.debug("Edit event ", err);
-          } else {
-            $log.error("Error: On edit event!", err);
+            return 'discarded';
           }
+          $log.error("Error: On edit event!", err);
+          return err;
         }
+        $scope.save(event, eventBlockName);
       });
     }
   }

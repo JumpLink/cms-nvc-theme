@@ -4,4 +4,5 @@ jumplink.cms.controller('ToolbarController', function($scope,  $log, routes) {
   $scope.shorttitle = "Admin";
   $scope.position = "fixed-top";
   $scope.fluid = false;
+  $scope.filter = {navbar: 'header'};
 });
