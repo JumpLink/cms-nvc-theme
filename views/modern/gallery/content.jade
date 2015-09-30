@@ -28,4 +28,4 @@
         div(ng-if="!$root.authenticated", style="display:inline-block;")
           .pull-left(ng-repeat="image in images[content.name]", style="height:100px;width:100px;padding:2px")
             img.img-responsive(ng-src="/{{config.paths.gallery}}/{{image.thumb.name}}", ui-sref="layout.gallery-fullscreen({id:image.id})")
-adminbar(data-add-dropdown="addDropdown", add-dropdown-actions="addDropdownActions", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")
+adminbar(data-authenticated="authenticated", data-allow-actions="authenticated", data-add-dropdown="addDropdown", add-dropdown-actions="addDropdownActions", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")

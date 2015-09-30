@@ -22,4 +22,4 @@
             button.btn.btn-warning(ng-click="edit(member)"): i.fa.fa-edit
             button.btn.btn-primary(ng-click="save(member)"): i.fa.fa-floppy-o
             button.btn.btn-warning(ng-disabled="$index >= members.length - 1", ng-click="moveForward(member)"): i.fa.fa-forward
-adminbar(data-add="add", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")
+adminbar(data-authenticated="authenticated", data-allow-actions="authenticated", data-add="add", data-download="download", data-refresh="refresh", data-toogle-html="toogleHtml", data-save="save")

@@ -5,7 +5,7 @@ jumplink.cms.controller('SigninController', function($rootScope, $scope, $log, $
   $scope.signin = function () {
     $log.debug($scope.user);
     // $scope.user.role = 'superadmin';
-    SigninService.signin($scope.user, true, function (error, result) {
+    SigninService.signin($scope.user, true, true, $rootScope, function (error, result) {
       if(error) {
         $scope.error = error;
         return $scope.error ;

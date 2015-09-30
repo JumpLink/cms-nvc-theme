@@ -25,7 +25,7 @@ jumplink.cms = angular.module('jumplink.cms', [
   'toggle-switch',           // AngularJS Toggle Switch: https://github.com/JumpLink/angular-toggle-switch
   'ngAsync',
   'ngFocus',
-  'ngHistory',
+  'jumplink.cms.history',
   'jumplink.cms.content',
   'jumplink.cms.content.medium',
   'jumplink.cms.sortable',
