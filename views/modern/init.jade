@@ -36,9 +36,11 @@ html(lang="en", ng-app="jumplink.cms", ng-controller="AppController", ng-init="$
           h1 Sie haben JavaScript deaktivert.
           a.btn.btn-primary.btn-lg(href="https://"+url+"?force=noscript") Kompatiblitätsmodus aktivieren
     span(ui-view)
-    // SCRIPTS
+    //- SCRIPTS
     if config.environment == 'development'
       script(type="text/javascript", charset="utf-8", src="assets/js/app.concat.js")
     else
-      script(type="text/javascript", charset="utf-8", src="assets/js/app.min.js")
-    // SCRIPTS END
+      //- WORKAROUND
+      script(type="text/javascript", charset="utf-8", src="assets/js/app.concat.js")
+      //- script(type="text/javascript", charset="utf-8", src="assets/js/app.min.js")
+    //- SCRIPTS END
