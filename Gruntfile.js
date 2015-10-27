@@ -92,6 +92,9 @@ module.exports = function(grunt) {
     'assets/third-party/socket.io-client/socket.io.js',
     'assets/third-party/sails.io.js/sails.io.js',
     'assets/third-party/angularSails/dist/ngsails.io.js',
+
+    // https://github.com/rndme/download
+    'assets/third-party/download/download.js',
   
     'assets/third-party/jumplink-cms-angular/src/**/*.js',
 

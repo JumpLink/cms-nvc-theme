@@ -570,6 +570,7 @@ jumplink.cms.config( function($stateProvider, $urlRouterProvider, $locationProvi
 
 jumplink.cms.run(function ($rootScope, $state, $window, $log) {
   $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+    $log.error(error);
     $state.go('error.anmelden', {error: error});
   });
 });
