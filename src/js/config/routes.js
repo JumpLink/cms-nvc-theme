@@ -329,9 +329,9 @@ jumplink.cms.config( function(jlRoutesProvider) {
     url: '/gallery/fs/:id',
     resolve:{
       image: function($sailsSocket, $stateParams, $log) {
-        // $log.debug("$stateParams", $stateParams);
-        return $sailsSocket.get('/gallery/'+$stateParams.id).then (function (data) {
-          // $log.debug('/gallery/'+$stateParams.id, data);
+        $log.debug("[config.routes] $stateParams", $stateParams);
+        return $sailsSocket.post('/gallery/findOne', {id: $stateParams.id}).then (function (data) {
+          $log.debug('[config.routes] /gallery/findOne', {id: $stateParams.id}, data);
           return data.data;
         });
       },
