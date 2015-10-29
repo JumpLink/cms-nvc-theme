@@ -1,5 +1,6 @@
-script.
-  var environment = '#{config.environment}';
-  var user = !{JSON.stringify(user)};
-  //- var authenticated = '#{authenticated}';
-  var routes = !{JSON.stringify(routes)};
+if !gulp
+  script.
+    var environment = '#{config.environment}';
+    var user = !{JSON.stringify(user)};
+    var authenticated = '#{authenticated}';
+    var routes = eval(!{JSON.stringify(routes)});

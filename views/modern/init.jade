@@ -37,10 +37,6 @@ html(lang="en", ng-app="jumplink.cms", ng-controller="AppController", ng-init="$
           a.btn.btn-primary.btn-lg(href="https://"+url+"?force=noscript") Kompatiblitätsmodus aktivieren
     span(ui-view)
     //- SCRIPTS
-    if config.environment == 'development'
-      script(type="text/javascript", charset="utf-8", src="assets/js/app.concat.js")
-    else
-      //- WORKAROUND
-      script(type="text/javascript", charset="utf-8", src="assets/js/app.concat.js")
-      //- script(type="text/javascript", charset="utf-8", src="assets/js/app.min.js")
+    script(type="text/javascript", charset="utf-8", src="assets/js/libs.js")
+    script(type="text/javascript", charset="utf-8", src="assets/js/app.js")
     //- SCRIPTS END
