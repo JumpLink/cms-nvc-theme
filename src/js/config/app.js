@@ -44,4 +44,5 @@ jumplink.cms = angular.module('jumplink.cms', [
   'jumplink.cms.toolbar',
   'jumplink.cms.browser',
   'jumplink.cms.bootstrap.signin',
+  'angular-preload-image',          // A simple AngularJS module to make it easy to pre-load images to prevent the horrible waterfall effect: https://github.com/RevillWeb/angular-preload-image
 ]);

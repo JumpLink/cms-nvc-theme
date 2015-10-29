@@ -514,65 +514,11 @@ jumplink.cms.config( function(jlRoutesProvider) {
   };
 
   jlRoutesProvider.setRoutes(routes, routeOptions);
-
-
-  /**
-   * Load optional addional states.
-   * WARNING: Very experimental and dangerous.
-   */
-
-//   for (var i = 0; i < routes.length; i++) {
-//     if(routes[i].main) {
-//       var options = {};
-//       // set state main url
-//       if(typeof(routes[i].url) === 'string' && routes[i].url.length > 0) {
-//         options.url = routes[i].url;
-//       }
-//       // WARNING custom states are very experimental
-//       if(routes[i].customstate === true) {
-//         // TODO Dirty hack!
-//         if(angular.isDefined(routes[i].state.resolve) && typeof(routes[i].state.resolve) === 'string' && routes[i].state.resolve.length > 0) {
-//           eval(routes[i].state.resolve);
-//           options.resolve = resolve;
-//         }
-//         // TODO Dirty hack!
-//         if(angular.isDefined(routes[i].state.views) && typeof(routes[i].state.views) === 'string' && routes[i].state.views.length > 0) {
-//           eval(routes[i].state.views);
-//           options.views = view;
-//         }
-//       // states wich are defined in routeOptions
-//       } else {
-//         // set state options
-//         if(angular.isDefined(routes[i].objectName) && angular.isDefined(routeOptions[routes[i].objectName])) {
-//           // console.log(routeOptions[routes[i].objectName]);
-//           options.resolve = routeOptions[routes[i].objectName].resolve;
-//           options.views = routeOptions[routes[i].objectName].views;
-//         }
-//       }
-//       // If options are set, init state
-//       if(angular.isDefined(options.url) && angular.isDefined(options.resolve) && angular.isDefined(options.views)) {
-//         // console.log("New Route", routes[i].state.name, options);
-//         if(typeof(routes[i].state.name) === 'string' && routes[i].state.name.length > 0) {
-//           jlRoutesProvider.state(routes[i].state.name, options);
-//         } else {
-//           console.error("No valid route", routes[i]);
-//         }
-//       }
-//       //set alternative urls as redirects
-//       if(angular.isArray(routes[i].alternativeUrls)) {
-//         for (var a = 0; a < routes[i].alternativeUrls.length; a++) {
-//           // e.g. $urlRouterProvider.when('/referenzen', '/referenzen/uebersicht');
-//           // console.log("New redirect: "+routes[i].alternativeUrls[a]+" -> "+routes[i].url);
-//           $urlRouterProvider.when(routes[i].alternativeUrls[a], routes[i].url);
-//         }
-//       }
-//     } // end main
-//   }
 });
 
 jumplink.cms.run(function ($rootScope, $state, $window, $log) {
   $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
     $log.error("[config/routes.js] Error", error);
-    $state.go('error.anmelden', {error: error});
+    $state.go('layout.signin', {error: error});
   });
 });

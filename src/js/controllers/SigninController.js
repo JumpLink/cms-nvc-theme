@@ -8,7 +8,7 @@ jumplink.cms.controller('SigninController', function($rootScope, $scope, $log, $
     SigninService.signin($scope.user, true, true, $rootScope, function (error, result) {
       if(error) {
         $scope.error = error;
-        return $scope.error ;
+        return $scope.error;
       }
       $rootScope.authenticated = result.authenticated;
       $rootScope.user = result.user;

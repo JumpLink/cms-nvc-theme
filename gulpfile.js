@@ -87,7 +87,7 @@ var SOURCES = {
     './src/third-party/js-beautify/js/lib/beautify-html.js',
   
     //- angular-leaflet-directive: https://github.com/tombatossals/angular-leaflet-directive
-    './src/third-party/angular-simple-logger/dist/index.js',
+    './src/third-party/angular-simple-logger/dist/angular-simple-logger.js',
     './src/third-party/leaflet/dist/leaflet-src.js',
     './src/third-party/Leaflet.label/dist/leaflet.label-src.js',
     './src/third-party/angular-leaflet-directive/dist/angular-leaflet-directive.js',
@@ -112,11 +112,14 @@ var SOURCES = {
   
     //- Bring in the socket.io client
     './src/third-party/socket.io-client/socket.io.js',
-    './src/third-party/sails.io.js/sails.io.js',
+    './src/third-party/sails.io.js/dist/sails.io.js',
     './src/third-party/angularSails/dist/ngsails.io.js',
 
     // https://github.com/rndme/download
     './src/third-party/download/download.js',
+
+    // A simple AngularJS module to make it easy to pre-load images to prevent the horrible waterfall effect: https://github.com/RevillWeb/angular-preload-image
+    './src/third-party/angular-preload-image/angular-preload-image.js',
   
     './src/third-party/jumplink-cms-angular/src/**/*.js',
   ],
