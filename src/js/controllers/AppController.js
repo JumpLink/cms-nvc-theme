@@ -21,7 +21,7 @@ jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $w
 
       $sailsSocket.subscribe('disconnect', function(msg){
         $rootScope.pop('error', 'Verbindung zum Server verloren', "");
-        $rootScope.authenticated = false;
+        // $rootScope.authenticated = false;
       });
 
       $sailsSocket.subscribe('reconnect', function(msg){
@@ -64,8 +64,10 @@ jumplink.cms.controller('AppController', function($rootScope, $scope, $state, $w
   };
 
   // http://stackoverflow.com/questions/18608161/angularjs-variable-set-in-ng-init-undefined-in-scope
-  $rootScope.$watch('authenticated', function () {
-    // $log.debug("authenticated: "+$rootScope.authenticated);
+  $rootScope.$watch('authenticated', function (newValue) {
+    $scope.authenticated = newValue;
+    // authenticated = newValue;
+    $log.debug("[AppController] authenticated changed ", $rootScope.authenticated, $scope.authenticated, newValue);
     if($rootScope.authenticated) {
       $rootScope.mainStyle = {'padding-bottom':'50px'};
       $rootScope.toasterPositionClass = 'toast-bottom-right-with-toolbar';

@@ -1,3 +1,5 @@
-jumplink.cms.controller('LayoutController', function($rootScope, authenticated) {
-  $rootScope.authenticated = authenticated;
+jumplink.cms.controller('LayoutController', function($rootScope, $log, authenticated) {
+  $rootScope.authenticated = (authenticated === true);
+  $log.debug("[LayoutController] authenticated", $rootScope.authenticated, authenticated);
+
 });

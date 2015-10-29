@@ -1,6 +1,5 @@
-jumplink.cms.controller('SigninController', function($rootScope, $scope, $log, $stateParams, SigninService, authenticated, $state, HistoryService) {
+jumplink.cms.controller('SigninController', function($rootScope, $scope, $log, $stateParams, SigninService, $state, HistoryService) {
   $scope.error = $stateParams.error;
-  $rootScope.authenticated = authenticated;
 
   $scope.signin = function () {
     $log.debug($scope.user);

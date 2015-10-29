@@ -1,6 +1,5 @@
-jumplink.cms.controller('TimelineController', function($rootScope, $scope, authenticated, events, config, EventService, $state, HistoryService, $log, $window) {
+jumplink.cms.controller('TimelineController', function($rootScope, $scope, events, config, EventService, $state, HistoryService, $log, $window) {
   var page = $state.current.name;
-  $rootScope.authenticated = authenticated;
   $scope.events = events; // TODO rename to eventBlocks
   $scope.config = config;
   $scope.goTo = HistoryService.goToHashPosition;

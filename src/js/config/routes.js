@@ -304,9 +304,9 @@ jumplink.cms.config( function(jlRoutesProvider) {
       routes: function(RoutesService) {
         return RoutesService.find({});
       },
-      authenticated: function (SessionService) {
-        return SessionService.isAuthenticated();
-      },
+      // authenticated: function (SessionService) {
+      //   return SessionService.isAuthenticated();
+      // },
     },
     views: {
       'content' : {
@@ -372,9 +372,9 @@ jumplink.cms.config( function(jlRoutesProvider) {
       routes: function(RoutesService) {
         return RoutesService.find({});
       },
-      authenticated: function (SessionService) {
-        return SessionService.isAuthenticated();
-      },
+      // authenticated: function (SessionService) {
+      //   return SessionService.isAuthenticated();
+      // },
     },
     views: {
       'content' : {
@@ -404,9 +404,9 @@ jumplink.cms.config( function(jlRoutesProvider) {
       routes: function(RoutesService) {
         return RoutesService.find({});
       },
-      authenticated: function (SessionService) {
-        return SessionService.isAuthenticated();
-      },
+      // authenticated: function (SessionService) {
+      //   return SessionService.isAuthenticated();
+      // },
     },
     views: {
       'content' : {
@@ -435,9 +435,9 @@ jumplink.cms.config( function(jlRoutesProvider) {
       routes: function(RoutesService) {
         return RoutesService.find({});
       },
-      authenticated: function (SessionService) {
-        return SessionService.isAuthenticated();
-      },
+    //   authenticated: function (SessionService) {
+    //     return SessionService.isAuthenticated();
+    //   },
     },
     views: {
       'content' : {
@@ -461,9 +461,9 @@ jumplink.cms.config( function(jlRoutesProvider) {
       routes: function(RoutesService) {
         return RoutesService.find({});
       },
-      authenticated: function (SessionService) {
-        return SessionService.isAuthenticated();
-      },
+      // authenticated: function (SessionService) {
+      //   return SessionService.isAuthenticated();
+      // },
     },
     views: {
       'content' : {
@@ -486,9 +486,9 @@ jumplink.cms.config( function(jlRoutesProvider) {
       routes: function(RoutesService) {
         return RoutesService.find({});
       },
-      authenticated: function (SessionService) {
-        return SessionService.isAuthenticated();
-      },
+      // authenticated: function (SessionService) {
+      //   return SessionService.isAuthenticated();
+      // },
       force: function ($stateParams) {
         if(angular.isString($stateParams.force)) {
           return $stateParams.force;

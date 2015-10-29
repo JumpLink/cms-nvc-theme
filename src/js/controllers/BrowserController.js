@@ -1,3 +1,3 @@
-jumplink.cms.controller('BrowserController', function($scope, $log, authenticated, force) {
+jumplink.cms.controller('BrowserController', function($scope, $log, force) {
   $scope.force = force;
 });

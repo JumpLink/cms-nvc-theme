@@ -1,5 +1,4 @@
-jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, authenticated, $state, Fullscreen, $sailsSocket, $stateParams, contents_images, navs, config, $modal, $log, $location, SortableService, GalleryService, ContentService, SubnavigationService, HistoryService) {
-  $rootScope.authenticated = authenticated;
+jumplink.cms.controller('GalleryContentController', function($rootScope, $scope, $state, Fullscreen, $sailsSocket, $stateParams, contents_images, navs, config, $modal, $log, $location, SortableService, GalleryService, ContentService, SubnavigationService, HistoryService) {
   $scope.images = contents_images.images;
   $scope.config = config;
   $scope.contents = contents_images.contents;
